@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXPO REACT V4</title>
+
+    <style>
+/* =====================================================
+   EXPO REACT V4
+   Hoja de estilos
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:white;
+
+    width:100vw;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+}
+
+/* ---------- PANEL ---------- */
+
+#panel{
+
+    width:500px;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 0 25px rgba(0,0,0,.15);
+
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    font-size:34px;
+
+}
+
+.grupo{
+
+    margin-bottom:25px;
+
+}
+
+label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-weight:bold;
+ text-align:center;
+}
+
+/* ---------- CONTROLES ---------- */
+
+.controlNumero{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.controlNumero button{
+
+    width:42px;
+
+    height:42px;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+}
+
+.controlNumero span{
+
+    width:80px;
+
+    text-align:center;
+
+    font-size:26px;
+
+}
+
+/* ---------- PALETA ---------- */
+
+#paleta{
+
+    display:flex;
+
+    justify-content:center;
+gap:15px;
+
+}
+
+.color{
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:8%;
+
+    border:2px solid transparent;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.color.activo{
+
+    border-color:black;
+
+    opacity:1;
+
+
+}
+
+.color:not(.activo){
+
+    opacity:.30;
+
+}
+
+/* ---------- PLAY ---------- */
+
+#play{
+
+    width:100%;
+
+    height:55px;
+
+    font-size:30px;
+
+    background:#000000;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+/* ---------- STOP ---------- */
+
+#stop{
+
+    position:fixed;
+
+    left:50%;
+
+    bottom:30px;
+
+    transform:translateX(-50%);
+
+    width:120px;
+
+    height:60px;
+
+    background:#000000;
+
+    color:white;
+
+    font-size:22px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    display:none;
+
+    z-index:1000;
+
+}
+</style>
+</head>
+
+<body>
+
+    <div id="panel">
+
+        <div class="grupo">
+
+            <label>INTERVALO ENTRE ESTÍMULOS (segundos)</label>
+
+            <div class="controlNumero">
+
+                <button id="menosIntervalo">−</button>
+
+                <span id="valorIntervalo">1.0</span>
+
+                <button id="masIntervalo">+</button>
+
+            </div>
+
+        </div>
+
+        <div class="grupo">
+
+            <label>PANTALLA BLANCA (ms)</label>
+
+            <div class="controlNumero">
+
+                <button id="menosBlanco">−</button>
+
+                <span id="valorBlanco">500</span>
+
+                <button id="masBlanco">+</button>
+
+            </div>
+
+        </div>
+
+        <div class="grupo">
+
+            <label>ELIGE NÚMERO DE ESTÍMULOS Y COLORES</label>
+
+            <div id="paleta">
+
+                <button class="color activo"
+                        data-color="red"
+                        style="background:red">
+                </button>
+
+                <button class="color activo"
+                        data-color="blue"
+                        style="background:blue">
+                </button>
+
+                <button class="color activo"
+                        data-color="green"
+                        style="background:#60F013">
+                </button>
+
+                <button class="color activo"
+                        data-color="yellow"
+                        style="background:#fff52d">
+                </button>
+
+            </div>
+
+        </div>
+
+        <button id="play">START</button>
+
+    </div>
+
+    <button id="stop">STOP</button>
+
+    <script>
+    /* EXPO REACT V4 - Script compatible con tu index.html y style.css */
+
+    const panel=document.getElementById("panel");
+    const play=document.getElementById("play");
+    const stop=document.getElementById("stop");
+
+    const menosIntervalo=document.getElementById("menosIntervalo");
+    const masIntervalo=document.getElementById("masIntervalo");
+    const menosBlanco=document.getElementById("menosBlanco");
+    const masBlanco=document.getElementById("masBlanco");
+
+    const valorIntervalo=document.getElementById("valorIntervalo");
+    const valorBlanco=document.getElementById("valorBlanco");
+
+    const botones=[...document.querySelectorAll(".color")];
+
+    let intervalo=1.0;
+    let blanco=500;
+    let ejecutando=false;
+    let t1=null,t2=null;
+
+    function actualizar(){
+      valorIntervalo.textContent=intervalo.toFixed(1);
+      valorBlanco.textContent=blanco;
+    }
+    actualizar();
+
+    masIntervalo.onclick=()=>{intervalo=+(intervalo+0.1).toFixed(1);actualizar();}
+    menosIntervalo.onclick=()=>{intervalo=Math.max(0.1,+(intervalo-0.1).toFixed(1));actualizar();}
+    masBlanco.onclick=()=>{blanco+=100;actualizar();}
+    menosBlanco.onclick=()=>{blanco=Math.max(0,blanco-100);actualizar();}
+
+    botones.forEach(b=>{
+     b.onclick=()=>{
+       if(b.classList.contains("activo")){
+          if(document.querySelectorAll(".color.activo").length>2){
+             b.classList.remove("activo");
+          }
+       }else{
+          b.classList.add("activo");
+       }
+     };
+    });
+
+    function activos(){
+     return [...document.querySelectorAll(".color.activo")].map(b=>b.dataset.color);
+    }
+
+    function azar(){
+     const c=activos();
+     return c[Math.floor(Math.random()*c.length)];
+    }
+
+    function ciclo(){
+     if(!ejecutando) return;
+     document.body.style.background="white";
+     t1=setTimeout(()=>{
+       if(!ejecutando) return;
+       document.body.style.background=azar();
+       t2=setTimeout(ciclo,intervalo*1000);
+     },blanco);
+    }
+
+    async function iniciar(){
+     if(ejecutando) return;
+     ejecutando=true;
+     panel.style.display="none";
+     stop.style.display="block";
+     document.body.style.cursor="none";
+     try{
+       if(!document.fullscreenElement){
+          await document.documentElement.requestFullscreen();
+       }
+     }catch(e){}
+     ciclo();
+    }
+
+    async function detener(){
+     ejecutando=false;
+     clearTimeout(t1);
+     clearTimeout(t2);
+     document.body.style.background="white";
+     panel.style.display="block";
+     stop.style.display="none";
+     document.body.style.cursor="default";
+     try{
+       if(document.fullscreenElement){
+          await document.exitFullscreen();
+       }
+     }catch(e){}
+    }
+
+    play.onclick=iniciar;
+    stop.onclick=detener;
+
+    document.addEventListener("fullscreenchange",()=>{
+     if(!document.fullscreenElement && ejecutando){
+        detener();
+     }
+    });
+
+</script>
+
+</body>
+
+</html>
