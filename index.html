@@ -153,7 +153,7 @@ gap:15px;
 
 }
 
-/* ---------- PLAY ---------- */
+/* ---------- PLAY ESTILO ---------- */
 
 #play{
 
@@ -175,7 +175,7 @@ gap:15px;
 
 }
 
-/* ---------- STOP ---------- */
+/* ---------- BOTÓN STOP ESTILO ---------- */
 
 #stop{
 
@@ -187,15 +187,15 @@ gap:15px;
 
     transform:translateX(-50%);
 
-    width:120px;
+    width:100px;
 
-    height:60px;
+    height:48px;
 
-    background:#000000;
+    background:rgba(0,0,0,.5);
 
     color:white;
 
-    font-size:22px;
+    font-size:18px;
 
     border:none;
 
@@ -208,6 +208,40 @@ gap:15px;
     z-index:1000;
 
 }
+
+/* ===== BOTÓN PAUSA ESTILO ===== */
+
+#pausa{
+position:fixed;
+left:calc(50% - 70px);
+bottom:30px;
+transform:translateX(-100%);
+width:100px;
+height:48px;
+background:rgba(0,0,0,.5);
+color:white;
+font-size:18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+display:none;
+z-index:1000;
+}
+/* ===== CRONOMETRO ESTILO ===== */
+#cronometro{
+position:fixed;top:20px;right:25px;
+padding:6px 12px;
+background:rgba(0,0,0,.5);
+color:white;
+font-size:22px;
+font-family:Consolas,monospace;
+border-radius:8px;
+display:none;
+z-index:2000;
+user-select:none;
+}
+
+
 </style>
 </head>
 
@@ -264,7 +298,7 @@ gap:15px;
                 </button>
 
                 <button class="color activo"
-                        data-color=#60F013
+                        data-color="#60F013"
                         style="background:#60F013">
                 </button>
 
@@ -281,14 +315,23 @@ gap:15px;
 
     </div>
 
-    <button id="stop">STOP</button>
+   <div id="botonera">
+
+    <button id="pausa">PAUSA</button>
+
+    <button id="stop">SALIR</button>
+
+</div>
+<div id="cronometro">00:00</div>
 
     <script>
-    /* EXPO REACT V4 - Script compatible con tu index.html y style.css */
+    /* ------------SCRIPT----------------------------- */
 
     const panel=document.getElementById("panel");
     const play=document.getElementById("play");
     const stop=document.getElementById("stop");
+const pausa=document.getElementById("pausa");
+const cronometro=document.getElementById("cronometro");
 
     const menosIntervalo=document.getElementById("menosIntervalo");
     const masIntervalo=document.getElementById("masIntervalo");
@@ -304,6 +347,10 @@ gap:15px;
     let blanco=500;
     let ejecutando=false;
     let t1=null,t2=null;
+let pausado=false;
+let tiempoAcumulado=0;
+let inicioCronometro;
+let relojCronometro;
 
     function actualizar(){
       valorIntervalo.textContent=intervalo.toFixed(1);
@@ -347,17 +394,38 @@ gap:15px;
      },blanco);
     }
 
-    async function iniciar(){
+ 
+function iniciarCronometro(){
+ inicioCronometro=Date.now()-tiempoAcumulado;
+ cronometro.style.display="block";
+ relojCronometro=setInterval(()=>{
+  const s=Math.floor((Date.now()-inicioCronometro)/1000);
+  const m=Math.floor(s/60);
+  const ss=s%60;
+  cronometro.textContent=String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");
+ },1000);
+}
+function pausarCronometro(){clearInterval(relojCronometro);tiempoAcumulado=Date.now()-inicioCronometro;}
+function reanudarCronometro(){inicioCronometro=Date.now()-tiempoAcumulado;relojCronometro=setInterval(()=>{const s=Math.floor((Date.now()-inicioCronometro)/1000);const m=Math.floor(s/60);const ss=s%60;cronometro.textContent=String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");},1000);}
+function detenerCronometro(){
+ clearInterval(relojCronometro);
+ cronometro.style.display="none";
+ cronometro.textContent="00:00";
+}
+
+async function iniciar(){
      if(ejecutando) return;
      ejecutando=true;
      panel.style.display="none";
      stop.style.display="block";
+     pausa.style.display="block";
      document.body.style.cursor="none";
      try{
        if(!document.fullscreenElement){
           await document.documentElement.requestFullscreen();
        }
      }catch(e){}
+     iniciarCronometro();
      ciclo();
     }
 
@@ -365,9 +433,11 @@ gap:15px;
      ejecutando=false;
      clearTimeout(t1);
      clearTimeout(t2);
+     detenerCronometro();
      document.body.style.background="white";
      panel.style.display="block";
      stop.style.display="none";
+     pausa.style.display="none";
      document.body.style.cursor="default";
      try{
        if(document.fullscreenElement){
@@ -376,7 +446,24 @@ gap:15px;
      }catch(e){}
     }
 
-    play.onclick=iniciar;
+ 
+    pausa.onclick=()=>{
+      if(!ejecutando) return;
+      if(!pausado){
+        pausado=true;
+        clearTimeout(t1);clearTimeout(t2);
+        pausarCronometro();
+        document.body.style.background="white";
+        pausa.textContent="CONT.";
+      }else{
+        pausado=false;
+        reanudarCronometro();
+        pausa.textContent="PAUSA";
+        ciclo();
+      }
+    };
+
+play.onclick=iniciar;
     stop.onclick=detener;
 
     document.addEventListener("fullscreenchange",()=>{
