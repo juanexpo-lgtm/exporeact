@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -16,7 +17,7 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body{
@@ -53,7 +54,7 @@ h1{
 
     text-align:center;
 
-    margin-bottom:30px;
+    margin-bottom:-15px;
 
     font-size:34px;
 
@@ -68,11 +69,15 @@ h1{
 label{
 
     display:block;
+    margin:0 auto 12px auto;
+    padding:4px 14px;
+    width:fit-content;
+    background:#444;
+    color:white;
+    font-weight:normal;
+    text-align:center;
+    border-radius:5px;
 
-    margin-bottom:10px;
-
-    font-weight:bold;
- text-align:center;
 }
 
 /* ---------- CONTROLES ---------- */
@@ -85,7 +90,7 @@ label{
 
     align-items:center;
 
-    gap:20px;
+    gap:2px;
 
 }
 
@@ -98,6 +103,8 @@ label{
     font-size:24px;
 
     cursor:pointer;
+    display:block;
+    margin:0 auto;
 
 }
 
@@ -118,7 +125,7 @@ label{
     display:flex;
 
     justify-content:center;
-gap:15px;
+gap:2px;
 
 }
 
@@ -134,7 +141,7 @@ gap:15px;
 
     cursor:pointer;
 
-    transition:.2s;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .2s;
 
 }
 
@@ -153,11 +160,12 @@ gap:15px;
 
 }
 
-/* ---------- PLAY ESTILO ---------- */
+/* ---------- PLAY ---------- */
 
 #play{
-
-    width:100%;
+    width:80%;
+    display:block;
+    margin:0 auto;
 
     height:55px;
 
@@ -173,113 +181,152 @@ gap:15px;
 
     cursor:pointer;
 
+
+    box-shadow:0 8px 18px rgba(0,0,0,.40);
+    transition:transform .18s ease, box-shadow .18s ease;
 }
 
-/* ---------- BOTÓN STOP ESTILO ---------- */
+/* ---------- CONTROLES INFERIORES ---------- */
 
-#stop{
-
-    position:fixed;
-
-    left:50%;
-
-    bottom:30px;
-
-    transform:translateX(-50%);
-
-    width:100px;
-
-    height:48px;
-
-    background:rgba(0,0,0,.5);
-
-    color:white;
-
-    font-size:18px;
-
-    border:none;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    display:none;
-
-    z-index:1000;
-
-}
-
-/* ===== BOTÓN PAUSA ESTILO ===== */
-
-#pausa{
+#controles{
 position:fixed;
-left:calc(50% - 70px);
+left:50%;
 bottom:30px;
-transform:translateX(-100%);
-width:100px;
-height:48px;
-background:rgba(0,0,0,.5);
-color:white;
-font-size:18px;
-border:none;
-border-radius:10px;
-cursor:pointer;
+transform:translateX(-50%);
 display:none;
+gap:12px;
 z-index:1000;
 }
-/* ===== CRONOMETRO ESTILO ===== */
+
+#controles button{
+min-width:85px;
+height:38px;
+padding:0 14px;
+background:rgba(0,0,0,.2);
+color:#000;
+font-size:28px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+}
+
+#pausa{
+transform:none;
+}
+
+#stop{
+font-size:14px !important;
+line-height:1;
+}
+
+#pausa .icon-pausa{
+display:block;
+line-height:1;
+position:relative;
+top:-3px;
+}
+
+
+
+#menosIntervalo{margin-right:-4px !important;}
+#masIntervalo{margin-left:-4px !important;}
+
+#intervaloInfo{
+position:relative;
+top:4px;
+width:46px;
+height:30px;
+padding:0 2px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.2);
+color:#000;
+font-size:14px;
+border-radius:6px;
+flex:0 0 auto;
+overflow:hidden;
+}
+
 #cronometro{
 position:fixed;top:20px;right:25px;
 padding:6px 12px;
-background:rgba(0,0,0,.5);
-color:white;
-font-size:22px;
-font-family:Consolas,monospace;
+background:rgba(0,0,0,.2);
+color:#000;
+font-size:16px;
+font-family: Arial, Helvetica, sans-serif;
 border-radius:8px;
 display:none;
 z-index:2000;
 user-select:none;
 }
 
+#cronometro .cronotext{
+display:inline-block;
+position:relative;
+top:1px;
+}
+
+
+
+#play:hover{
+    transform:translateY(2px);
+    background:#333;
+    box-shadow:0 12px 24px rgba(0,0,0,.45);
+}
+
+#play:active{
+    transform:translateY(3px);
+    box-shadow:0 5px 10px rgba(0,0,0,.30);
+}
+
+
+
+.color:hover{
+    transform:translateY(-3px) scale(1.05);
+    box-shadow:0 4px 10px rgba(0,0,0,.25);
+}
+
+#cursorVirtual{
+position:fixed;
+width:18px;
+height:18px;
+border:none;
+background:rgba(0,0,0,.2);
+border-radius:50%;
+pointer-events:none;
+display:none;
+z-index:99999;
+transform:translate(-50%,-50%);
+}
+
+
+#cuentaAtras{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:220px;
+font-weight:bold;
+font-family:Arial,Helvetica,sans-serif;
+color:#000;
+display:none;
+z-index:100000;
+user-select:none;
+}
 
 </style>
 </head>
 
 <body>
+<div id="cursorVirtual"></div>
+<div id="cuentaAtras"></div>
 
     <div id="panel">
-
-        <div class="grupo">
-
-            <label>INTERVALO ENTRE ESTÍMULOS (segundos)</label>
-
-            <div class="controlNumero">
-
-                <button id="menosIntervalo">−</button>
-
-                <span id="valorIntervalo">1.0</span>
-
-                <button id="masIntervalo">+</button>
-
-            </div>
-
-        </div>
-
-        <div class="grupo">
-
-            <label>PANTALLA BLANCA (ms)</label>
-
-            <div class="controlNumero">
-
-                <button id="menosBlanco">−</button>
-
-                <span id="valorBlanco">500</span>
-
-                <button id="masBlanco">+</button>
-
-            </div>
-
-        </div>
 
         <div class="grupo">
 
@@ -311,40 +358,92 @@ user-select:none;
 
         </div>
 
+        <div class="grupo">
+
+            <label>INTERVALO ENTRE ESTÍMULOS (segundos)</label>
+
+            <div class="controlNumero">
+
+                <button id="menosIntervalo">−</button>
+
+                <span id="valorIntervalo">1.0</span>
+
+                <button id="masIntervalo">+</button>
+
+            </div>
+
+        </div>
+
         <button id="play">START</button>
 
     </div>
 
-   <div id="botonera">
-
-    <button id="pausa">PAUSA</button>
-
-    <button id="stop">SALIR</button>
-
-</div>
-<div id="cronometro">00:00</div>
+    <div id="controles">
+        <button id="pausa"><span class="icon-pausa">⏸</span></button>
+        <div id="intervaloInfo">1.00 s</div>
+        <button id="stop">SALIR</button>
+    </div>
+<div id="cronometro"><span class="cronotext">00:00</span></div>
 
     <script>
-    /* ------------SCRIPT----------------------------- */
+    /* EXPO REACT V4 - Script compatible con tu index.html y style.css */
 
-    const panel=document.getElementById("panel");
+    
+const cursorVirtual=document.getElementById("cursorVirtual");
+document.addEventListener("mousemove",e=>{
+  cursorVirtual.style.left=e.clientX+"px";
+  cursorVirtual.style.top=e.clientY+"px";
+});
+
+const cuentaAtras=document.getElementById("cuentaAtras");
+
+const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+
+function beep(duracion=0.18,frecuencia=950){
+ const osc=audioCtx.createOscillator();
+ const gain=audioCtx.createGain();
+ osc.type="square";
+ osc.frequency.value=frecuencia;
+ gain.gain.setValueAtTime(0.8,audioCtx.currentTime);
+ gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+duracion);
+ osc.connect(gain);
+ gain.connect(audioCtx.destination);
+ osc.start();
+ osc.stop(audioCtx.currentTime+duracion);
+}
+
+function esperar(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function cuentaRegresiva(){
+ cuentaAtras.style.display="block";
+ cuentaAtras.textContent="3";
+ beep(0.18,950);
+ await esperar(1000);
+ cuentaAtras.textContent="2";
+ beep(0.18,950);
+ await esperar(1000);
+ cuentaAtras.textContent="1";
+ beep(0.55,1200);
+ await esperar(1000);
+ cuentaAtras.style.display="none";
+}
+
+const panel=document.getElementById("panel");
     const play=document.getElementById("play");
     const stop=document.getElementById("stop");
 const pausa=document.getElementById("pausa");
 const cronometro=document.getElementById("cronometro");
+const intervaloInfo=document.getElementById("intervaloInfo");
 
     const menosIntervalo=document.getElementById("menosIntervalo");
     const masIntervalo=document.getElementById("masIntervalo");
-    const menosBlanco=document.getElementById("menosBlanco");
-    const masBlanco=document.getElementById("masBlanco");
 
     const valorIntervalo=document.getElementById("valorIntervalo");
-    const valorBlanco=document.getElementById("valorBlanco");
 
     const botones=[...document.querySelectorAll(".color")];
 
     let intervalo=1.0;
-    let blanco=500;
+    const blanco=600;
     let ejecutando=false;
     let t1=null,t2=null;
 let pausado=false;
@@ -354,14 +453,11 @@ let relojCronometro;
 
     function actualizar(){
       valorIntervalo.textContent=intervalo.toFixed(1);
-      valorBlanco.textContent=blanco;
     }
     actualizar();
 
     masIntervalo.onclick=()=>{intervalo=+(intervalo+0.1).toFixed(1);actualizar();}
     menosIntervalo.onclick=()=>{intervalo=Math.max(0.1,+(intervalo-0.1).toFixed(1));actualizar();}
-    masBlanco.onclick=()=>{blanco+=100;actualizar();}
-    menosBlanco.onclick=()=>{blanco=Math.max(0,blanco-100);actualizar();}
 
     botones.forEach(b=>{
      b.onclick=()=>{
@@ -394,7 +490,7 @@ let relojCronometro;
      },blanco);
     }
 
- 
+    
 function iniciarCronometro(){
  inicioCronometro=Date.now()-tiempoAcumulado;
  cronometro.style.display="block";
@@ -402,29 +498,31 @@ function iniciarCronometro(){
   const s=Math.floor((Date.now()-inicioCronometro)/1000);
   const m=Math.floor(s/60);
   const ss=s%60;
-  cronometro.textContent=String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");
+  cronometro.querySelector(".cronotext").textContent=String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");
  },1000);
 }
 function pausarCronometro(){clearInterval(relojCronometro);tiempoAcumulado=Date.now()-inicioCronometro;}
-function reanudarCronometro(){inicioCronometro=Date.now()-tiempoAcumulado;relojCronometro=setInterval(()=>{const s=Math.floor((Date.now()-inicioCronometro)/1000);const m=Math.floor(s/60);const ss=s%60;cronometro.textContent=String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");},1000);}
+function reanudarCronometro(){inicioCronometro=Date.now()-tiempoAcumulado;relojCronometro=setInterval(()=>{const s=Math.floor((Date.now()-inicioCronometro)/1000);const m=Math.floor(s/60);const ss=s%60;cronometro.querySelector(".cronotext").textContent=String(m).padStart(2,"0")+":"+String(ss).padStart(2,"0");},1000);}
 function detenerCronometro(){
  clearInterval(relojCronometro);
  cronometro.style.display="none";
- cronometro.textContent="00:00";
+ cronometro.querySelector(".cronotext").textContent="00:00";
 }
 
 async function iniciar(){
      if(ejecutando) return;
      ejecutando=true;
      panel.style.display="none";
-     stop.style.display="block";
-     pausa.style.display="block";
+     document.getElementById("controles").style.display="flex";
      document.body.style.cursor="none";
+     cursorVirtual.style.display="block";
      try{
        if(!document.fullscreenElement){
           await document.documentElement.requestFullscreen();
        }
      }catch(e){}
+     intervaloInfo.textContent=intervalo.toFixed(2)+" s";
+     await cuentaRegresiva();
      iniciarCronometro();
      ciclo();
     }
@@ -436,9 +534,9 @@ async function iniciar(){
      detenerCronometro();
      document.body.style.background="white";
      panel.style.display="block";
-     stop.style.display="none";
-     pausa.style.display="none";
+     document.getElementById("controles").style.display="none";
      document.body.style.cursor="default";
+     cursorVirtual.style.display="none";
      try{
        if(document.fullscreenElement){
           await document.exitFullscreen();
@@ -446,7 +544,7 @@ async function iniciar(){
      }catch(e){}
     }
 
- 
+    
     pausa.onclick=()=>{
       if(!ejecutando) return;
       if(!pausado){
@@ -454,14 +552,24 @@ async function iniciar(){
         clearTimeout(t1);clearTimeout(t2);
         pausarCronometro();
         document.body.style.background="white";
-        pausa.textContent="CONT.";
+        pausa.textContent="▶";
       }else{
         pausado=false;
         reanudarCronometro();
-        pausa.textContent="PAUSA";
+        pausa.textContent="⏸";
         ciclo();
       }
     };
+
+
+document.addEventListener("keydown",(e)=>{
+  if(e.code==="Space"){
+    e.preventDefault();
+    if(ejecutando){
+      pausa.click();
+    }
+  }
+});
 
 play.onclick=iniciar;
     stop.onclick=detener;
