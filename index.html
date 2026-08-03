@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,8 +28,8 @@ body{font-family:"Manrope",sans-serif;margin:20px}
 .arrow-card span{font-size:30px;font-weight:bold;font-weight:bold;transition:transform .18s ease}.arrow-card:hover span,.arrow-card:has(input:checked) span{transform:scale(1.2)}
 label{border:1px solid #ccc;padding:8px;border-radius:6px}
 #stage{display:none;position:fixed;inset:0;justify-content:center;align-items:center;background:#fff}
-#num{font-size:55vh;font-weight:400;display:none}
-#arrow{width:40vh;height:40vh;display:none}#arrow svg{width:100%;height:100%;display:block}
+#num{font-size:45vh;font-weight:400;display:none}
+#arrow{width:32vh;height:32vh;display:none}#arrow svg{width:100%;height:100%;display:block}
 button{padding:8px 16px}
 
 
@@ -70,13 +71,13 @@ border:2px solid #222;
 /* PANEL DE CONFIGURACIÓN */
 body{background:#eef2f5}
 #cfg{max-width:600px;margin:auto;background:#fff;padding:25px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
-.banner{background:#CF2B64;color:#fff;font-size:42px;font-weight:bold;text-align:center;padding:10px;border-radius:12px;margin-bottom:25px}
+.banner{background:#CF2B64;color:#fff;font-size:42px;font-weight:bold;text-align:center;padding:9px;border-radius:12px;margin-bottom:25px}
 .section-title{
 display:inline-block;
 background:#3a3a3a;
 color:#fff;
 padding:6px 18px;
-border-radius:10px;
+border-radius:8px;
 font-weight:normal;
 font-size:20px;
 line-height:1.2;
@@ -111,7 +112,7 @@ margin:12px 0;
 position:fixed;inset:0;display:none;
 justify-content:center;align-items:center;
 background:#fff;color:#000;
-font-size:55vh;font-weight:800;z-index:9999;
+font-size:45vh;font-weight:800;z-index:9999;
 }
 
 
@@ -124,7 +125,7 @@ margin-bottom:10px;
 }
 
 /* CRONÓMETRO Y BADGES */
-#timerBox{position:fixed;top:18px;right:18px;background:rgba(0,0,0,.55);color:#fff;padding:5px 5px;border-radius:10px;font-family:"Manrope",sans-serif;font-size:25px;font-weight:400;letter-spacing:2px;z-index:10001;display:none;backdrop-filter:blur(4px);width:150px;box-sizing:border-box;text-align:center;font-variant-numeric:tabular-nums;}
+#timerBox{position:fixed;top:18px;right:18px;background:rgba(0,0,0,.55);color:#fff;padding:8px 15px;border-radius:10px;font-family:"Manrope",sans-serif;font-size:28px;font-weight:400;letter-spacing:1px;z-index:10001;display:none;backdrop-filter:blur(4px);width:128px;box-sizing:border-box;text-align:center;font-variant-numeric:tabular-nums;}
 
 #pauseBtn:hover{
 transform:scale(1.08);
@@ -157,7 +158,7 @@ display:none;
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner">EXPO REACT/div>
+<div class="banner">EXPO REACT</div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -301,6 +302,13 @@ document.getElementById('pauseBtn').onclick=()=>{
 };
 
 document.addEventListener('keydown',(e)=>{
+
+ if(e.code==='Escape'){
+   e.preventDefault();
+   document.getElementById('exitBtn').click();
+   return;
+ }
+
  if(e.code==='Space'){
    const stageVisible=stage.style.display==='flex';
    if(!stageVisible)return;
