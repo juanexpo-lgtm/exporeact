@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1912,6 +1911,132 @@ body.training-transition #cfg{
   }
 }
 
+
+/* ==========================================================
+   MODO APP / GITHUB PAGES / GOOGLE SITES A PÁGINA COMPLETA
+   ========================================================== */
+
+html, body{
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:#eef2f5 !important;
+  overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+  touch-action:manipulation;
+}
+
+/* Panel inicial: ocupa el máximo espacio sin perder proporción */
+#cfg{
+  position:fixed !important;
+  left:50% !important;
+  top:50% !important;
+  width:600px !important;
+  max-width:none !important;
+  margin:0 !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--app-fit,.72)) !important;
+  transform-origin:center center !important;
+  will-change:transform;
+}
+
+/* La secuencia ocupa todo el viewport disponible */
+#stage,
+#countdown{
+  position:fixed !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-width:100% !important;
+  min-height:100% !important;
+  margin:0 !important;
+}
+
+/* Estímulos adaptativos */
+#num{
+  font-size:min(46vh,46vw) !important;
+  line-height:1 !important;
+}
+#arrow{
+  width:min(54vh,54vw) !important;
+  height:min(54vh,54vw) !important;
+}
+#shape svg{
+  width:min(72vh,72vw) !important;
+  height:min(72vh,72vw) !important;
+}
+#soundStimulus{
+  width:min(68vh,68vw) !important;
+  height:min(68vh,68vw) !important;
+}
+
+/* Zonas seguras iOS */
+#timerBox{
+  top:max(12px,env(safe-area-inset-top)) !important;
+  right:max(12px,env(safe-area-inset-right)) !important;
+}
+
+/* Botón de pantalla completa */
+#fullscreenBtn{
+  position:fixed;
+  left:max(12px,env(safe-area-inset-left));
+  bottom:max(12px,env(safe-area-inset-bottom));
+  width:48px;
+  height:48px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:14px;
+  background:rgba(28,28,30,.76);
+  color:#fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:10005;
+  box-shadow:0 6px 22px rgba(0,0,0,.22);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  transition:transform .16s ease,background .16s ease;
+}
+#fullscreenBtn:hover{
+  background:rgba(58,58,60,.94);
+  transform:scale(1.06);
+}
+#fullscreenBtn:active{
+  transform:scale(.96);
+}
+#fullscreenBtn svg{
+  width:26px;
+  height:26px;
+  display:block;
+}
+body.training-active #fullscreenBtn,
+#stage[style*="display: flex"] ~ #fullscreenBtn{
+  display:flex;
+}
+
+@media (max-width:480px){
+  #fullscreenBtn{
+    width:44px;
+    height:44px;
+    border-radius:13px;
+  }
+}
+
+/* Evita que la transición de inicio rompa el ajuste */
+body.training-transition #cfg{
+  opacity:0;
+  filter:blur(8px);
+  transform:
+    translate(-50%,-50%)
+    scale(calc(var(--app-fit,.72) * .94))
+    translateY(-8px) !important;
+}
+
 </style>
 
 <style id="expo-react-fit-total">
@@ -2041,7 +2166,7 @@ body.training-transition #cfg{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">ENTRENADOra DE VELOCIDAD DE REACCIÓN</div></div>
+<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">ENTRENADOR DE VELOCIDAD DE REACCIÓN</div></div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -2916,6 +3041,145 @@ syncSoundButton();
   fitAll();
   setTimeout(fitAll,100);
   setTimeout(fitAll,500);
+})();
+</script>
+
+
+<button id="fullscreenBtn" type="button" aria-label="Pantalla completa" title="Pantalla completa">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"
+      fill="none" stroke="currentColor" stroke-width="2.2"
+      stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+
+<script>
+(function(){
+  const cfg = document.getElementById("cfg");
+  const stage = document.getElementById("stage");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+  if(!cfg) return;
+
+  let raf = 0;
+
+  function viewport(){
+    const vv = window.visualViewport;
+    return {
+      width: vv ? vv.width : document.documentElement.clientWidth,
+      height: vv ? vv.height : document.documentElement.clientHeight,
+      offsetLeft: vv ? vv.offsetLeft : 0,
+      offsetTop: vv ? vv.offsetTop : 0
+    };
+  }
+
+  function fitApp(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(()=>{
+      const vp = viewport();
+
+      /* Medición natural del panel */
+      const naturalWidth = 600;
+      const naturalHeight = Math.max(cfg.scrollHeight, cfg.offsetHeight, 760);
+
+      const side = vp.width <= 480 ? 14 : 20;
+      const vertical = vp.height <= 520 ? 10 : 16;
+
+      const fitX = (vp.width - side * 2) / naturalWidth;
+      const fitY = (vp.height - vertical * 2) / naturalHeight;
+
+      let fit = Math.min(fitX, fitY);
+
+      /* En pantallas grandes puede ampliarse ligeramente */
+      const maxFit = vp.width >= 1100 && vp.height >= 850 ? 1.12 : 1;
+      fit = Math.max(.28, Math.min(fit, maxFit));
+
+      cfg.style.setProperty("--app-fit", fit.toFixed(4));
+      cfg.style.left = (vp.offsetLeft + vp.width / 2) + "px";
+      cfg.style.top = (vp.offsetTop + vp.height / 2) + "px";
+    });
+  }
+
+  function syncTrainingState(){
+    const visible = stage && getComputedStyle(stage).display !== "none";
+    document.body.classList.toggle("training-active", visible);
+    if(fullscreenBtn) fullscreenBtn.style.display = visible ? "flex" : "none";
+  }
+
+  async function toggleFullscreen(){
+    try{
+      if(!document.fullscreenElement){
+        const target = document.documentElement;
+        if(target.requestFullscreen){
+          await target.requestFullscreen({navigationUI:"hide"});
+        }else if(target.webkitRequestFullscreen){
+          target.webkitRequestFullscreen();
+        }
+      }else{
+        if(document.exitFullscreen){
+          await document.exitFullscreen();
+        }else if(document.webkitExitFullscreen){
+          document.webkitExitFullscreen();
+        }
+      }
+    }catch(err){
+      console.warn("No se pudo activar pantalla completa:", err);
+    }
+  }
+
+  fullscreenBtn?.addEventListener("click", toggleFullscreen);
+
+  window.addEventListener("load", ()=>{
+    fitApp();
+    syncTrainingState();
+  }, {passive:true});
+  window.addEventListener("resize", fitApp, {passive:true});
+  window.addEventListener("orientationchange", ()=>{
+    setTimeout(fitApp,80);
+    setTimeout(fitApp,350);
+  }, {passive:true});
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", fitApp, {passive:true});
+    window.visualViewport.addEventListener("scroll", fitApp, {passive:true});
+  }
+
+  if(window.ResizeObserver){
+    const ro = new ResizeObserver(()=>{
+      fitApp();
+      syncTrainingState();
+    });
+    ro.observe(cfg);
+    if(stage) ro.observe(stage);
+  }
+
+  if(window.MutationObserver && stage){
+    const mo = new MutationObserver(syncTrainingState);
+    mo.observe(stage,{attributes:true,attributeFilter:["style","class"]});
+  }
+
+  document.addEventListener("fullscreenchange", ()=>{
+    if(fullscreenBtn){
+      fullscreenBtn.title = document.fullscreenElement
+        ? "Salir de pantalla completa"
+        : "Pantalla completa";
+      fullscreenBtn.setAttribute(
+        "aria-label",
+        document.fullscreenElement
+          ? "Salir de pantalla completa"
+          : "Pantalla completa"
+      );
+    }
+    fitApp();
+  });
+
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(fitApp);
+  }
+
+  fitApp();
+  setTimeout(fitApp,120);
+  setTimeout(fitApp,700);
 })();
 </script>
 
