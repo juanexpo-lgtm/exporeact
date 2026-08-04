@@ -2462,7 +2462,7 @@ body.training-transition #cfg{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">ENTRENADOR DEe VELOCIDAD DE REACCIÓN</div></div>
+<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">HENTRENADOR DE VELOCIDAD DE REACCIÓN</div></div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -3725,7 +3725,165 @@ syncSoundButton();
 })();
 </script>
 
+
+<script>
+/* Ajusta automáticamente los controles inferiores a una sola línea. */
+(function(){
+  const controls=document.getElementById("controls");
+  const stage=document.getElementById("stage");
+  if(!controls) return;
+
+  let controlsFitFrame=0;
+
+  function getVisibleViewport(){
+    const vv=window.visualViewport;
+    return {
+      width:vv ? vv.width : document.documentElement.clientWidth,
+      offsetLeft:vv ? vv.offsetLeft : 0
+    };
+  }
+
+  function fitSequenceControls(){
+    cancelAnimationFrame(controlsFitFrame);
+
+    controlsFitFrame=requestAnimationFrame(()=>{
+      const viewport=getVisibleViewport();
+
+      /*
+        Primero se mide la barra a tamaño natural. Como utiliza
+        max-content y no permite saltos de línea, scrollWidth representa
+        el ancho completo de todos los controles en una sola fila.
+      */
+      controls.style.setProperty("--sequence-controls-fit","1");
+
+      const naturalWidth=Math.max(
+        controls.scrollWidth,
+        controls.getBoundingClientRect().width
+      );
+
+      const sideMargin=viewport.width<=520 ? 8 : 16;
+      const availableWidth=Math.max(240,viewport.width-sideMargin*2);
+
+      let fit=Math.min(1,availableWidth/naturalWidth);
+
+      /* Pequeño margen para redondeos de Safari y Firefox. */
+      if(fit<1) fit*=0.985;
+
+      fit=Math.max(0.72,fit);
+
+      controls.style.setProperty(
+        "--sequence-controls-fit",
+        fit.toFixed(4)
+      );
+
+      /*
+        visualViewport evita desplazamientos cuando Safari cambia
+        el tamaño de sus barras superior e inferior.
+      */
+      if(window.visualViewport){
+        controls.style.left=
+          (viewport.offsetLeft+viewport.width/2)+"px";
+      }else{
+        controls.style.left="50%";
+      }
+    });
+  }
+
+  window.addEventListener("load",fitSequenceControls,{passive:true});
+  window.addEventListener("resize",fitSequenceControls,{passive:true});
+  window.addEventListener("orientationchange",()=>{
+    setTimeout(fitSequenceControls,80);
+    setTimeout(fitSequenceControls,350);
+  },{passive:true});
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener(
+      "resize",
+      fitSequenceControls,
+      {passive:true}
+    );
+    window.visualViewport.addEventListener(
+      "scroll",
+      fitSequenceControls,
+      {passive:true}
+    );
+  }
+
+  if(window.ResizeObserver){
+    const observer=new ResizeObserver(fitSequenceControls);
+    observer.observe(controls);
+  }
+
+  if(window.MutationObserver && stage){
+    const observer=new MutationObserver(fitSequenceControls);
+    observer.observe(stage,{
+      attributes:true,
+      attributeFilter:["style","class"]
+    });
+  }
+
+  fitSequenceControls();
+  setTimeout(fitSequenceControls,120);
+  setTimeout(fitSequenceControls,600);
+})();
+</script>
+
 </body>
 </html>
 
-<style>#soundStimulus img.voice-uploaded-icon{width:45vh!important;height:45vh!important}#soundStimulus .sound-number{font-size:20vh!important;color:#000!important}#soundStimulus svg{width:45vh!important;height:45vh!important}</style>
+<style>#soundStimulus img.voice-uploaded-icon{width:45vh!important;height:45vh!important}#soundStimulus .sound-number{font-size:20vh!important;color:#000!important}#soundStimulus svg{width:45vh!important;height:45vh!important}
+/* ==========================================================
+   CONTROLES INFERIORES: UNA SOLA LÍNEA CON AJUSTE AUTOMÁTICO
+   ========================================================== */
+#controls{
+  --sequence-controls-fit:1;
+  width:max-content !important;
+  max-width:none !important;
+  min-width:max-content !important;
+  flex-wrap:nowrap !important;
+  white-space:nowrap !important;
+  align-items:center !important;
+  justify-content:center !important;
+  transform:
+    translateX(-50%)
+    scale(var(--sequence-controls-fit)) !important;
+  transform-origin:center bottom !important;
+  will-change:transform;
+}
+
+#controls > div{
+  flex-wrap:nowrap !important;
+  flex:0 0 auto !important;
+  width:max-content !important;
+  max-width:none !important;
+}
+
+#controls > button,
+#controls > div,
+#controls #speedBadge,
+#controls #stimCounter{
+  flex-shrink:0 !important;
+}
+
+/* En iPhone conserva una fila y usa el mínimo espacio lateral posible. */
+@media (max-width:520px){
+  #controls{
+    width:max-content !important;
+    max-width:none !important;
+    min-width:max-content !important;
+    flex-wrap:nowrap !important;
+    gap:6px !important;
+  }
+}
+
+/* En horizontal también permanece en una sola línea. */
+@media (max-height:520px) and (orientation:landscape){
+  #controls{
+    width:max-content !important;
+    max-width:none !important;
+    min-width:max-content !important;
+    flex-wrap:nowrap !important;
+  }
+}
+
+</style>
