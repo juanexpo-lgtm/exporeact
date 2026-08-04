@@ -2165,6 +2165,174 @@ input{
   touch-action:manipulation;
 }
 
+
+/* ==========================================================
+   CORRECCIÓN SECUENCIA EN iPHONE
+   Mantiene intactos PC, iPad y el panel inicial.
+   ========================================================== */
+@media (max-width: 520px){
+
+  /* Cronómetro siempre dentro de la zona visible */
+  #timerBox{
+    top:max(8px, env(safe-area-inset-top)) !important;
+    right:max(8px, env(safe-area-inset-right)) !important;
+    width:76px !important;
+    min-width:76px !important;
+    height:36px !important;
+    padding:0 6px !important;
+    font-size:18px !important;
+    line-height:36px !important;
+    border-radius:10px !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Barra inferior ajustada al ancho real del iPhone */
+  #controls{
+    left:50% !important;
+    right:auto !important;
+    bottom:max(8px, env(safe-area-inset-bottom)) !important;
+    width:calc(100vw - 16px) !important;
+    max-width:calc(100vw - 16px) !important;
+    transform:translateX(-50%) !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Grupo central: velocidad y repeticiones */
+  #controls > div{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:5px !important;
+    min-width:0 !important;
+    max-width:100% !important;
+  }
+
+  #pauseBtn{
+    min-width:54px !important;
+    width:54px !important;
+    height:38px !important;
+    padding:0 !important;
+    font-size:30px !important;
+    border-radius:10px !important;
+  }
+
+  #minusStage,
+  #plusStage{
+    min-width:30px !important;
+    width:30px !important;
+    height:30px !important;
+    padding:0 !important;
+    font-size:15px !important;
+    border-radius:9px !important;
+  }
+
+  #speedBadge{
+    min-width:56px !important;
+    width:auto !important;
+    padding:6px 8px !important;
+    font-size:15px !important;
+    line-height:18px !important;
+    border-radius:9px !important;
+    box-sizing:border-box !important;
+  }
+
+  #stimCounter{
+    min-width:68px !important;
+    width:auto !important;
+    padding:6px 7px !important;
+    font-size:14px !important;
+    line-height:18px !important;
+    white-space:nowrap !important;
+    border-radius:9px !important;
+    box-sizing:border-box !important;
+  }
+
+  #exitBtn{
+    min-width:66px !important;
+    height:38px !important;
+    padding:0 10px !important;
+    font-size:17px !important;
+    line-height:38px !important;
+    border-radius:10px !important;
+  }
+
+  /* El botón de pantalla completa no tapa los controles */
+  #fullscreenBtn{
+    left:max(8px, env(safe-area-inset-left)) !important;
+    bottom:max(58px, calc(env(safe-area-inset-bottom) + 54px)) !important;
+    width:40px !important;
+    height:40px !important;
+    border-radius:11px !important;
+  }
+}
+
+/* iPhone horizontal: una sola fila compacta */
+@media (max-height: 520px) and (orientation: landscape){
+  #timerBox{
+    top:max(6px, env(safe-area-inset-top)) !important;
+    right:max(6px, env(safe-area-inset-right)) !important;
+    width:68px !important;
+    min-width:68px !important;
+    height:30px !important;
+    font-size:15px !important;
+    line-height:30px !important;
+  }
+
+  #controls{
+    bottom:max(5px, env(safe-area-inset-bottom)) !important;
+    width:calc(100vw - 20px) !important;
+    max-width:calc(100vw - 20px) !important;
+    flex-wrap:nowrap !important;
+    gap:5px !important;
+  }
+
+  #pauseBtn{
+    min-width:48px !important;
+    width:48px !important;
+    height:32px !important;
+    font-size:25px !important;
+  }
+
+  #minusStage,
+  #plusStage{
+    min-width:27px !important;
+    width:27px !important;
+    height:27px !important;
+  }
+
+  #speedBadge{
+    min-width:50px !important;
+    padding:4px 6px !important;
+    font-size:13px !important;
+  }
+
+  #stimCounter{
+    min-width:62px !important;
+    padding:4px 6px !important;
+    font-size:12px !important;
+  }
+
+  #exitBtn{
+    min-width:58px !important;
+    height:32px !important;
+    padding:0 8px !important;
+    font-size:14px !important;
+    line-height:32px !important;
+  }
+
+  #fullscreenBtn{
+    width:36px !important;
+    height:36px !important;
+    bottom:max(44px, calc(env(safe-area-inset-bottom) + 40px)) !important;
+  }
+}
+
 </style>
 
 <style id="expo-react-fit-total">
