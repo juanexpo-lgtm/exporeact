@@ -2037,6 +2037,134 @@ body.training-transition #cfg{
     translateY(-8px) !important;
 }
 
+
+/* ==========================================================
+   AJUSTE RESPONSIVE FINAL: PC + iPHONE + iPAD
+   ========================================================== */
+:root{
+  --expo-fit:1;
+  --expo-safe-x:max(12px, env(safe-area-inset-left));
+  --expo-safe-y:max(12px, env(safe-area-inset-top));
+}
+
+html,
+body{
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+  touch-action:manipulation;
+}
+
+body{
+  display:block !important;
+  background:#eef2f5 !important;
+}
+
+/* Panel de configuración centrado y escalado según el espacio real */
+#cfg{
+  position:fixed !important;
+  left:50% !important;
+  top:50% !important;
+  width:600px !important;
+  max-width:none !important;
+  margin:0 !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--expo-fit)) !important;
+  transform-origin:center center !important;
+  will-change:transform;
+}
+
+/* La transición conserva el ajuste responsive */
+body.training-transition #cfg{
+  transform:
+    translate(-50%,-50%)
+    scale(calc(var(--expo-fit) * .95))
+    translateY(-8px) !important;
+}
+
+/* Secuencia y cuenta atrás siempre cubren el viewport */
+#stage,
+#countdown{
+  position:fixed !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  min-width:100% !important;
+  min-height:100% !important;
+  margin:0 !important;
+}
+
+/* Estímulos adaptados por ancho y alto */
+#num{
+  font-size:min(48vh,48vw) !important;
+  line-height:.92 !important;
+}
+#arrow{
+  width:min(56vh,56vw) !important;
+  height:min(56vh,56vw) !important;
+}
+#shape svg{
+  width:min(72vh,72vw) !important;
+  height:min(72vh,72vw) !important;
+}
+#soundStimulus{
+  width:min(68vh,68vw) !important;
+  height:min(68vh,68vw) !important;
+}
+
+/* Controles de secuencia dentro de las zonas seguras */
+#timerBox{
+  top:max(12px,env(safe-area-inset-top)) !important;
+  right:max(12px,env(safe-area-inset-right)) !important;
+}
+
+/* iPhone vertical */
+@media (max-width:480px) and (orientation:portrait){
+  #cfg{
+    border-radius:22px !important;
+  }
+}
+
+/* iPhone horizontal: priorizar la altura disponible */
+@media (max-height:520px) and (orientation:landscape){
+  #cfg{
+    top:50% !important;
+  }
+
+  #num{
+    font-size:min(72vh,38vw) !important;
+  }
+  #arrow{
+    width:min(72vh,38vw) !important;
+    height:min(72vh,38vw) !important;
+  }
+  #shape svg,
+  #soundStimulus{
+    width:min(76vh,42vw) !important;
+    height:min(76vh,42vw) !important;
+  }
+}
+
+/* iPad y tablets: aprovechar mejor el espacio sin exagerar */
+@media (min-width:700px) and (min-height:700px){
+  #cfg{
+    --tablet-max:1.08;
+  }
+}
+
+/* Evita zoom accidental al tocar controles en iOS */
+button,
+label,
+input{
+  touch-action:manipulation;
+}
+
 </style>
 
 <style id="expo-react-fit-total">
@@ -3180,6 +3308,95 @@ syncSoundButton();
   fitApp();
   setTimeout(fitApp,120);
   setTimeout(fitApp,700);
+})();
+</script>
+
+
+<script>
+/* Ajuste final para PC, iPhone e iPad */
+(function(){
+  const cfg = document.getElementById("cfg");
+  if(!cfg) return;
+
+  let rafId = 0;
+
+  function getViewport(){
+    const vv = window.visualViewport;
+    return {
+      width: vv ? vv.width : document.documentElement.clientWidth,
+      height: vv ? vv.height : document.documentElement.clientHeight,
+      offsetLeft: vv ? vv.offsetLeft : 0,
+      offsetTop: vv ? vv.offsetTop : 0
+    };
+  }
+
+  function fitExpoReact(){
+    cancelAnimationFrame(rafId);
+
+    rafId = requestAnimationFrame(()=>{
+      const vp = getViewport();
+
+      /*
+        Se mide el panel en su tamaño natural. El ancho de diseño es
+        600 px; la altura real se obtiene del contenido completo.
+      */
+      const naturalWidth = 600;
+      const naturalHeight = Math.max(cfg.scrollHeight, cfg.offsetHeight, 760);
+
+      const isPhone = vp.width <= 480;
+      const isTablet = vp.width >= 700 && vp.width <= 1400;
+
+      const sidePadding = isPhone ? 14 : isTablet ? 20 : 24;
+      const verticalPadding = vp.height <= 520 ? 10 : isPhone ? 14 : 20;
+
+      const usableWidth = Math.max(260, vp.width - sidePadding * 2);
+      const usableHeight = Math.max(300, vp.height - verticalPadding * 2);
+
+      const fitX = usableWidth / naturalWidth;
+      const fitY = usableHeight / naturalHeight;
+
+      let maxScale = 1;
+      if(isTablet && vp.height >= 800) maxScale = 1.08;
+      if(vp.width >= 1200 && vp.height >= 900) maxScale = 1.12;
+
+      let fit = Math.min(fitX, fitY, maxScale);
+
+      /* Margen de seguridad para Safari móvil y sombras */
+      if(isPhone) fit *= .97;
+      else if(isTablet) fit *= .985;
+
+      fit = Math.max(.28, fit);
+
+      cfg.style.setProperty("--expo-fit", fit.toFixed(4));
+      cfg.style.left = (vp.offsetLeft + vp.width / 2) + "px";
+      cfg.style.top = (vp.offsetTop + vp.height / 2) + "px";
+    });
+  }
+
+  window.addEventListener("load", fitExpoReact, {passive:true});
+  window.addEventListener("resize", fitExpoReact, {passive:true});
+  window.addEventListener("orientationchange", ()=>{
+    setTimeout(fitExpoReact, 80);
+    setTimeout(fitExpoReact, 350);
+  }, {passive:true});
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", fitExpoReact, {passive:true});
+    window.visualViewport.addEventListener("scroll", fitExpoReact, {passive:true});
+  }
+
+  if(window.ResizeObserver){
+    const observer = new ResizeObserver(fitExpoReact);
+    observer.observe(cfg);
+  }
+
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(fitExpoReact);
+  }
+
+  fitExpoReact();
+  setTimeout(fitExpoReact,120);
+  setTimeout(fitExpoReact,600);
 })();
 </script>
 
