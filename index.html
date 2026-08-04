@@ -2462,7 +2462,7 @@ body.training-transition #cfg{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">ENTRENADORA DE VELOCIDAD DE REACCIÓN</div></div>
+<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">ENTRENADOR DEe VELOCIDAD DE REACCIÓN</div></div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -2612,7 +2612,7 @@ function getSoundCardIcon(id){
  return '<div style="display:flex;align-items:center;justify-content:center;width:70vh;height:70vh;color:#000;font-size:18vh;font-weight:800;">'+html+'</div>';
 }
 
-async function run(){
+async function run(sessionId){
   const shape = document.getElementById("shape");
 
   // Solo utiliza índices seleccionados que realmente existan en defs.
@@ -2629,7 +2629,7 @@ async function run(){
 
   let lastIndex = -1;
 
-  while (stage.style.display === "flex") {
+  while (stage.style.display === "flex" && sessionId === activeSession) {
     const totalMs = Math.max(100, dur * 1000);
     const blankMs = Math.min(300, totalMs * 0.20);
     const stimulusMs = Math.max(50, totalMs - blankMs);
@@ -2641,8 +2641,8 @@ async function run(){
     soundStimulus.style.display = "none";
     stopActiveVoice();
 
-    await wait(blankMs);
-    if (stage.style.display !== "flex") break;
+    await wait(blankMs, sessionId);
+    if (stage.style.display !== "flex" || sessionId !== activeSession) break;
 
     // Evita repetir inmediatamente el mismo estímulo cuando hay varios.
     let selectedIndex;
@@ -2659,7 +2659,7 @@ async function run(){
     // Si por cualquier motivo la definición no existe, salta esta vuelta
     // en lugar de detener toda la secuencia.
     if (!d) {
-      await wait(50);
+      await wait(50, sessionId);
       continue;
     }
 
@@ -2702,24 +2702,122 @@ async function run(){
       arrow.style.transform = `${movement} rotate(${d[2]}deg)`;
     }
 
-    await wait(stimulusMs);
+    await wait(stimulusMs, sessionId);
   }
 }
 
 
 let timerInt,startMs,elapsed=0,paused=false;
-async function wait(ms){
- let rem=ms;
- while(rem>0&&stage.style.display==="flex"){
-   while(paused&&stage.style.display==="flex"){await sleep(100);}
-   const step=Math.min(100,rem);
-   await sleep(step);
-   if(!paused){rem-=step;}
- }
+let activeSession=0;
+
+function hideTrainingVisuals(){
+  stage.style.background="white";
+  num.style.display="none";
+  arrow.style.display="none";
+
+  const shapeEl=document.getElementById("shape");
+  if(shapeEl) shapeEl.style.display="none";
+
+  soundStimulus.style.display="none";
+  stopActiveVoice();
+}
+
+function cancelTrainingSession(){
+  activeSession++;
+  paused=false;
+  elapsed=0;
+
+  clearInterval(timerInt);
+  timerInt=null;
+
+  const pauseBtn=document.getElementById("pauseBtn");
+  if(pauseBtn) pauseBtn.textContent="⏸";
+
+  const timerBox=document.getElementById("timerBox");
+  if(timerBox){
+    timerBox.textContent="00:00";
+    timerBox.style.display="none";
+  }
+
+  const cd=document.getElementById("countdown");
+  if(cd){
+    cd.classList.remove("is-visible");
+    cd.style.display="none";
+    cd.style.opacity="";
+    cd.style.visibility="";
+    cd.textContent="";
+  }
+
+  hideTrainingVisuals();
+
+  stimCount=0;
+  updateStim();
+}
+
+async function wait(ms, sessionId){
+  let remaining=ms;
+
+  while(
+    remaining>0 &&
+    stage.style.display==="flex" &&
+    sessionId===activeSession
+  ){
+    while(
+      paused &&
+      stage.style.display==="flex" &&
+      sessionId===activeSession
+    ){
+      await sleep(50);
+    }
+
+    if(sessionId!==activeSession || stage.style.display!=="flex") return false;
+
+    const step=Math.min(50,remaining);
+    await sleep(step);
+    if(!paused) remaining-=step;
+  }
+
+  return sessionId===activeSession && stage.style.display==="flex";
 }
 // ================= INICIO DE LA PRESENTACIÓN =================
-function startTimer(){const b=document.getElementById('timerBox');elapsed=0;paused=false;startMs=Date.now();b.style.display='block';clearInterval(timerInt);b.textContent='00:00';timerInt=setInterval(()=>{if(paused)return;elapsed=Date.now()-startMs;const e=Math.floor(elapsed/1000);const m=String(Math.floor(e/60)).padStart(2,'0');const s=String(e%60).padStart(2,'0');b.textContent=`${m}:${s}`;},250);}
-function stopTimer(){clearInterval(timerInt);const b=document.getElementById('timerBox');if(b)b.style.display='none';}
+function startTimer(sessionId){
+  const b=document.getElementById("timerBox");
+
+  elapsed=0;
+  paused=false;
+  startMs=Date.now();
+
+  b.style.display="flex";
+  b.textContent="00:00";
+
+  clearInterval(timerInt);
+
+  timerInt=setInterval(()=>{
+    if(sessionId!==activeSession){
+      clearInterval(timerInt);
+      return;
+    }
+
+    if(paused) return;
+
+    elapsed=Date.now()-startMs;
+    const e=Math.floor(elapsed/1000);
+    const m=String(Math.floor(e/60)).padStart(2,"0");
+    const s=String(e%60).padStart(2,"0");
+    b.textContent=`${m}:${s}`;
+  },250);
+}
+
+function stopTimer(){
+  clearInterval(timerInt);
+  timerInt=null;
+
+  const b=document.getElementById("timerBox");
+  if(b){
+    b.textContent="00:00";
+    b.style.display="none";
+  }
+}
 
 
 const EMBEDDED = window.self !== window.top;
@@ -2739,17 +2837,23 @@ if(EMBEDDED){
   document.head.appendChild(st);
 }
 start.onclick=async()=>{
+  cancelTrainingSession();
+  const sessionId=activeSession;
+
   cfg.style.display="none";
   stage.style.display="flex";
-  try{
-    if(!EMBEDDED && document.documentElement.requestFullscreen){
-      await document.documentElement.requestFullscreen();
-    }
-}catch(e){
-  console.log('Fullscreen no disponible');
-}
-  stimCount=0; updateStim();
-  await runCountdown();startTimer();run();
+  hideTrainingVisuals();
+
+  const completed=await runCountdown(sessionId);
+
+  if(
+    !completed ||
+    sessionId!==activeSession ||
+    stage.style.display!=="flex"
+  ) return;
+
+  startTimer(sessionId);
+  run(sessionId);
 };
 
 
@@ -2775,16 +2879,24 @@ document.addEventListener('keydown',(e)=>{
  }
 });
 
-document.getElementById('exitBtn').onclick=()=>{stopActiveVoice();
- stopTimer();
- if(!EMBEDDED && document.fullscreenElement) document.exitFullscreen(); else {stage.style.display='none'; document.getElementById('cfg').style.display='block';}
+document.getElementById("exitBtn").onclick=()=>{
+  cancelTrainingSession();
+
+  stage.style.display="none";
+  cfg.style.display="grid";
+  document.body.classList.remove("training-transition","training-active");
+
+  if(!EMBEDDED && document.fullscreenElement){
+    document.exitFullscreen().catch(()=>{});
+  }
 };
 
 document.addEventListener("fullscreenchange",()=>{
-  if(!document.fullscreenElement && stage.style.display==='flex'){
-    stopTimer();
+  if(!document.fullscreenElement && stage.style.display==="flex"){
+    cancelTrainingSession();
     stage.style.display="none";
-    cfg.style.display="block";
+    cfg.style.display="grid";
+    document.body.classList.remove("training-transition","training-active");
   }
 });
 
@@ -2798,16 +2910,61 @@ function beep(ms){
  o.start();
  o.stop(audioCtx.currentTime+ms/1000);
 }
-async function runCountdown(){
- const cd=document.getElementById('countdown');
- cd.style.display='flex';
- for(const n of [3,2,1]){
-   cd.textContent=n;
-   beep(120);
-   await new Promise(r=>setTimeout(r,1000));
- }
- beep(500);
- cd.style.display='none';
+async function runCountdown(sessionId){
+  const cd=document.getElementById("countdown");
+
+  cd.style.display="flex";
+  cd.style.opacity="1";
+  cd.style.visibility="visible";
+  cd.classList.add("is-visible");
+  cd.textContent="3";
+
+  void cd.offsetHeight;
+  await new Promise(resolve=>
+    requestAnimationFrame(()=>
+      requestAnimationFrame(resolve)
+    )
+  );
+
+  for(const n of [3,2,1]){
+    if(sessionId!==activeSession || stage.style.display!=="flex"){
+      cd.classList.remove("is-visible");
+      cd.style.display="none";
+      cd.textContent="";
+      return false;
+    }
+
+    cd.textContent=String(n);
+    beep(120);
+
+    const end=performance.now()+1000;
+
+    while(performance.now()<end){
+      if(sessionId!==activeSession || stage.style.display!=="flex"){
+        cd.classList.remove("is-visible");
+        cd.style.display="none";
+        cd.textContent="";
+        return false;
+      }
+      await sleep(40);
+    }
+  }
+
+  if(sessionId!==activeSession || stage.style.display!=="flex"){
+    cd.classList.remove("is-visible");
+    cd.style.display="none";
+    cd.textContent="";
+    return false;
+  }
+
+  beep(500);
+  cd.classList.remove("is-visible");
+  cd.style.display="none";
+  cd.style.opacity="";
+  cd.style.visibility="";
+  cd.textContent="";
+
+  return true;
 }
 
 // ================= SINCRONIZACIÓN DE INTERFAZ =================
