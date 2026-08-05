@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>EXPO REACT V2</title>
+<title>EXPO REACT 2.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2462,7 +2462,7 @@ body.training-transition #cfg{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">ENTTRENADOR DE VELOCIDAD DE REACCIÓN</div></div>
+<div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">XENTRENADOR DE VELOCIDAD DE REACCIÓN</div></div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -2496,7 +2496,7 @@ body.training-transition #cfg{
 <!-- ESCENARIO DE PRESENTACIÓN -->
 <div id="stage"><div id="cursorCircle"></div><div id="timerBox">00:00</div>
 <div id="controls" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:16px;z-index:10002">
-<button id="pauseBtn" style="font-size:42px;padding:0;border-radius:12px;min-width:84px;height:48px;display:flex;align-items:center;justify-content:center;line-height:1;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;border:none;transition:transform .18s ease;cursor:pointer"><span style="display:inline-block;transform:translateY(-3px)">⏸</span></button>
+<button id="pauseBtn" style="font-size:42px;padding:0;border-radius:12px;min-width:84px;height:48px;display:flex;align-items:center;justify-content:center;line-height:1;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;border:none;transition:transform .18s ease;cursor:pointer" aria-label="Pausar secuencia"></button>
 <div style="display:flex;gap:8px;align-items:center">
 <button id="minusStage" style="font-size:16px;min-width:32px;height:32px;border:none;border-radius:10px;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;cursor:pointer"><span style="display:inline-block;transform:translateY(-3px)">−</span></button>
 <div id="speedBadge" style="background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;padding:8px 14px;border-radius:10px;font-size:18px;font-weight:400;min-width:64px;text-align:center">1.5 s</div>
@@ -2751,6 +2751,31 @@ function hideTrainingVisuals(){
   stopActiveVoice();
 }
 
+
+function setPauseButtonIcon(isPaused){
+  const btn=document.getElementById("pauseBtn");
+  if(!btn) return;
+
+  if(isPaused){
+    btn.innerHTML=`
+      <svg class="sequence-control-icon play-icon"
+           viewBox="0 0 24 24"
+           aria-hidden="true">
+        <path d="M8 5.4v13.2c0 .78.86 1.26 1.53.85l10.1-6.6a1 1 0 0 0 0-1.7l-10.1-6.6A1 1 0 0 0 8 5.4Z"/>
+      </svg>`;
+    btn.setAttribute("aria-label","Reanudar secuencia");
+  }else{
+    btn.innerHTML=`
+      <svg class="sequence-control-icon pause-icon"
+           viewBox="0 0 24 24"
+           aria-hidden="true">
+        <rect x="6.5" y="4.5" width="4" height="15" rx="1.3"/>
+        <rect x="13.5" y="4.5" width="4" height="15" rx="1.3"/>
+      </svg>`;
+    btn.setAttribute("aria-label","Pausar secuencia");
+  }
+}
+
 function cancelTrainingSession(){
   activeSession++;
   paused=false;
@@ -2760,7 +2785,7 @@ function cancelTrainingSession(){
   timerInt=null;
 
   const pauseBtn=document.getElementById("pauseBtn");
-  if(pauseBtn) pauseBtn.textContent="⏸";
+  if(pauseBtn) setPauseButtonIcon(false);
 
   const timerBox=document.getElementById("timerBox");
   if(timerBox){
@@ -2891,10 +2916,17 @@ start.onclick=async()=>{
 };
 
 
+setPauseButtonIcon(false);
+
 document.getElementById('pauseBtn').onclick=()=>{
- const btn=document.getElementById('pauseBtn');
- if(!paused){paused=true;btn.textContent='▶';}
- else{paused=false;startMs=Date.now()-elapsed;btn.textContent='⏸';}
+ if(!paused){
+   paused=true;
+   setPauseButtonIcon(true);
+ }else{
+   paused=false;
+   startMs=Date.now()-elapsed;
+   setPauseButtonIcon(false);
+ }
 };
 
 document.addEventListener('keydown',(e)=>{
@@ -4124,6 +4156,78 @@ syncSoundButton();
   #controls > div{
     padding:0 6px !important;
     gap:3px !important;
+  }
+}
+
+
+/* ==========================================================
+   EXPO REACT 2.0 + PAUSA INTEGRADA EN iOS
+   ========================================================== */
+.banner .banner-main-title{
+  font-weight:800 !important;
+  letter-spacing:-.035em !important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.18),
+    0 3px 8px rgba(90,0,12,.24);
+}
+
+#pauseBtn{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  -webkit-tap-highlight-color:transparent !important;
+  outline:none !important;
+  color:rgba(255,255,255,.96) !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  font-family:inherit !important;
+}
+
+#pauseBtn:focus,
+#pauseBtn:focus-visible,
+#pauseBtn:active{
+  outline:none !important;
+  -webkit-appearance:none !important;
+}
+
+#pauseBtn .sequence-control-icon{
+  width:25px !important;
+  height:25px !important;
+  display:block !important;
+  fill:currentColor !important;
+  color:rgba(255,255,255,.96) !important;
+  pointer-events:none !important;
+  filter:none !important;
+}
+
+#pauseBtn .sequence-control-icon.play-icon{
+  width:24px !important;
+  height:24px !important;
+  transform:translateX(1px);
+}
+
+@media (hover:none) and (pointer:coarse){
+  #pauseBtn,
+  #pauseBtn:hover,
+  #pauseBtn:active,
+  #pauseBtn:focus,
+  #pauseBtn:focus-visible{
+    -webkit-appearance:none !important;
+    appearance:none !important;
+    -webkit-tap-highlight-color:transparent !important;
+    color:rgba(255,255,255,.96) !important;
+    border-color:transparent !important;
+    outline:none !important;
+  }
+
+  #pauseBtn:hover{
+    background:transparent !important;
+    transform:none !important;
+  }
+
+  #pauseBtn:active{
+    background:rgba(255,255,255,.13) !important;
+    transform:scale(.94) !important;
   }
 }
 
