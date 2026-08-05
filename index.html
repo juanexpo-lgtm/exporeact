@@ -2462,7 +2462,7 @@ body.training-transition #cfg{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">XENTRENADOR DE VELOCIDAD DE REACCIÓN</div></div>
+<div class="banner"><div style="position:relative;z-index:1;">EXPO REACT 2.0</div><div style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">MEJORA TU MEJORA TU VELOCIDAD DE REACCION Y AGILIDAD Y AGILIDAD Y AGILIDAD</div></div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -2496,7 +2496,7 @@ body.training-transition #cfg{
 <!-- ESCENARIO DE PRESENTACIÓN -->
 <div id="stage"><div id="cursorCircle"></div><div id="timerBox">00:00</div>
 <div id="controls" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:16px;z-index:10002">
-<button id="pauseBtn" style="font-size:42px;padding:0;border-radius:12px;min-width:84px;height:48px;display:flex;align-items:center;justify-content:center;line-height:1;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;border:none;transition:transform .18s ease;cursor:pointer" aria-label="Pausar secuencia"></button>
+<button id="pauseBtn" style="font-size:42px;padding:0;border-radius:12px;min-width:84px;height:48px;display:flex;align-items:center;justify-content:center;line-height:1;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;border:none;transition:transform .18s ease;cursor:pointer"><span style="display:inline-block;transform:translateY(-3px)">⏸</span></button>
 <div style="display:flex;gap:8px;align-items:center">
 <button id="minusStage" style="font-size:16px;min-width:32px;height:32px;border:none;border-radius:10px;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;cursor:pointer"><span style="display:inline-block;transform:translateY(-3px)">−</span></button>
 <div id="speedBadge" style="background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;padding:8px 14px;border-radius:10px;font-size:18px;font-weight:400;min-width:64px;text-align:center">1.5 s</div>
@@ -2592,20 +2592,84 @@ const num=document.getElementById("num");
 const arrow=document.getElementById("arrow");
 const soundStimulus=document.getElementById("soundStimulus");
 let activeVoice=null;
+const voiceAudioCache=new Map();
+
+function getVoiceAudio(source){
+  if(!source) return null;
+
+  if(!voiceAudioCache.has(source)){
+    const audio=new Audio();
+    audio.preload="auto";
+    audio.src=source;
+    audio.load();
+    voiceAudioCache.set(source,audio);
+  }
+
+  return voiceAudioCache.get(source);
+}
+
 function stopActiveVoice(){
   if(activeVoice){
     activeVoice.pause();
-    activeVoice.currentTime=0;
+    try{
+      activeVoice.currentTime=0;
+    }catch(error){}
     activeVoice=null;
   }
 }
-function playVoice(source){
+
+async function playVoice(source){
   stopActiveVoice();
-  if(!selectionSoundToggle?.checked) return;
-  activeVoice=new Audio(source);
-  activeVoice.preload="auto";
-  activeVoice.play().catch(error=>console.error("No se pudo reproducir la voz:",error));
-  activeVoice.addEventListener("ended",()=>{activeVoice=null;},{once:true});
+
+  /* Respeta el botón general de sonido. */
+  if(!selectionSoundToggle?.checked) return false;
+
+  const audio=getVoiceAudio(source);
+  if(!audio) return false;
+
+  activeVoice=audio;
+  audio.muted=false;
+  audio.volume=1;
+
+  try{
+    audio.currentTime=0;
+  }catch(error){}
+
+  try{
+    await audio.play();
+
+    audio.addEventListener("ended",()=>{
+      if(activeVoice===audio) activeVoice=null;
+    },{once:true});
+
+    return true;
+  }catch(error){
+    /*
+      Segundo intento para Safari/iPad/Firefox cuando el primer play()
+      coincide con un cambio de estado o repintado.
+    */
+    try{
+      await new Promise(resolve=>setTimeout(resolve,30));
+
+      if(activeVoice!==audio || !selectionSoundToggle?.checked){
+        return false;
+      }
+
+      audio.load();
+      audio.currentTime=0;
+      await audio.play();
+
+      audio.addEventListener("ended",()=>{
+        if(activeVoice===audio) activeVoice=null;
+      },{once:true});
+
+      return true;
+    }catch(secondError){
+      console.error("No se pudo reproducir la voz:",secondError);
+      if(activeVoice===audio) activeVoice=null;
+      return false;
+    }
+  }
 }
 
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -2620,12 +2684,68 @@ function updateStim(){
 
 
 
-function getSoundCardIcon(id){
- const c=document.querySelector('.sound-card input[value="'+id+'"]')?.closest('.sound-card');
- if(!c) return "";
- const html=c.querySelector('.sound-card-content').innerHTML;
- return '<div style="display:flex;align-items:center;justify-content:center;width:70vh;height:70vh;color:#000;font-size:18vh;font-weight:800;">'+html+'</div>';
+function getSoundStimulusVisual(label,id){
+  const spokenNumber=(String(label).match(/\d+/)||[""])[0];
+
+  /*
+    Voces 1–10:
+    altavoz negro con exactamente dos ondas + número pronunciado grande.
+  */
+  if(/^Voz\s+\d+$/i.test(String(label)) && spokenNumber){
+    return `
+      <div class="spoken-sound-visual" aria-label="${label}">
+        <svg class="spoken-speaker-icon"
+             viewBox="0 0 100 100"
+             aria-hidden="true">
+          <path d="M10 39v22h17l24 19V20L27 39H10Z"
+                fill="currentColor"/>
+          <path d="M61 37c7 7 7 19 0 26"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="7"
+                stroke-linecap="round"/>
+          <path d="M72 25c14 14 14 36 0 50"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="7"
+                stroke-linecap="round"/>
+        </svg>
+        <span class="spoken-sound-number" data-two-digits="${spokenNumber.length>1}">${spokenNumber}</span>
+      </div>`;
+  }
+
+  /*
+    Pitido 11: mantiene exactamente el icono de su tarjeta,
+    ampliado y en negro.
+  */
+  const card=document
+    .querySelector('.sound-card input[value="'+id+'"]')
+    ?.closest('.sound-card');
+
+  if(!card) return "";
+
+  const content=card.querySelector(".sound-card-content")?.cloneNode(true);
+  if(!content) return "";
+
+  content.querySelectorAll(".sound-number").forEach(el=>el.remove());
+
+  const wrapper=document.createElement("div");
+  wrapper.className="whistle-sound-visual";
+  wrapper.appendChild(content);
+
+  return wrapper.outerHTML;
 }
+
+
+function preloadVoiceAudios(){
+  defs.forEach(definition=>{
+    if(definition?.[0]==="sound" && definition[2]){
+      getVoiceAudio(definition[2]);
+    }
+  });
+}
+
+preloadVoiceAudios();
 
 async function run(sessionId){
   const shape = document.getElementById("shape");
@@ -2644,6 +2764,7 @@ async function run(sessionId){
 
   let lastIndex = -1;
   let consecutiveCount = 0;
+  let isFirstStimulus = true;
 
   while (stage.style.display === "flex" && sessionId === activeSession) {
     const totalMs = Math.max(100, dur * 1000);
@@ -2657,8 +2778,14 @@ async function run(sessionId){
     soundStimulus.style.display = "none";
     stopActiveVoice();
 
-    await wait(blankMs, sessionId);
-    if (stage.style.display !== "flex" || sessionId !== activeSession) break;
+    /*
+      El primer estímulo aparece inmediatamente al terminar la cuenta atrás.
+      En las vueltas siguientes se conserva el intervalo blanco normal.
+    */
+    if(!isFirstStimulus){
+      await wait(blankMs, sessionId);
+      if(stage.style.display!=="flex" || sessionId!==activeSession) break;
+    }
 
     /*
       Aleatoriedad natural:
@@ -2709,9 +2836,21 @@ async function run(sessionId){
       shape.style.display = "flex";
 
     } else if (d[0] === "sound") {
-      soundStimulus.innerHTML=getSoundCardIcon(d[2]);
+      /*
+        El estímulo visual y su MP3 correspondiente comienzan juntos.
+      */
+      soundStimulus.innerHTML=getSoundStimulusVisual(d[1],d[2]);
       soundStimulus.style.display="flex";
-      playVoice(d[2]);
+
+      requestAnimationFrame(()=>{
+        if(
+          sessionId===activeSession &&
+          stage.style.display==="flex" &&
+          soundStimulus.style.display==="flex"
+        ){
+          playVoice(d[2]);
+        }
+      });
 
     } else if (d[0] === "arr") {
       arrow.style.display = "block";
@@ -2729,6 +2868,10 @@ async function run(sessionId){
 
       const movement = transforms[d[2]] || "translate(0px,0px)";
       arrow.style.transform = `${movement} rotate(${d[2]}deg)`;
+    }
+
+    if(isFirstStimulus){
+      isFirstStimulus=false;
     }
 
     await wait(stimulusMs, sessionId);
@@ -2751,31 +2894,6 @@ function hideTrainingVisuals(){
   stopActiveVoice();
 }
 
-
-function setPauseButtonIcon(isPaused){
-  const btn=document.getElementById("pauseBtn");
-  if(!btn) return;
-
-  if(isPaused){
-    btn.innerHTML=`
-      <svg class="sequence-control-icon play-icon"
-           viewBox="0 0 24 24"
-           aria-hidden="true">
-        <path d="M8 5.4v13.2c0 .78.86 1.26 1.53.85l10.1-6.6a1 1 0 0 0 0-1.7l-10.1-6.6A1 1 0 0 0 8 5.4Z"/>
-      </svg>`;
-    btn.setAttribute("aria-label","Reanudar secuencia");
-  }else{
-    btn.innerHTML=`
-      <svg class="sequence-control-icon pause-icon"
-           viewBox="0 0 24 24"
-           aria-hidden="true">
-        <rect x="6.5" y="4.5" width="4" height="15" rx="1.3"/>
-        <rect x="13.5" y="4.5" width="4" height="15" rx="1.3"/>
-      </svg>`;
-    btn.setAttribute("aria-label","Pausar secuencia");
-  }
-}
-
 function cancelTrainingSession(){
   activeSession++;
   paused=false;
@@ -2785,7 +2903,7 @@ function cancelTrainingSession(){
   timerInt=null;
 
   const pauseBtn=document.getElementById("pauseBtn");
-  if(pauseBtn) setPauseButtonIcon(false);
+  if(pauseBtn) pauseBtn.textContent="⏸";
 
   const timerBox=document.getElementById("timerBox");
   if(timerBox){
@@ -2916,17 +3034,10 @@ start.onclick=async()=>{
 };
 
 
-setPauseButtonIcon(false);
-
 document.getElementById('pauseBtn').onclick=()=>{
- if(!paused){
-   paused=true;
-   setPauseButtonIcon(true);
- }else{
-   paused=false;
-   startMs=Date.now()-elapsed;
-   setPauseButtonIcon(false);
- }
+ const btn=document.getElementById('pauseBtn');
+ if(!paused){paused=true;btn.textContent='▶';}
+ else{paused=false;startMs=Date.now()-elapsed;btn.textContent='⏸';}
 };
 
 document.addEventListener('keydown',(e)=>{
@@ -2996,11 +3107,32 @@ async function runCountdown(sessionId){
     if(sessionId!==activeSession || stage.style.display!=="flex"){
       cd.classList.remove("is-visible");
       cd.style.display="none";
-      cd.textContent="";
+      cd.replaceChildren();
       return false;
     }
 
-    cd.textContent=String(n);
+    /*
+      Se crea un elemento nuevo para cada número.
+      Esto obliga al navegador a reproducir la animación desde cero.
+    */
+    const countdownContent=document.createElement("div");
+    countdownContent.className="countdown-content";
+
+    const readyEl=document.createElement("div");
+    readyEl.className="countdown-ready";
+    readyEl.textContent="READY";
+
+    const numberEl=document.createElement("span");
+    numberEl.className="countdown-number";
+    numberEl.textContent=String(n);
+
+    countdownContent.append(readyEl,numberEl);
+    cd.replaceChildren(countdownContent);
+
+    /* Fuerza el primer fotograma antes de lanzar la animación. */
+    void numberEl.offsetWidth;
+    numberEl.classList.add("is-animating");
+
     beep(120);
 
     const end=performance.now()+1000;
@@ -3019,16 +3151,41 @@ async function runCountdown(sessionId){
   if(sessionId!==activeSession || stage.style.display!=="flex"){
     cd.classList.remove("is-visible");
     cd.style.display="none";
-    cd.textContent="";
+    cd.replaceChildren();
     return false;
   }
 
+  /*
+    Salida:
+    GO aparece solo y coincide exactamente con el pitido final.
+    Permanece durante medio segundo antes del primer estímulo.
+  */
+  const goEl=document.createElement("div");
+  goEl.className="countdown-go";
+  goEl.textContent="GO";
+  cd.replaceChildren(goEl);
+
+  void goEl.offsetWidth;
+  goEl.classList.add("is-visible");
+
   beep(500);
+
+  const goEnd=performance.now()+1000;
+  while(performance.now()<goEnd){
+    if(sessionId!==activeSession || stage.style.display!=="flex"){
+      cd.classList.remove("is-visible");
+      cd.style.display="none";
+      cd.replaceChildren();
+      return false;
+    }
+    await sleep(25);
+  }
+
   cd.classList.remove("is-visible");
   cd.style.display="none";
   cd.style.opacity="";
   cd.style.visibility="";
-  cd.textContent="";
+  cd.replaceChildren();
 
   return true;
 }
@@ -4161,73 +4318,517 @@ syncSoundButton();
 
 
 /* ==========================================================
-   EXPO REACT 2.0 + PAUSA INTEGRADA EN iOS
+   CUENTA ATRÁS: ZOOM VISIBLE Y FIABLE
    ========================================================== */
-.banner .banner-main-title{
-  font-weight:800 !important;
-  letter-spacing:-.035em !important;
+#countdown{
+  transform:none !important;
+  transition:opacity .08s ease !important;
+  font-variant-numeric:tabular-nums;
+  text-shadow:
+    0 8px 22px rgba(0,0,0,.10),
+    0 1px 0 rgba(255,255,255,.72);
+}
+
+#countdown .countdown-number{
+  display:inline-block;
+  transform-origin:center center;
+  will-change:transform,opacity;
+}
+
+#countdown .countdown-number.is-animating{
+  animation:countdownGrowVisible .72s cubic-bezier(.22,.61,.36,1) both;
+}
+
+@keyframes countdownGrowVisible{
+  from{
+    transform:scale(.06);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  #countdown .countdown-number.is-animating{
+    animation:none !important;
+  }
+}
+
+
+/* ==========================================================
+   SONIDO EN SECUENCIA: ALTAVOZ + NÚMERO PRONUNCIADO
+   ========================================================== */
+#soundStimulus{
+  width:auto !important;
+  height:auto !important;
+  max-width:90vw !important;
+  max-height:72vh !important;
+  color:#000 !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+#soundStimulus .spoken-sound-visual{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(18px,4vw,58px);
+  color:#000;
+  line-height:1;
+  max-width:90vw;
+}
+
+#soundStimulus .spoken-speaker-icon{
+  width:clamp(150px,30vh,330px) !important;
+  height:clamp(150px,30vh,330px) !important;
+  display:block !important;
+  flex:0 0 auto;
+  color:#000 !important;
+  overflow:visible;
+}
+
+#soundStimulus .spoken-sound-number{
+  display:block;
+  min-width:.65em;
+  color:#000 !important;
+  font-family:"Manrope",sans-serif;
+  font-size:clamp(180px,42vh,460px) !important;
+  font-weight:700 !important;
+  line-height:.82 !important;
+  letter-spacing:-.07em;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+
+#soundStimulus .whistle-sound-visual{
+  width:min(58vh,72vw);
+  height:min(58vh,72vw);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#000 !important;
+}
+
+#soundStimulus .whistle-sound-visual .sound-card-content{
+  width:100% !important;
+  height:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:0 !important;
+  color:#000 !important;
+}
+
+#soundStimulus .whistle-sound-visual img,
+#soundStimulus .whistle-sound-visual svg{
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  display:block !important;
+  color:#000 !important;
+  filter:brightness(0) !important;
+  margin:0 !important;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  #soundStimulus .spoken-sound-visual{
+    gap:12px;
+    transform:translateY(-2vh);
+  }
+
+  #soundStimulus .spoken-speaker-icon{
+    width:29vw !important;
+    height:29vw !important;
+  }
+
+  #soundStimulus .spoken-sound-number{
+    font-size:min(48vw,38vh) !important;
+  }
+
+  #soundStimulus .whistle-sound-visual{
+    width:min(64vw,44vh);
+    height:min(64vw,44vh);
+  }
+}
+
+
+/* ==========================================================
+   AJUSTE FINAL: ALTAVOZ + NÚMERO MÁS UNIDOS Y CENTRADOS
+   ========================================================== */
+#soundStimulus .spoken-sound-visual{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:clamp(2px,.65vw,10px) !important;
+  width:max-content !important;
+  max-width:92vw !important;
+  margin:0 auto !important;
+  transform:translateX(-1.5%) !important;
+}
+
+#soundStimulus .spoken-speaker-icon{
+  width:clamp(135px,26vh,285px) !important;
+  height:clamp(135px,26vh,285px) !important;
+  margin-right:clamp(-12px,-1vw,-4px) !important;
+}
+
+#soundStimulus .spoken-sound-number{
+  margin-left:0 !important;
+  min-width:auto !important;
+  font-size:clamp(190px,43vh,470px) !important;
+  letter-spacing:-.075em !important;
+}
+
+/* Números de dos cifras: evita que el conjunto se desplace visualmente. */
+#soundStimulus .spoken-sound-number[data-two-digits="true"]{
+  letter-spacing:-.10em !important;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  #soundStimulus .spoken-sound-visual{
+    gap:0 !important;
+    transform:translateX(-2%) translateY(-2vh) !important;
+  }
+
+  #soundStimulus .spoken-speaker-icon{
+    width:27vw !important;
+    height:27vw !important;
+    margin-right:-3vw !important;
+  }
+
+  #soundStimulus .spoken-sound-number{
+    font-size:min(50vw,39vh) !important;
+  }
+}
+
+
+/* ==========================================================
+   ALTAVOZ + NÚMERO: BLOQUE MÁS UNIDO Y CENTRADO
+   ========================================================== */
+#soundStimulus .spoken-sound-visual{
+  gap:0 !important;
+  transform:translateX(-2.2%) !important;
+}
+
+#soundStimulus .spoken-speaker-icon{
+  margin-right:clamp(-28px,-2.2vw,-12px) !important;
+}
+
+#soundStimulus .spoken-sound-number{
+  margin-left:0 !important;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  #soundStimulus .spoken-sound-visual{
+    gap:0 !important;
+    transform:translateX(-3%) translateY(-2vh) !important;
+  }
+
+  #soundStimulus .spoken-speaker-icon{
+    margin-right:-5vw !important;
+  }
+}
+
+
+/* ==========================================================
+   CUENTA ATRÁS: READY + NÚMERO / GO FINAL
+   ========================================================== */
+#countdown .countdown-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,1.5vh,18px);
+  line-height:1;
+}
+
+#countdown .countdown-ready{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(8px,1vh,12px) clamp(18px,2.2vw,34px);
+  border-radius:999px;
+  font-family:"Manrope",sans-serif;
+  font-size:clamp(42px,8.6vh,108px);
+  font-weight:800;
+  letter-spacing:.08em;
+  line-height:1;
+  text-transform:uppercase;
+  color:#fff;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,116,116,.94) 0%,
+      rgba(220,40,58,.92) 54%,
+      rgba(142,9,29,.96) 100%
+    );
+  border:1px solid rgba(255,255,255,.34);
+  box-shadow:
+    0 14px 32px rgba(132,10,28,.22),
+    inset 0 1px 0 rgba(255,255,255,.44),
+    inset 0 -8px 18px rgba(84,0,16,.18);
+  backdrop-filter:blur(12px) saturate(140%);
+  -webkit-backdrop-filter:blur(12px) saturate(140%);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.16),
+    0 2px 10px rgba(80,0,10,.24);
+  overflow:hidden;
+}
+
+#countdown .countdown-ready::before{
+  content:"";
+  position:absolute;
+  left:10%;
+  right:10%;
+  top:6%;
+  height:48%;
+  border-radius:999px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.36),
+      rgba(255,255,255,.08) 72%,
+      transparent
+    );
+  pointer-events:none;
+}
+
+#countdown .countdown-number{
+  line-height:.82;
+}
+
+#countdown .countdown-go{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:clamp(185px,31vh,355px);
+  height:clamp(185px,31vh,355px);
+  border-radius:50%;
+  color:#fff;
+  font-family:"Manrope",sans-serif;
+  font-size:clamp(68px,14vh,160px);
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-.04em;
+  opacity:0;
+  transform:scale(.84);
+  transition:
+    opacity .16s ease,
+    transform .24s cubic-bezier(.22,.61,.36,1);
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255,255,255,.34), rgba(255,255,255,0) 34%),
+    linear-gradient(
+      180deg,
+      rgba(88,214,138,.90) 0%,
+      rgba(25,160,83,.92) 48%,
+      rgba(9,109,54,.96) 100%
+    );
+  border:1px solid rgba(255,255,255,.34);
+  box-shadow:
+    0 16px 38px rgba(8,92,46,.20),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -12px 20px rgba(0,70,30,.16);
+  backdrop-filter:blur(16px) saturate(145%);
+  -webkit-backdrop-filter:blur(16px) saturate(145%);
   text-shadow:
     0 1px 0 rgba(255,255,255,.18),
-    0 3px 8px rgba(90,0,12,.24);
+    0 4px 16px rgba(0,50,20,.22);
+  overflow:hidden;
 }
 
-#pauseBtn{
-  -webkit-appearance:none !important;
-  appearance:none !important;
-  -webkit-tap-highlight-color:transparent !important;
-  outline:none !important;
-  color:rgba(255,255,255,.96) !important;
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-  font-family:inherit !important;
+#countdown .countdown-go::before{
+  content:"";
+  position:absolute;
+  left:12%;
+  right:12%;
+  top:8%;
+  height:38%;
+  border-radius:50%;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.34),
+      rgba(255,255,255,.08) 70%,
+      transparent
+    );
+  pointer-events:none;
 }
 
-#pauseBtn:focus,
-#pauseBtn:focus-visible,
-#pauseBtn:active{
-  outline:none !important;
-  -webkit-appearance:none !important;
+#countdown .countdown-go::after{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.14);
+  pointer-events:none;
 }
 
-#pauseBtn .sequence-control-icon{
-  width:25px !important;
-  height:25px !important;
-  display:block !important;
-  fill:currentColor !important;
-  color:rgba(255,255,255,.96) !important;
-  pointer-events:none !important;
-  filter:none !important;
+#countdown .countdown-go.is-visible{
+  opacity:1;
+  transform:scale(1);
 }
 
-#pauseBtn .sequence-control-icon.play-icon{
-  width:24px !important;
-  height:24px !important;
-  transform:translateX(1px);
-}
-
-@media (hover:none) and (pointer:coarse){
-  #pauseBtn,
-  #pauseBtn:hover,
-  #pauseBtn:active,
-  #pauseBtn:focus,
-  #pauseBtn:focus-visible{
-    -webkit-appearance:none !important;
-    appearance:none !important;
-    -webkit-tap-highlight-color:transparent !important;
-    color:rgba(255,255,255,.96) !important;
-    border-color:transparent !important;
-    outline:none !important;
+@media (max-width:520px) and (orientation:portrait){
+  #countdown .countdown-ready{
+    padding:7px 16px;
+    font-size:min(10vw,62px);
   }
 
-  #pauseBtn:hover{
-    background:transparent !important;
-    transform:none !important;
+  #countdown .countdown-go{
+    width:min(48vw,30vh);
+    height:min(48vw,30vh);
+    font-size:min(16vw,88px);
+  }
+}
+
+
+/* ==========================================================
+   AJUSTE FINAL BANNER + READY + ALTAVOZ
+   ========================================================== */
+
+/* Banner con más presencia/grosor */
+.banner .banner-main-title{
+  font-weight:900 !important;
+  letter-spacing:-.045em !important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.18),
+    0 3px 8px rgba(90,0,12,.24) !important;
+}
+
+.banner .banner-subtitle{
+  font-weight:500 !important;
+  letter-spacing:.03em !important;
+}
+
+/* READY con bordes menos redondeados */
+#countdown .countdown-ready{
+  border-radius:18px !important;
+  padding:clamp(8px,1vh,12px) clamp(16px,2vw,28px) !important;
+}
+
+/* Altavoz más grande y algo más unido al número */
+#soundStimulus .spoken-speaker-icon{
+  width:clamp(170px,33vh,360px) !important;
+  height:clamp(170px,33vh,360px) !important;
+  margin-right:clamp(-34px,-2.6vw,-14px) !important;
+}
+
+#soundStimulus .spoken-sound-visual{
+  transform:translateX(-2.8%) !important;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  #soundStimulus .spoken-speaker-icon{
+    width:32vw !important;
+    height:32vw !important;
+    margin-right:-6vw !important;
   }
 
-  #pauseBtn:active{
-    background:rgba(255,255,255,.13) !important;
-    transform:scale(.94) !important;
+  #soundStimulus .spoken-sound-visual{
+    transform:translateX(-3.4%) translateY(-2vh) !important;
+  }
+
+  #countdown .countdown-ready{
+    border-radius:14px !important;
+  }
+}
+
+
+/* ==========================================================
+   AJUSTE FINAL: BANNER + CUENTA ATRÁS EN CÍRCULO GLASS ROJO
+   ========================================================== */
+
+/* Banner: más peso visual para EXPO REACT 2.0 */
+.banner .banner-main-title{
+  font-weight:950 !important;
+  letter-spacing:-.055em !important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.18),
+    0 4px 10px rgba(90,0,12,.24) !important;
+}
+
+.banner .banner-subtitle{
+  font-weight:500 !important;
+  letter-spacing:.028em !important;
+}
+
+/* Cuenta atrás: círculo glass rojo para el número */
+#countdown .countdown-content{
+  gap:clamp(10px,2vh,20px) !important;
+}
+
+#countdown .countdown-number{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:clamp(180px,33vh,360px) !important;
+  height:clamp(180px,33vh,360px) !important;
+  border-radius:50% !important;
+  line-height:1 !important;
+  font-family:"Manrope",sans-serif !important;
+  font-size:clamp(110px,23vh,250px) !important;
+  font-weight:800 !important;
+  color:#fff !important;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255,255,255,.30), rgba(255,255,255,0) 34%),
+    linear-gradient(
+      180deg,
+      rgba(255,116,116,.93) 0%,
+      rgba(220,40,58,.92) 52%,
+      rgba(142,9,29,.96) 100%
+    ) !important;
+  border:1px solid rgba(255,255,255,.34) !important;
+  box-shadow:
+    0 16px 38px rgba(132,10,28,.22),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -12px 20px rgba(84,0,16,.16) !important;
+  backdrop-filter:blur(16px) saturate(145%) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(145%) !important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.18),
+    0 4px 16px rgba(80,0,10,.22) !important;
+  overflow:hidden;
+  position:relative;
+}
+
+#countdown .countdown-number::before{
+  content:"";
+  position:absolute;
+  left:12%;
+  right:12%;
+  top:8%;
+  height:38%;
+  border-radius:50%;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.34),
+      rgba(255,255,255,.08) 70%,
+      transparent
+    );
+  pointer-events:none;
+}
+
+#countdown .countdown-number::after{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.14);
+  pointer-events:none;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  #countdown .countdown-number{
+    width:min(48vw,30vh) !important;
+    height:min(48vw,30vh) !important;
+    font-size:min(24vw,132px) !important;
   }
 }
 
