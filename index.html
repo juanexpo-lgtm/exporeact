@@ -2473,9 +2473,9 @@ body.training-transition #cfg{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div class="banner-subtitle" style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">MEJORA ZU VELOCIDAD DE REACCION Y AGILIDAD</div></div>
+<div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div class="banner-subtitle" style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">MEJORA TU VELOCIDAD DE REACCIÓN Y TU AGILIDAD</div></div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
-<div class="section-wrap"><div class="section-title">ELIGE FLECHAS DE DIRECCIÓN</div></div><div class="grid" id="arrows"></div>
+<div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FORMAS</div></div><div class="grid colors-grid" id="shapes"></div>
 <div class="section-wrap"><div class="section-title">ELIGE VOCES Y SONIDOS</div></div><div class="grid" id="sounds"></div>
@@ -2485,20 +2485,41 @@ body.training-transition #cfg{
 <button id="plus"><span style="transform:translateY(-2px);display:inline-block;">+</span></button>
 </p>
 <div class="start-row">
-<button id="soundToggleBtn" type="button" title="Silenciar sonido" aria-label="Silenciar sonido" aria-pressed="false">
+<button id="soundToggleBtn" type="button" aria-label="Silenciar" aria-pressed="false" data-tooltip="SILENCIAR">
   <svg class="sound-icon sound-on-icon volume-elegant-icon" viewBox="0 0 64 64" aria-hidden="true">
   <path d="M9 25.5h11L34.5 14a3 3 0 0 1 4.9 2.3v31.4a3 3 0 0 1-4.9 2.3L20 38.5H9a4 4 0 0 1-4-4v-5a4 4 0 0 1 4-4Z" fill="currentColor"/>
   <path d="M45 24c4.2 4.4 4.2 11.6 0 16" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
   <path d="M50.5 18.5c7.3 7.4 7.3 19.6 0 27" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
 </svg>
+  <span class="mute-slash" aria-hidden="true"></span>
 </button>
 
 <input id="selectionSoundToggle" type="checkbox" checked hidden>
 
 <button id="start" disabled>START</button>
-<button id="reset" title="Reiniciar"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:translateY(2px)">
+<div class="start-actions">
+<button id="reset" aria-label="Reiniciar selección" data-tooltip="REINICIAR SELECCIÓN"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="transform:translateY(2px)">
 <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L7 6l5 5V7a5 5 0 1 1-5 5H5a7 7 0 1 0 12.65-5.65Z" fill="currentColor"/>
 </svg></button>
+<a id="homeLink"
+   href="https://sites.google.com/view/juanexpo/expo-react"
+   aria-label="Volver a la web principal"
+   data-tooltip="VOLVER A LA WEB PRINCIPAL">
+  <svg class="home-link-icon home-vector-icon"
+       viewBox="0 0 100 100"
+       aria-hidden="true"
+       focusable="false">
+    <path class="home-house-body"
+          d="M14 48.8 50 15l36 33.8h-8.2V85H22.2V48.8H14Z"/>
+    <path class="home-house-chimney"
+          d="M25 22h13v22H25z"/>
+    <rect class="home-house-door"
+          x="42" y="60" width="16" height="25" rx="1.5"/>
+    <rect class="home-house-window"
+          x="43" y="42" width="14" height="14" rx="3.2"/>
+  </svg>
+</a>
+</div>
 </div>
 </div>
 
@@ -3414,9 +3435,13 @@ function syncSoundButton() {
   soundToggleBtn.setAttribute("aria-pressed", String(muted));
   soundToggleBtn.setAttribute(
     "aria-label",
-    muted ? "Activar sonido" : "Silenciar sonido"
+    muted ? "Activar sonido" : "Silenciar"
   );
-  soundToggleBtn.title = muted ? "Activar sonido" : "Silenciar sonido";
+  soundToggleBtn.setAttribute(
+    "data-tooltip",
+    muted ? "ACTIVAR SONIDO" : "SILENCIAR"
+  );
+  soundToggleBtn.removeAttribute("title");
 }
 
 soundToggleBtn?.addEventListener("click", () => {
@@ -4492,6 +4517,701 @@ syncSoundButton();
 
   #soundStimulus .spoken-sound-visual[aria-label="Voz Stop"]{
     gap:10px !important;
+  }
+}
+</style>
+
+
+<style id="commandsVerticalAndLargerGoFinal">
+/* ==========================================================
+   SECUENCIA — TARJETAS 7–12
+   ALTAVOZ ARRIBA + TEXTO DEBAJO, TODO CENTRADO
+   ========================================================== */
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"]{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:clamp(10px,2vh,24px) !important;
+  width:min(92vw,760px) !important;
+  max-width:92vw !important;
+  max-height:78vh !important;
+  margin:0 auto !important;
+  transform:none !important;
+  text-align:center !important;
+}
+
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-speaker-icon{
+  order:1 !important;
+  width:clamp(135px,25vh,285px) !important;
+  height:clamp(135px,25vh,285px) !important;
+  margin:0 !important;
+  flex:0 0 auto !important;
+  align-self:center !important;
+}
+
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-sound-number{
+  order:2 !important;
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  color:#000 !important;
+  font-size:clamp(82px,14vh,178px) !important;
+  font-weight:800 !important;
+  line-height:.92 !important;
+  letter-spacing:.015em !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  transform:none !important;
+}
+
+/* Anula ajustes individuales anteriores de SALTA y STOP */
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"][aria-label="Voz Salta"],
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"][aria-label="Voz Stop"]{
+  gap:clamp(10px,2vh,24px) !important;
+  transform:none !important;
+}
+
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"][aria-label="Voz Salta"] .spoken-speaker-icon,
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"][aria-label="Voz Stop"] .spoken-speaker-icon{
+  margin:0 !important;
+}
+
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"][aria-label="Voz Salta"] .spoken-sound-number,
+#soundStimulus .spoken-sound-visual[data-sound-kind="command"][aria-label="Voz Stop"] .spoken-sound-number{
+  margin:0 !important;
+}
+
+
+/* ==========================================================
+   GO MÁS GRANDE: CÍRCULO Y TEXTO
+   ========================================================== */
+#countdown .countdown-go{
+  width:clamp(235px,39vh,445px) !important;
+  height:clamp(235px,39vh,445px) !important;
+  font-size:clamp(92px,18vh,215px) !important;
+  font-weight:850 !important;
+  letter-spacing:-.045em !important;
+}
+
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+@media (max-width:900px){
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"]{
+    gap:clamp(9px,1.7vh,18px) !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-speaker-icon{
+    width:clamp(120px,22vh,230px) !important;
+    height:clamp(120px,22vh,230px) !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-sound-number{
+    font-size:clamp(70px,12vh,138px) !important;
+  }
+
+  #countdown .countdown-go{
+    width:clamp(220px,36vh,380px) !important;
+    height:clamp(220px,36vh,380px) !important;
+    font-size:clamp(88px,17vh,180px) !important;
+  }
+}
+
+
+/* ==========================================================
+   IPHONE VERTICAL
+   ========================================================== */
+@media (max-width:520px) and (orientation:portrait){
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"]{
+    width:94vw !important;
+    max-width:94vw !important;
+    gap:10px !important;
+    transform:translateY(-1vh) !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-speaker-icon{
+    width:min(38vw,24vh) !important;
+    height:min(38vw,24vh) !important;
+    margin:0 !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-sound-number{
+    width:94vw !important;
+    font-size:min(18vw,11vh) !important;
+    line-height:.94 !important;
+    letter-spacing:.005em !important;
+    white-space:nowrap !important;
+  }
+
+  #countdown .countdown-go{
+    width:min(66vw,42vh) !important;
+    height:min(66vw,42vh) !important;
+    font-size:min(23vw,14vh) !important;
+  }
+}
+
+
+/* ==========================================================
+   IPHONE / MÓVIL HORIZONTAL
+   ========================================================== */
+@media (max-height:520px) and (pointer:coarse){
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"]{
+    gap:5px !important;
+    transform:none !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-speaker-icon{
+    width:24vh !important;
+    height:24vh !important;
+    margin:0 !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[data-sound-kind="command"] .spoken-sound-number{
+    font-size:12vh !important;
+    line-height:.9 !important;
+  }
+
+  #countdown .countdown-go{
+    width:46vh !important;
+    height:46vh !important;
+    font-size:21vh !important;
+  }
+}
+</style>
+
+
+<style id="whistleInactiveGrayAndHomeLinkFinal">
+/* ==========================================================
+   SILBATO: GRIS ÚNICAMENTE CUANDO LA TARJETA ESTÁ INACTIVA
+   ========================================================== */
+#sounds .sound-card:nth-child(6):not(:has(input:checked)) .voice-uploaded-icon{
+  filter:grayscale(1) saturate(0) opacity(.66) !important;
+}
+
+/* Al seleccionarlo recupera exactamente su aspecto original */
+#sounds .sound-card:nth-child(6):has(input:checked) .voice-uploaded-icon{
+  filter:none !important;
+  opacity:1 !important;
+}
+
+
+/* ==========================================================
+   REINICIAR + BOTÓN DE INICIO
+   ========================================================== */
+.start-row .start-actions{
+  grid-column:3 !important;
+  justify-self:center !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:12px !important;
+  min-width:110px !important;
+}
+
+.start-row .start-actions #reset{
+  grid-column:auto !important;
+  justify-self:auto !important;
+  margin:0 !important;
+}
+
+#homeLink{
+  position:relative !important;
+  width:46px !important;
+  height:46px !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:50% !important;
+  border:1px solid rgba(0,0,0,.04) !important;
+  background:rgba(118,118,128,.12) !important;
+  color:#1d1d1f !important;
+  box-shadow:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  text-decoration:none !important;
+  cursor:pointer !important;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    background .18s ease,
+    color .18s ease !important;
+  z-index:20 !important;
+}
+
+#homeLink .home-link-icon{
+  width:31px !important;
+  height:31px !important;
+  display:block !important;
+  overflow:visible !important;
+  transform:translateY(1px) !important;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1) !important;
+}
+
+/* Tooltip */
+#homeLink::after{
+  content:attr(data-tooltip);
+  position:absolute;
+  left:50%;
+  bottom:calc(100% + 12px);
+  transform:translateX(-50%) translateY(4px);
+  min-width:max-content;
+  max-width:230px;
+  padding:8px 11px;
+  border-radius:9px;
+  background:rgba(20,20,22,.94);
+  color:#fff;
+  font-family:"Manrope",sans-serif;
+  font-size:11px;
+  font-weight:700;
+  line-height:1.15;
+  letter-spacing:.035em;
+  text-align:center;
+  white-space:nowrap;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .16s ease,transform .16s ease,visibility .16s ease;
+  z-index:1000;
+}
+
+#homeLink::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:calc(100% + 6px);
+  width:9px;
+  height:9px;
+  background:rgba(20,20,22,.94);
+  transform:translateX(-50%) rotate(45deg);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .16s ease,visibility .16s ease;
+  z-index:999;
+}
+
+@media (hover:hover) and (pointer:fine){
+  #homeLink:hover{
+    background:rgba(118,118,128,.23) !important;
+    color:#000 !important;
+    transform:scale(1.13) !important;
+  }
+
+  #homeLink:hover .home-link-icon{
+    transform:translateY(1px) scale(1.08) !important;
+  }
+
+  #homeLink:hover::after{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  #homeLink:hover::before{
+    opacity:1;
+    visibility:visible;
+  }
+}
+
+#homeLink:active{
+  transform:scale(.96) !important;
+}
+
+#homeLink:focus-visible{
+  outline:3px solid rgba(0,122,255,.36) !important;
+  outline-offset:3px !important;
+}
+
+
+/* En pantallas estrechas conserva el equilibrio de la fila */
+@media (max-width:600px){
+  .start-row .start-actions{
+    gap:8px !important;
+    min-width:98px !important;
+  }
+
+  #homeLink{
+    width:42px !important;
+    height:42px !important;
+  }
+
+  #homeLink .home-link-icon{
+    width:28px !important;
+    height:28px !important;
+  }
+
+  #homeLink::after{
+    right:0;
+    left:auto;
+    transform:translateY(4px);
+    font-size:10px;
+  }
+
+  #homeLink::before{
+    left:auto;
+    right:16px;
+    transform:rotate(45deg);
+  }
+
+  #homeLink:hover::after{
+    transform:translateY(0);
+  }
+}
+</style>
+
+
+<style id="homeVectorSquareResetGreenGlassFinal">
+/* HOME VECTORIAL REAL — BOTÓN CUADRADO */
+#homeLink{
+  width:48px !important;
+  height:48px !important;
+  min-width:48px !important;
+  min-height:48px !important;
+  padding:5px !important;
+  margin:0 !important;
+  border-radius:12px !important;
+  border:1px solid rgba(255,255,255,.34) !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(178,183,190,.88) 0%,
+      rgba(137,143,151,.86) 52%,
+      rgba(105,111,120,.90) 100%
+    ) !important;
+  color:#8b929a !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.62),
+    inset 0 -5px 10px rgba(45,50,58,.12) !important;
+  backdrop-filter:blur(12px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(12px) saturate(125%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  text-decoration:none !important;
+  overflow:visible !important;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    color .18s ease !important;
+}
+
+#homeLink .home-vector-icon{
+  width:39px !important;
+  height:39px !important;
+  display:block !important;
+  overflow:visible !important;
+  transform:none !important;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1) !important;
+}
+
+#homeLink .home-house-body,
+#homeLink .home-house-chimney{
+  fill:rgba(255,255,255,.94) !important;
+}
+
+#homeLink .home-house-door{
+  fill:currentColor !important;
+}
+
+#homeLink .home-house-window{
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:3 !important;
+}
+
+/* HOME: AZUL GLASS EN HOVER */
+@media (hover:hover) and (pointer:fine){
+  #homeLink:hover{
+    background:
+      linear-gradient(
+        180deg,
+        rgba(61,190,255,.88) 0%,
+        rgba(10,132,255,.82) 50%,
+        rgba(0,92,210,.88) 100%
+      ) !important;
+    color:#0a84ff !important;
+    border-color:rgba(255,255,255,.55) !important;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.64),
+      inset 0 -8px 14px rgba(0,55,145,.20),
+      0 5px 13px rgba(0,110,230,.16) !important;
+    transform:scale(1.10) !important;
+  }
+
+  #homeLink:hover .home-vector-icon{
+    transform:scale(1.045) !important;
+  }
+}
+
+/* REINICIAR — BOTÓN CUADRADO */
+.start-row .start-actions #reset,
+#reset{
+  width:48px !important;
+  height:48px !important;
+  min-width:48px !important;
+  min-height:48px !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:12px !important;
+  border:1px solid rgba(0,0,0,.04) !important;
+  background:rgba(118,118,128,.12) !important;
+  color:#1d1d1f !important;
+  box-shadow:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    color .18s ease !important;
+}
+
+.start-row .start-actions #reset svg,
+#reset svg{
+  width:32px !important;
+  height:32px !important;
+  display:block !important;
+}
+
+/* REINICIAR: VERDE GLASS SUAVE EN HOVER */
+@media (hover:hover) and (pointer:fine){
+  .start-row .start-actions #reset:hover,
+  #reset:hover{
+    background:
+      linear-gradient(
+        180deg,
+        rgba(224,255,230,.82) 0%,
+        rgba(153,241,174,.62) 52%,
+        rgba(105,220,135,.58) 100%
+      ) !important;
+    color:#126b2a !important;
+    border-color:rgba(70,195,105,.26) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.78),
+      inset 0 -6px 11px rgba(51,160,80,.10),
+      0 4px 11px rgba(45,170,80,.11) !important;
+    transform:scale(1.08) !important;
+  }
+}
+
+#homeLink:active,
+#reset:active{
+  transform:scale(.96) !important;
+}
+
+@media (max-width:600px){
+  #homeLink,
+  .start-row .start-actions #reset,
+  #reset{
+    width:44px !important;
+    height:44px !important;
+    min-width:44px !important;
+    min-height:44px !important;
+    border-radius:11px !important;
+  }
+
+  #homeLink .home-vector-icon{
+    width:35px !important;
+    height:35px !important;
+  }
+
+  .start-row .start-actions #reset svg,
+  #reset svg{
+    width:29px !important;
+    height:29px !important;
+  }
+}
+</style>
+
+
+<style id="subtitleTooltipsTransparentResetBlackFinal">
+/* ==========================================================
+   ETIQUETAS INFORMATIVAS TRANSPARENTES
+   ========================================================== */
+#soundToggleBtn,
+#reset,
+#homeLink{
+  position:relative !important;
+  overflow:visible !important;
+}
+
+/* Caja común de las tres etiquetas */
+#soundToggleBtn::after,
+#reset::after,
+#homeLink::after{
+  content:attr(data-tooltip) !important;
+  position:absolute !important;
+  left:50% !important;
+  bottom:calc(100% + 12px) !important;
+  transform:translateX(-50%) translateY(4px) !important;
+  min-width:max-content !important;
+  max-width:240px !important;
+  padding:8px 11px !important;
+  border-radius:9px !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  background:rgba(20,20,23,.76) !important;
+  color:#fff !important;
+  font-family:"Manrope",sans-serif !important;
+  font-size:11px !important;
+  font-weight:700 !important;
+  line-height:1.15 !important;
+  letter-spacing:.035em !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:blur(9px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(9px) saturate(125%) !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:
+    opacity .16s ease,
+    transform .16s ease,
+    visibility .16s ease !important;
+  z-index:1200 !important;
+}
+
+/* Flecha común de las etiquetas */
+#soundToggleBtn::before,
+#reset::before,
+#homeLink::before{
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  bottom:calc(100% + 7px) !important;
+  width:9px !important;
+  height:9px !important;
+  background:rgba(20,20,23,.76) !important;
+  border-right:1px solid rgba(255,255,255,.10) !important;
+  border-bottom:1px solid rgba(255,255,255,.10) !important;
+  transform:translateX(-50%) rotate(45deg) !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .16s ease,visibility .16s ease !important;
+  z-index:1199 !important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  #soundToggleBtn:hover::after,
+  #reset:hover::after,
+  #homeLink:hover::after{
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:translateX(-50%) translateY(0) !important;
+  }
+
+  #soundToggleBtn:hover::before,
+  #reset:hover::before,
+  #homeLink:hover::before{
+    opacity:1 !important;
+    visibility:visible !important;
+  }
+}
+
+
+/* ==========================================================
+   REINICIAR: ICONO NEGRO DURANTE EL HOVER
+   ========================================================== */
+@media (hover:hover) and (pointer:fine){
+  .start-row .start-actions #reset:hover,
+  #reset:hover{
+    color:#000 !important;
+  }
+
+  .start-row .start-actions #reset:hover svg,
+  #reset:hover svg{
+    color:#000 !important;
+  }
+
+  .start-row .start-actions #reset:hover svg path,
+  #reset:hover svg path{
+    fill:#000 !important;
+    stroke:#000 !important;
+  }
+}
+
+
+/* ==========================================================
+   AJUSTE DE ETIQUETAS EN PANTALLAS ESTRECHAS
+   ========================================================== */
+@media (max-width:600px){
+  #soundToggleBtn::after{
+    left:0 !important;
+    transform:translateY(4px) !important;
+  }
+
+  #soundToggleBtn::before{
+    left:17px !important;
+    transform:rotate(45deg) !important;
+  }
+
+  #homeLink::after,
+  #reset::after{
+    left:auto !important;
+    right:0 !important;
+    transform:translateY(4px) !important;
+  }
+
+  #homeLink::before,
+  #reset::before{
+    left:auto !important;
+    right:16px !important;
+    transform:rotate(45deg) !important;
+  }
+
+  #soundToggleBtn:hover::after,
+  #homeLink:hover::after,
+  #reset:hover::after{
+    transform:translateY(0) !important;
+  }
+}
+</style>
+
+
+<style id="shapeIconsGrowOnHoverFinal">
+/* ==========================================================
+   TARJETAS DE FORMAS:
+   LA FIGURA INTERIOR AUMENTA AL PASAR EL RATÓN
+   ========================================================== */
+#shapes .color-card .shape-preview,
+#shapes .color-card .shape-preview svg{
+  transform-origin:center center !important;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    filter .18s ease !important;
+}
+
+/* Aumenta únicamente la forma, sin cambiar el tamaño de la tarjeta */
+@media (hover:hover) and (pointer:fine){
+  #shapes .color-card:hover .shape-preview{
+    transform:scale(1.18) !important;
+  }
+
+  #shapes .color-card:hover .shape-preview svg{
+    transform:scale(1.08) !important;
+  }
+}
+
+/* Las formas seleccionadas también responden al hover */
+@media (hover:hover) and (pointer:fine){
+  #shapes .color-card:has(input:checked):hover .shape-preview{
+    transform:scale(1.18) !important;
+  }
+
+  #shapes .color-card:has(input:checked):hover .shape-preview svg{
+    transform:scale(1.08) !important;
   }
 }
 </style>
@@ -5770,3 +6490,377 @@ syncSoundButton();
   }
 }
 </style>
+
+
+<style id="sequenceSaltaExitControlsTimerFinal">
+/* ==========================================================
+   BARRA DE CONTROLES: TAMAÑO GENERAL MAYOR
+   ========================================================== */
+#controls{
+  gap:10px !important;
+  padding:6px 9px !important;
+  min-height:44px !important;
+  border-radius:18px !important;
+  box-sizing:border-box !important;
+}
+
+#controls > div{
+  gap:5px !important;
+  padding:0 8px !important;
+  min-height:34px !important;
+}
+
+#controls #pauseBtn{
+  min-width:38px !important;
+  width:38px !important;
+  height:38px !important;
+  padding:0 !important;
+  border-radius:50% !important;
+}
+
+#controls #pauseBtn .pause-control-icon{
+  width:24px !important;
+  height:24px !important;
+}
+
+#controls #minusStage,
+#controls #plusStage{
+  min-width:30px !important;
+  width:30px !important;
+  height:30px !important;
+  padding:0 !important;
+  border-radius:9px !important;
+  font-size:19px !important;
+  line-height:1 !important;
+}
+
+#controls #speedBadge{
+  min-width:60px !important;
+  height:30px !important;
+  padding:0 7px !important;
+  border-radius:9px !important;
+  font-size:15px !important;
+  line-height:30px !important;
+}
+
+#controls #stimCounter{
+  min-width:72px !important;
+  height:30px !important;
+  padding:0 7px !important;
+  border-radius:9px !important;
+  font-size:12px !important;
+  line-height:30px !important;
+}
+
+#controls #exitBtn{
+  min-width:62px !important;
+  width:auto !important;
+  height:34px !important;
+  padding:0 10px !important;
+  border-radius:10px !important;
+  font-size:13px !important;
+  line-height:1 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  box-sizing:border-box !important;
+  white-space:nowrap !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+}
+
+
+/* ==========================================================
+   CRONÓMETRO: UN POCO MÁS TRANSPARENTE
+   ========================================================== */
+#timerBox{
+  background:rgba(5,5,8,.58) !important;
+  border-color:rgba(255,255,255,.09) !important;
+  box-shadow:0 5px 14px rgba(0,0,0,.13) !important;
+}
+
+
+/* ==========================================================
+   SALTA: MÁS SEPARADO DEL ALTAVOZ EN PC
+   El iPad conserva su ajuste actual.
+   ========================================================== */
+@media (hover:hover) and (pointer:fine){
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"]{
+    gap:clamp(16px,1.5vw,30px) !important;
+    transform:translateX(-1%) !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"] .spoken-speaker-icon{
+    margin-right:0 !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"] .spoken-sound-number{
+    margin-left:0 !important;
+  }
+}
+
+
+/* ==========================================================
+   IPHONE VERTICAL
+   ========================================================== */
+@media (max-width:520px) and (orientation:portrait){
+  #controls{
+    gap:7px !important;
+    padding:5px 7px !important;
+    min-height:40px !important;
+    border-radius:16px !important;
+  }
+
+  #controls > div{
+    gap:4px !important;
+    padding:0 5px !important;
+    min-height:30px !important;
+  }
+
+  #controls #pauseBtn{
+    min-width:34px !important;
+    width:34px !important;
+    height:34px !important;
+  }
+
+  #controls #pauseBtn .pause-control-icon{
+    width:21px !important;
+    height:21px !important;
+  }
+
+  #controls #minusStage,
+  #controls #plusStage{
+    min-width:28px !important;
+    width:28px !important;
+    height:28px !important;
+    font-size:18px !important;
+  }
+
+  #controls #speedBadge{
+    min-width:54px !important;
+    height:28px !important;
+    padding:0 5px !important;
+    font-size:13px !important;
+    line-height:28px !important;
+  }
+
+  #controls #stimCounter{
+    min-width:66px !important;
+    height:28px !important;
+    padding:0 5px !important;
+    font-size:10px !important;
+    line-height:28px !important;
+  }
+
+  /* SALIR perfectamente centrado en Safari iPhone */
+  #controls #exitBtn{
+    min-width:58px !important;
+    height:32px !important;
+    padding:0 8px !important;
+    font-size:11px !important;
+    line-height:1 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+    vertical-align:middle !important;
+    -webkit-appearance:none !important;
+    appearance:none !important;
+  }
+
+  /* SALTA: evita que el margen negativo pegue el altavoz al texto */
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"]{
+    gap:10px !important;
+    transform:translateX(-1.5%) translateY(-2vh) !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"] .spoken-speaker-icon{
+    margin-right:-1vw !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"] .spoken-sound-number{
+    margin-left:0 !important;
+  }
+}
+
+
+/* ==========================================================
+   IPHONE HORIZONTAL
+   ========================================================== */
+@media (max-height:520px) and (pointer:coarse){
+  #controls #exitBtn{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+    line-height:1 !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+    -webkit-appearance:none !important;
+    appearance:none !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"]{
+    gap:10px !important;
+    transform:translateX(-1%) !important;
+  }
+
+  #soundStimulus .spoken-sound-visual[aria-label="Voz Salta"] .spoken-speaker-icon{
+    margin-right:-6px !important;
+  }
+}
+</style>
+
+
+<style id="whistleExactGrayHomeBlueHoverFinal">
+/* ==========================================================
+   SILBATO INACTIVO: MISMO GRIS VISUAL QUE LOS ALTAVOCES
+   ========================================================== */
+#sounds .sound-card:nth-child(6):not(:has(input:checked)) .whistle-uploaded-icon,
+#sounds .sound-card:nth-child(6):not(:has(input:checked)) .voice-uploaded-icon{
+  filter:grayscale(1) brightness(0) opacity(.40) !important;
+  opacity:1 !important;
+}
+
+/* Seleccionado: mantiene el comportamiento y aspecto anteriores */
+#sounds .sound-card:nth-child(6):has(input:checked) .whistle-uploaded-icon,
+#sounds .sound-card:nth-child(6):has(input:checked) .voice-uploaded-icon{
+  filter:none !important;
+  opacity:1 !important;
+}
+
+
+/* ==========================================================
+   CASA: TRAZO MÁS FINO
+   ========================================================== */
+#homeLink .home-link-icon path{
+  stroke-width:3 !important;
+}
+
+#homeLink .home-link-icon path:nth-child(4){
+  stroke-width:2.6 !important;
+}
+
+
+/* ==========================================================
+   HOVER: FONDO AZUL + CASA BLANCA
+   ========================================================== */
+@media (hover:hover) and (pointer:fine){
+  #homeLink:hover{
+    background:#0a84ff !important;
+    color:#fff !important;
+    border-color:rgba(255,255,255,.22) !important;
+    transform:scale(1.13) !important;
+  }
+
+  #homeLink:hover .home-link-icon{
+    color:#fff !important;
+    transform:translateY(1px) scale(1.08) !important;
+  }
+
+  #homeLink:hover .home-link-icon path{
+    stroke:#fff !important;
+  }
+}
+</style>
+
+
+<style id="realShapeHoverAndFixedMuteSlashFinal">
+/* ==========================================================
+   FORMAS: ZOOM REAL SOBRE LAS TARJETAS QUE EXISTEN
+   Las formas se crean con .number-card, no con .color-card.
+   ========================================================== */
+#shapes .number-card .shape-preview{
+  position:relative !important;
+  z-index:5 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  transform:none !important;
+  transform-origin:center center !important;
+  will-change:transform !important;
+  transition:transform .20s cubic-bezier(.2,.8,.2,1) !important;
+}
+
+#shapes .number-card .shape-preview > svg,
+#shapes .number-card .shape-preview svg{
+  transform:none !important;
+  transform-origin:center center !important;
+  transition:transform .20s cubic-bezier(.2,.8,.2,1) !important;
+}
+
+/* La tarjeta no cambia de tamaño; crece claramente la figura interior */
+@media (hover:hover) and (pointer:fine){
+  #shapes .number-card:hover .shape-preview,
+  #shapes .number-card:has(input:checked):hover .shape-preview{
+    transform:scale(1.30) !important;
+  }
+
+  #shapes .number-card:hover .shape-preview > svg,
+  #shapes .number-card:hover .shape-preview svg,
+  #shapes .number-card:has(input:checked):hover .shape-preview > svg,
+  #shapes .number-card:has(input:checked):hover .shape-preview svg{
+    transform:none !important;
+  }
+}
+
+
+/* ==========================================================
+   SILENCIADO: BARRA FIJA Y ALTAVOZ SIN ROTACIÓN
+   ========================================================== */
+#soundToggleBtn .sound-icon,
+#soundToggleBtn.is-muted .sound-icon,
+#soundToggleBtn:hover .sound-icon,
+#soundToggleBtn.is-muted:hover .sound-icon{
+  transform:none !important;
+  rotate:none !important;
+  transition:color .18s ease,fill .18s ease,stroke .18s ease !important;
+}
+
+/* Barra real superpuesta al altavoz */
+#soundToggleBtn .mute-slash{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:34px !important;
+  height:3.5px !important;
+  border-radius:999px !important;
+  background:currentColor !important;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.06),
+    0 1px 1px rgba(0,0,0,.12) !important;
+  transform:translate(-50%,-50%) rotate(-42deg) !important;
+  transform-origin:center center !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .14s ease,visibility .14s ease !important;
+  z-index:4 !important;
+}
+
+/* Solo aparece cuando el silencio está activo */
+#soundToggleBtn.is-muted .mute-slash{
+  opacity:1 !important;
+  visibility:visible !important;
+  background:#fff !important;
+}
+
+/* Impide que reglas antiguas usen ::after como barra:
+   ::after queda exclusivamente para el tooltip. */
+#soundToggleBtn.is-muted::after{
+  content:attr(data-tooltip) !important;
+}
+
+/* En hover silenciado, el altavoz y la barra permanecen estables */
+@media (hover:hover) and (pointer:fine){
+  #soundToggleBtn.is-muted:hover .sound-icon{
+    transform:none !important;
+  }
+
+  #soundToggleBtn.is-muted:hover .mute-slash{
+    transform:translate(-50%,-50%) rotate(-42deg) !important;
+  }
+}
+</style>
+
