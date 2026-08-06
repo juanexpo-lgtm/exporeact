@@ -2474,6 +2474,16 @@ body.training-transition #cfg{
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
 <div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div class="banner-subtitle" style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">MEJORA TU VELOCIDAD DE REACCIÓN Y TU AGILIDAD</div></div>
+<div id="gameModeSelector" class="game-mode-selector" role="group" aria-label="Modo de juego">
+  <button type="button" class="game-mode-option is-active" data-game-mode="movement" aria-pressed="true">
+    <span class="game-mode-title">MODO MOVIMIENTO</span>
+    <span class="game-mode-description">Responde moviéndote como hasta ahora</span>
+  </button>
+  <button type="button" class="game-mode-option" data-game-mode="tactile" aria-pressed="false">
+    <span class="game-mode-title">MODO TÁCTIL</span>
+    <span class="game-mode-description">Toca la tarjeta que coincide</span>
+  </button>
+</div>
 <div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
@@ -2536,6 +2546,21 @@ body.training-transition #cfg{
 <div id="stimCounter" style="background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;padding:8px 14px;border-radius:10px;font-size:18px;font-weight:400;min-width:90px;text-align:center">0 REPS</div>
 </div>
 <button id="exitBtn" style="font-size:24px;padding:1px 22px;border-radius:10px;background:rgba(70,70,70,.40);backdrop-filter:blur(4px);color:#fff;border:none;transition:transform .18s ease;cursor:pointer">SALIR</button>
+</div>
+<div id="tactileGame" aria-hidden="true">
+  <div id="tactileChoices" aria-label="Tarjetas seleccionadas"></div>
+  <div id="tactileTarget" aria-live="polite" aria-label="Estímulo actual"></div>
+  <div id="tactileFeedback" aria-live="polite"></div>
+  <div id="tactileScore" aria-live="polite">
+    <span class="tactile-score-item tactile-score-correct">
+      <span class="tactile-score-label">CORRECTOS</span>
+      <strong id="tactileCorrectCount">0</strong>
+    </span>
+    <span class="tactile-score-item tactile-score-wrong">
+      <span class="tactile-score-label">INCORRECTOS</span>
+      <strong id="tactileIncorrectCount">0</strong>
+    </span>
+  </div>
 </div>
 <div id="num"></div>
 <div id="soundStimulus" aria-hidden="true">
@@ -2932,6 +2957,7 @@ function cancelTrainingSession(){
   }
 
   hideTrainingVisuals();
+  deactivateTactileMode();
 
   stimCount=0;
   updateStim();
@@ -3019,6 +3045,493 @@ if(EMBEDDED){
     }`;
   document.head.appendChild(st);
 }
+/* ==========================================================
+   DOS MODOS DE JUEGO: MOVIMIENTO Y TÁCTIL
+   ========================================================== */
+let gameMode="movement";
+let tactileCorrect=0;
+let tactileIncorrect=0;
+let tactileRound=null;
+let tactileSelectedIndices=[];
+let tactileResizeRaf=0;
+
+const gameModeButtons=[...document.querySelectorAll("[data-game-mode]")];
+const tactileGame=document.getElementById("tactileGame");
+const tactileChoices=document.getElementById("tactileChoices");
+const tactileTarget=document.getElementById("tactileTarget");
+const tactileFeedback=document.getElementById("tactileFeedback");
+const tactileCorrectCount=document.getElementById("tactileCorrectCount");
+const tactileIncorrectCount=document.getElementById("tactileIncorrectCount");
+
+function setGameMode(mode){
+  gameMode=mode==="tactile" ? "tactile" : "movement";
+
+  gameModeButtons.forEach(button=>{
+    const active=button.dataset.gameMode===gameMode;
+    button.classList.toggle("is-active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+}
+
+gameModeButtons.forEach(button=>{
+  button.addEventListener("click",()=>{
+    setGameMode(button.dataset.gameMode);
+    playSelectionClick?.();
+  });
+});
+
+setGameMode("movement");
+
+function getSelectedStimulusIndices(){
+  return checks
+    .filter(input=>input.checked)
+    .map(input=>Number(input.value))
+    .filter(index=>Number.isInteger(index) && defs[index]);
+}
+
+function getTactileStimulusName(index){
+  const definition=defs[index] || [];
+  const type=definition[0];
+
+  if(type==="color") return definition[1] || "Color";
+  if(type==="num") return `Número ${definition[2]}`;
+  if(type==="arr") return `Flecha ${definition[1]}`;
+  if(type==="sound") return definition[1] || "Sonido";
+
+  if(type==="shape"){
+    const shapeNames=["Triángulo","Círculo","Cuadrado","Estrella","Corazón","Trébol"];
+    return shapeNames[index-16] || "Forma";
+  }
+
+  return "Estímulo";
+}
+
+function updateTactileScore(changed){
+  if(tactileCorrectCount) tactileCorrectCount.textContent=String(tactileCorrect);
+  if(tactileIncorrectCount) tactileIncorrectCount.textContent=String(tactileIncorrect);
+
+  if(!changed) return;
+
+  const selector=changed==="correct"
+    ? ".tactile-score-correct"
+    : ".tactile-score-wrong";
+  const scoreItem=document.querySelector(selector);
+
+  if(scoreItem){
+    scoreItem.classList.remove("is-updated");
+    void scoreItem.offsetWidth;
+    scoreItem.classList.add("is-updated");
+  }
+}
+
+function resetTactileScore(){
+  tactileCorrect=0;
+  tactileIncorrect=0;
+  updateTactileScore();
+}
+
+function clearTactileChoiceFeedback(){
+  if(!tactileChoices) return;
+
+  tactileChoices.querySelectorAll(".tactile-choice").forEach(button=>{
+    button.classList.remove("is-correct","is-wrong","shows-correct-answer");
+    button.disabled=false;
+  });
+
+  tactileTarget?.classList.remove("is-correct","is-wrong");
+  if(tactileFeedback){
+    tactileFeedback.textContent="";
+    tactileFeedback.className="";
+  }
+}
+
+function makeTactileChoice(index){
+  const input=checks.find(item=>Number(item.value)===index);
+  const source=input?.closest("label") || input?.parentElement;
+  const button=document.createElement("button");
+
+  button.type="button";
+  button.className="tactile-choice";
+  button.dataset.index=String(index);
+  button.setAttribute("aria-label",getTactileStimulusName(index));
+
+  if(source){
+    const visual=source.cloneNode(true);
+    visual.removeAttribute("for");
+    visual.removeAttribute("id");
+    visual.classList.add("tactile-choice-source");
+
+    /*
+      Conserva imágenes aplicadas mediante CSS, como el silbato de la
+      sexta tarjeta de sonido, antes de sacar el clon de #sounds.
+    */
+    const sourceImages=[...source.querySelectorAll("img")];
+    const clonedImages=[...visual.querySelectorAll("img")];
+    sourceImages.forEach((image,imageIndex)=>{
+      const computedContent=getComputedStyle(image).content;
+      const match=String(computedContent).match(/^url\(["']?(.*?)["']?\)$/);
+      if(match?.[1] && clonedImages[imageIndex]){
+        clonedImages[imageIndex].src=match[1];
+      }
+    });
+
+    visual.querySelectorAll("input").forEach(node=>node.remove());
+    visual.querySelectorAll("[id]").forEach(node=>node.removeAttribute("id"));
+    button.appendChild(visual);
+  }else{
+    button.textContent=getTactileStimulusName(index);
+  }
+
+  button.addEventListener("click",()=>{
+    handleTactileChoice(index,button);
+  });
+
+  return button;
+}
+
+function buildTactileChoices(indices){
+  if(!tactileChoices) return;
+
+  tactileChoices.replaceChildren();
+  tactileSelectedIndices=[...indices];
+
+  indices.forEach(index=>{
+    tactileChoices.appendChild(makeTactileChoice(index));
+  });
+
+  requestAnimationFrame(layoutTactileChoices);
+}
+
+function getTactileRingPlan(count){
+  if(count<=10) return [count];
+  if(count<=20){
+    const inner=Math.min(8,Math.floor(count*.42));
+    return [inner,count-inner];
+  }
+  if(count<=30){
+    const inner=8;
+    const middle=Math.min(10,count-inner-8);
+    return [inner,middle,count-inner-middle];
+  }
+
+  const inner=8;
+  const middle=10;
+  return [inner,middle,count-inner-middle];
+}
+
+function layoutTactileChoices(){
+  if(!tactileChoices || !stage.classList.contains("tactile-mode")) return;
+
+  const buttons=[...tactileChoices.querySelectorAll(".tactile-choice")];
+  const count=buttons.length;
+  if(!count) return;
+
+  const rect=stage.getBoundingClientRect();
+  const width=Math.max(320,rect.width);
+  const height=Math.max(320,rect.height);
+  const compact=count>24 || width<480 || height<560;
+  const veryCompact=count>30 || width<380 || height<480;
+  const buttonSize=veryCompact ? 36 : compact ? 42 : count>16 ? 50 : 62;
+  const rings=getTactileRingPlan(count);
+
+  tactileChoices.style.setProperty("--tactile-choice-size",`${buttonSize}px`);
+
+  const centerX=width/2;
+  const topReserve=Math.max(42,height*.055);
+  const bottomReserve=Math.max(118,height*.16);
+  const usableHeight=Math.max(210,height-topReserve-bottomReserve);
+  const centerY=topReserve+(usableHeight/2);
+  const maxRx=Math.max(112,(width/2)-(buttonSize/2)-10);
+  const maxRy=Math.max(92,(usableHeight/2)-(buttonSize/2)-8);
+
+  let cursor=0;
+  const ringCount=rings.length;
+
+  rings.forEach((ringSize,ringIndex)=>{
+    const outerness=(ringIndex+1)/ringCount;
+    const rx=ringCount===1
+      ? maxRx*.88
+      : maxRx*(.48+outerness*.48);
+    const ry=ringCount===1
+      ? maxRy*.88
+      : maxRy*(.48+outerness*.48);
+    const angleOffset=ringIndex%2===0 ? -Math.PI/2 : (-Math.PI/2)+(Math.PI/ringSize);
+
+    for(let position=0;position<ringSize;position++){
+      const button=buttons[cursor++];
+      if(!button) continue;
+
+      const angle=angleOffset+(position/ringSize)*Math.PI*2;
+      const x=centerX+(Math.cos(angle)*rx)-(buttonSize/2);
+      const y=centerY+(Math.sin(angle)*ry)-(buttonSize/2);
+
+      button.style.left=`${Math.round(x)}px`;
+      button.style.top=`${Math.round(y)}px`;
+      button.style.width=`${buttonSize}px`;
+      button.style.height=`${buttonSize}px`;
+      button.style.setProperty("--choice-scale",String(
+        veryCompact ? .52 : compact ? .62 : count>16 ? .72 : .88
+      ));
+    }
+  });
+}
+
+function scheduleTactileLayout(){
+  cancelAnimationFrame(tactileResizeRaf);
+  tactileResizeRaf=requestAnimationFrame(layoutTactileChoices);
+}
+
+window.addEventListener("resize",scheduleTactileLayout,{passive:true});
+window.addEventListener("orientationchange",scheduleTactileLayout,{passive:true});
+
+function renderTactileTarget(index,sessionId){
+  if(!tactileTarget) return;
+
+  const definition=defs[index];
+  if(!definition) return;
+
+  const type=definition[0];
+  tactileTarget.className=`tactile-target tactile-target-${type}`;
+  tactileTarget.replaceChildren();
+  tactileTarget.setAttribute("aria-label",getTactileStimulusName(index));
+
+  if(type==="color"){
+    const color=document.createElement("div");
+    color.className="tactile-target-color";
+    color.style.background=definition[2];
+    color.setAttribute("aria-hidden","true");
+    tactileTarget.appendChild(color);
+
+  }else if(type==="num"){
+    const number=document.createElement("div");
+    number.className="tactile-target-number";
+    number.textContent=definition[2];
+    tactileTarget.appendChild(number);
+
+  }else if(type==="shape"){
+    const shapeVisual=document.createElement("div");
+    shapeVisual.className="tactile-target-shape";
+    shapeVisual.style.color=definition[2];
+    shapeVisual.innerHTML=definition[1];
+    tactileTarget.appendChild(shapeVisual);
+
+  }else if(type==="arr"){
+    const arrowVisual=document.createElement("div");
+    arrowVisual.className="tactile-target-arrow";
+    const sourceSvg=arrow.querySelector("svg");
+
+    if(sourceSvg){
+      const clone=sourceSvg.cloneNode(true);
+      clone.removeAttribute("id");
+      clone.querySelectorAll("[id]").forEach(node=>node.removeAttribute("id"));
+      clone.style.transform=`rotate(${definition[2]}deg)`;
+      arrowVisual.appendChild(clone);
+    }else{
+      arrowVisual.textContent=definition[1];
+      arrowVisual.style.transform=`rotate(${definition[2]}deg)`;
+    }
+
+    tactileTarget.appendChild(arrowVisual);
+
+  }else if(type==="sound"){
+    const soundVisual=document.createElement("div");
+    soundVisual.className="tactile-target-sound";
+    soundVisual.innerHTML=getSoundStimulusVisual(definition[1],index);
+    tactileTarget.appendChild(soundVisual);
+
+    requestAnimationFrame(()=>{
+      if(
+        sessionId===activeSession &&
+        stage.style.display==="flex" &&
+        stage.classList.contains("tactile-mode")
+      ){
+        playVoice(definition[2]);
+      }
+    });
+  }
+}
+
+function handleTactileChoice(index,button){
+  if(
+    gameMode!=="tactile" ||
+    paused ||
+    !tactileRound ||
+    tactileRound.answered ||
+    stage.style.display!=="flex"
+  ){
+    return;
+  }
+
+  tactileRound.answered=true;
+  tactileRound.answeredAt=performance.now();
+
+  const correct=index===tactileRound.correctIndex;
+  const correctButton=tactileChoices?.querySelector(
+    `.tactile-choice[data-index="${tactileRound.correctIndex}"]`
+  );
+
+  tactileChoices?.querySelectorAll(".tactile-choice").forEach(choice=>{
+    choice.disabled=true;
+  });
+
+  if(correct){
+    tactileCorrect++;
+    button.classList.add("is-correct");
+    tactileTarget?.classList.add("is-correct");
+    if(tactileFeedback){
+      tactileFeedback.textContent="CORRECTO";
+      tactileFeedback.className="is-correct";
+    }
+    updateTactileScore("correct");
+  }else{
+    tactileIncorrect++;
+    button.classList.add("is-wrong");
+    correctButton?.classList.add("shows-correct-answer");
+    tactileTarget?.classList.add("is-wrong");
+    if(tactileFeedback){
+      tactileFeedback.textContent="INCORRECTO";
+      tactileFeedback.className="is-wrong";
+    }
+    updateTactileScore("wrong");
+  }
+}
+
+function activateTactileMode(){
+  const selected=getSelectedStimulusIndices();
+
+  stage.classList.add("tactile-mode");
+  stage.classList.remove("movement-mode");
+  if(tactileGame){
+    tactileGame.style.display="block";
+    tactileGame.setAttribute("aria-hidden","false");
+  }
+
+  resetTactileScore();
+  buildTactileChoices(selected);
+  clearTactileChoiceFeedback();
+  requestAnimationFrame(layoutTactileChoices);
+}
+
+function deactivateTactileMode(){
+  tactileRound=null;
+  tactileSelectedIndices=[];
+  stage.classList.remove("tactile-mode","tactile-paused");
+  stage.classList.add("movement-mode");
+
+  if(tactileGame){
+    tactileGame.style.display="none";
+    tactileGame.setAttribute("aria-hidden","true");
+  }
+
+  tactileTarget?.replaceChildren();
+  tactileChoices?.replaceChildren();
+  clearTactileChoiceFeedback();
+}
+
+function prepareSelectedGameMode(){
+  if(gameMode==="tactile"){
+    activateTactileMode();
+  }else{
+    deactivateTactileMode();
+  }
+}
+
+async function runTactile(sessionId){
+  const selected=getSelectedStimulusIndices();
+
+  if(!selected.length){
+    stage.style.display="none";
+    cfg.style.display="grid";
+    deactivateTactileMode();
+    return;
+  }
+
+  let lastIndex=-1;
+  let consecutiveCount=0;
+  let isFirstStimulus=true;
+
+  while(
+    stage.style.display==="flex" &&
+    sessionId===activeSession &&
+    gameMode==="tactile"
+  ){
+    const totalMs=Math.max(450,dur*1000);
+    const blankMs=Math.min(180,totalMs*.12);
+    const responseMs=Math.max(300,totalMs-blankMs);
+
+    stopActiveVoice();
+    tactileTarget?.replaceChildren();
+    clearTactileChoiceFeedback();
+
+    if(!isFirstStimulus){
+      await wait(blankMs,sessionId);
+      if(
+        stage.style.display!=="flex" ||
+        sessionId!==activeSession ||
+        gameMode!=="tactile"
+      ) break;
+    }
+
+    let selectedIndex;
+
+    if(selected.length>1){
+      do{
+        selectedIndex=selected[Math.floor(Math.random()*selected.length)];
+      }while(selectedIndex===lastIndex && consecutiveCount>=2);
+    }else{
+      selectedIndex=selected[0];
+    }
+
+    if(selectedIndex===lastIndex){
+      consecutiveCount++;
+    }else{
+      lastIndex=selectedIndex;
+      consecutiveCount=1;
+    }
+
+    stimCount++;
+    updateStim();
+
+    tactileRound={
+      correctIndex:selectedIndex,
+      answered:false,
+      answeredAt:0
+    };
+
+    renderTactileTarget(selectedIndex,sessionId);
+
+    if(isFirstStimulus) isFirstStimulus=false;
+
+    let remaining=responseMs;
+    let previous=performance.now();
+
+    while(
+      remaining>0 &&
+      stage.style.display==="flex" &&
+      sessionId===activeSession &&
+      gameMode==="tactile"
+    ){
+      if(paused){
+        await sleep(35);
+        previous=performance.now();
+        continue;
+      }
+
+      if(tactileRound?.answered){
+        await wait(Math.min(360,remaining),sessionId);
+        break;
+      }
+
+      await sleep(25);
+      const now=performance.now();
+      remaining-=Math.max(0,now-previous);
+      previous=now;
+    }
+
+    tactileRound=null;
+  }
+}
+
 start.onclick=async()=>{
   const selectedCount=checks.filter(input=>input.checked).length;
   if(selectedCount<2){
@@ -3031,6 +3544,7 @@ start.onclick=async()=>{
   cfg.style.display="none";
   stage.style.display="flex";
   hideTrainingVisuals();
+  prepareSelectedGameMode();
 
   const completed=await runCountdown(sessionId);
 
@@ -3041,7 +3555,12 @@ start.onclick=async()=>{
   ) return;
 
   startTimer(sessionId);
-  run(sessionId);
+
+  if(gameMode==="tactile"){
+    runTactile(sessionId);
+  }else{
+    run(sessionId);
+  }
 };
 
 
@@ -3058,9 +3577,11 @@ setPauseButtonState(false);
 document.getElementById('pauseBtn').onclick=()=>{
   if(!paused){
     paused=true;
+    stage.classList.toggle("tactile-paused",stage.classList.contains("tactile-mode"));
     setPauseButtonState(true);
   }else{
     paused=false;
+    stage.classList.remove("tactile-paused");
     startMs=Date.now()-elapsed;
     setPauseButtonState(false);
   }
@@ -6864,3 +7385,650 @@ syncSoundButton();
 }
 </style>
 
+<style id="dualGameMovementTactileFinal">
+/* ==========================================================
+   SELECTOR DE MODO — DEBAJO DEL BANNER
+   ========================================================== */
+#gameModeSelector{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:10px !important;
+  width:100% !important;
+  margin:0 !important;
+}
+
+#gameModeSelector .game-mode-option{
+  min-height:54px !important;
+  padding:8px 12px !important;
+  border:1px solid rgba(0,0,0,.07) !important;
+  border-radius:14px !important;
+  background:rgba(118,118,128,.10) !important;
+  color:#1d1d1f !important;
+  box-shadow:none !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  text-align:center !important;
+  cursor:pointer !important;
+  transition:
+    transform .17s cubic-bezier(.2,.8,.2,1),
+    background .17s ease,
+    border-color .17s ease,
+    color .17s ease !important;
+}
+
+#gameModeSelector .game-mode-title{
+  font-size:13px !important;
+  font-weight:800 !important;
+  line-height:1 !important;
+  letter-spacing:.035em !important;
+}
+
+#gameModeSelector .game-mode-description{
+  font-size:9.5px !important;
+  font-weight:600 !important;
+  line-height:1.15 !important;
+  color:#6e6e73 !important;
+}
+
+#gameModeSelector .game-mode-option.is-active{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(57,57,60,.94) 0%,
+      rgba(28,28,30,.96) 100%
+    ) !important;
+  color:#fff !important;
+  border-color:rgba(255,255,255,.18) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -5px 10px rgba(0,0,0,.20) !important;
+}
+
+#gameModeSelector .game-mode-option.is-active .game-mode-description{
+  color:rgba(255,255,255,.72) !important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  #gameModeSelector .game-mode-option:hover{
+    transform:scale(1.025) !important;
+    background:rgba(118,118,128,.18) !important;
+  }
+
+  #gameModeSelector .game-mode-option.is-active:hover{
+    background:
+      linear-gradient(
+        180deg,
+        rgba(72,72,76,.96) 0%,
+        rgba(35,35,38,.98) 100%
+      ) !important;
+  }
+}
+
+
+/* ==========================================================
+   ESCENARIO TÁCTIL
+   ========================================================== */
+#tactileGame{
+  position:absolute !important;
+  inset:0 !important;
+  display:none;
+  pointer-events:none !important;
+  overflow:hidden !important;
+  z-index:6 !important;
+}
+
+#stage.tactile-mode{
+  cursor:auto !important;
+  overflow:hidden !important;
+}
+
+#stage.tactile-mode #cursorCircle{
+  display:none !important;
+}
+
+#stage.tactile-mode #num,
+#stage.tactile-mode #arrow,
+#stage.tactile-mode #shape,
+#stage.tactile-mode #soundStimulus{
+  display:none !important;
+}
+
+
+/* ==========================================================
+   ESTÍMULO CENTRAL
+   ========================================================== */
+#tactileTarget{
+  position:absolute !important;
+  left:50% !important;
+  top:46% !important;
+  width:clamp(150px,25vmin,260px) !important;
+  height:clamp(150px,25vmin,260px) !important;
+  transform:translate(-50%,-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:28px !important;
+  border:1px solid rgba(0,0,0,.07) !important;
+  background:rgba(255,255,255,.82) !important;
+  box-shadow:
+    0 12px 34px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.88) !important;
+  backdrop-filter:blur(14px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(125%) !important;
+  pointer-events:none !important;
+  z-index:12 !important;
+  overflow:hidden !important;
+  transition:
+    transform .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease,
+    background .16s ease !important;
+}
+
+#tactileTarget.is-correct{
+  border-color:rgba(48,180,82,.52) !important;
+  background:rgba(223,252,230,.88) !important;
+  box-shadow:
+    0 12px 34px rgba(25,150,60,.16),
+    inset 0 1px 0 rgba(255,255,255,.90) !important;
+  transform:translate(-50%,-50%) scale(1.035) !important;
+}
+
+#tactileTarget.is-wrong{
+  border-color:rgba(230,63,72,.50) !important;
+  background:rgba(255,230,233,.90) !important;
+  box-shadow:
+    0 12px 34px rgba(200,35,50,.15),
+    inset 0 1px 0 rgba(255,255,255,.90) !important;
+}
+
+#tactileTarget .tactile-target-color{
+  width:72% !important;
+  height:72% !important;
+  border-radius:24px !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 8px 22px rgba(0,0,0,.13) !important;
+}
+
+#tactileTarget .tactile-target-number{
+  font-size:clamp(88px,17vmin,180px) !important;
+  font-weight:850 !important;
+  line-height:.85 !important;
+  color:#111 !important;
+}
+
+#tactileTarget .tactile-target-shape{
+  width:76% !important;
+  height:76% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+#tactileTarget .tactile-target-shape svg{
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  overflow:visible !important;
+}
+
+#tactileTarget .tactile-target-arrow{
+  width:74% !important;
+  height:74% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:clamp(82px,16vmin,170px) !important;
+  font-weight:800 !important;
+}
+
+#tactileTarget .tactile-target-arrow svg{
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  overflow:visible !important;
+  transform-origin:center center !important;
+}
+
+#tactileTarget .tactile-target-sound,
+#tactileTarget .spoken-sound-visual,
+#tactileTarget .whistle-sound-visual{
+  width:100% !important;
+  height:100% !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  margin:0 !important;
+  transform:none !important;
+  text-align:center !important;
+}
+
+#tactileTarget .spoken-speaker-icon{
+  width:48% !important;
+  height:auto !important;
+  max-height:52% !important;
+  margin:0 !important;
+  display:block !important;
+}
+
+#tactileTarget .spoken-sound-number{
+  width:100% !important;
+  margin:0 !important;
+  font-size:clamp(27px,5.2vmin,58px) !important;
+  font-weight:850 !important;
+  line-height:.92 !important;
+  letter-spacing:-.035em !important;
+  color:#111 !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+}
+
+#tactileTarget .whistle-sequence-icon{
+  width:66% !important;
+  height:66% !important;
+  object-fit:contain !important;
+  margin:0 !important;
+}
+
+
+/* ==========================================================
+   TARJETAS ALREDEDOR DEL ESTÍMULO
+   ========================================================== */
+#tactileChoices{
+  position:absolute !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  z-index:14 !important;
+}
+
+#tactileChoices .tactile-choice{
+  position:absolute !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  border-radius:16px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#1d1d1f !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:visible !important;
+  cursor:pointer !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+  transition:
+    transform .14s ease,
+    filter .14s ease,
+    opacity .14s ease !important;
+}
+
+#tactileChoices .tactile-choice:disabled{
+  opacity:1 !important;
+  cursor:default !important;
+}
+
+#tactileChoices .tactile-choice-source{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  margin:0 !important;
+  pointer-events:none !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--choice-scale,.82)) !important;
+  transform-origin:center center !important;
+  transition:
+    transform .15s cubic-bezier(.2,.8,.2,1),
+    filter .15s ease,
+    box-shadow .15s ease !important;
+}
+
+/* Normalización de los clones */
+#tactileChoices .tactile-choice-source.color-card{
+  width:72px !important;
+  height:72px !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
+#tactileChoices .tactile-choice-source.color-card .swatch{
+  width:60px !important;
+  height:50px !important;
+  border-radius:12px !important;
+  opacity:.92 !important;
+  transform:none !important;
+}
+
+#tactileChoices .tactile-choice-source.arrow-card{
+  width:58px !important;
+  height:58px !important;
+  border-radius:14px !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--choice-scale,.82)) !important;
+}
+
+#tactileChoices .tactile-choice-source.arrow-card svg{
+  width:32px !important;
+  height:32px !important;
+}
+
+#tactileChoices .tactile-choice-source.number-card{
+  width:72px !important;
+  height:72px !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--choice-scale,.82)) !important;
+}
+
+#tactileChoices .tactile-choice-source.number-card::before{
+  width:66px !important;
+  height:56px !important;
+  border-radius:13px !important;
+  transform:none !important;
+}
+
+#tactileChoices .tactile-choice-source.number-card > span{
+  font-size:30px !important;
+  transform:none !important;
+}
+
+#tactileChoices .tactile-choice-source.number-card .shape-preview{
+  width:48px !important;
+  height:48px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  transform:none !important;
+}
+
+#tactileChoices .tactile-choice-source.number-card .shape-preview svg{
+  width:44px !important;
+  height:44px !important;
+  display:block !important;
+  transform:none !important;
+}
+
+#tactileChoices .tactile-choice-source.sound-card{
+  width:78px !important;
+  height:54px !important;
+  border-radius:14px !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--choice-scale,.82)) !important;
+}
+
+#tactileChoices .tactile-choice-source.sound-card .sound-card-content{
+  width:100% !important;
+  height:100% !important;
+  padding:3px 5px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:2px !important;
+  box-sizing:border-box !important;
+}
+
+#tactileChoices .tactile-choice-source.sound-card .voice-uploaded-icon{
+  width:42px !important;
+  height:46px !important;
+  margin:0 !important;
+  object-fit:contain !important;
+}
+
+#tactileChoices .tactile-choice-source.sound-card .sound-number{
+  margin:0 !important;
+  min-width:0 !important;
+  font-size:18px !important;
+  font-weight:750 !important;
+  line-height:.9 !important;
+  letter-spacing:-.05em !important;
+  text-align:center !important;
+}
+
+#tactileChoices .tactile-choice-source.sound-card .sound-number.is-command{
+  font-size:12px !important;
+  letter-spacing:-.06em !important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  #tactileChoices .tactile-choice:hover{
+    transform:scale(1.12) !important;
+    filter:brightness(1.03) !important;
+    z-index:30 !important;
+  }
+}
+
+#tactileChoices .tactile-choice:active{
+  transform:scale(.94) !important;
+}
+
+#tactileChoices .tactile-choice.is-correct,
+#tactileChoices .tactile-choice.shows-correct-answer{
+  transform:scale(1.12) !important;
+  z-index:31 !important;
+}
+
+#tactileChoices .tactile-choice.is-correct .tactile-choice-source,
+#tactileChoices .tactile-choice.shows-correct-answer .tactile-choice-source{
+  filter:
+    drop-shadow(0 0 0 rgba(0,0,0,0))
+    drop-shadow(0 0 9px rgba(35,190,80,.72)) !important;
+  transform:
+    translate(-50%,-50%)
+    scale(var(--choice-scale,.82)) !important;
+}
+
+#tactileChoices .tactile-choice.is-wrong .tactile-choice-source{
+  filter:drop-shadow(0 0 9px rgba(230,50,65,.75)) !important;
+  animation:tactileWrongShake .25s ease;
+}
+
+@keyframes tactileWrongShake{
+  0%,100%{margin-left:0}
+  30%{margin-left:-5px}
+  65%{margin-left:5px}
+}
+
+
+/* ==========================================================
+   CONTADOR Y REACCIÓN
+   ========================================================== */
+#tactileScore{
+  position:absolute !important;
+  left:50% !important;
+  bottom:82px !important;
+  transform:translateX(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:10px !important;
+  pointer-events:none !important;
+  z-index:22 !important;
+}
+
+#tactileScore .tactile-score-item{
+  min-width:118px !important;
+  min-height:40px !important;
+  padding:5px 11px !important;
+  border-radius:13px !important;
+  border:1px solid rgba(255,255,255,.24) !important;
+  background:rgba(28,28,30,.68) !important;
+  color:#fff !important;
+  box-shadow:none !important;
+  backdrop-filter:blur(12px) saturate(135%) !important;
+  -webkit-backdrop-filter:blur(12px) saturate(135%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  box-sizing:border-box !important;
+  transition:transform .16s ease,background .16s ease !important;
+}
+
+#tactileScore .tactile-score-label{
+  font-size:9px !important;
+  font-weight:800 !important;
+  letter-spacing:.045em !important;
+  line-height:1 !important;
+}
+
+#tactileScore strong{
+  min-width:22px !important;
+  font-size:22px !important;
+  font-weight:850 !important;
+  line-height:1 !important;
+  text-align:center !important;
+}
+
+#tactileScore .tactile-score-correct strong{
+  color:#76ef91 !important;
+}
+
+#tactileScore .tactile-score-wrong strong{
+  color:#ff858d !important;
+}
+
+#tactileScore .tactile-score-correct.is-updated{
+  background:rgba(20,116,48,.78) !important;
+  animation:tactileScorePulse .34s ease;
+}
+
+#tactileScore .tactile-score-wrong.is-updated{
+  background:rgba(147,37,49,.78) !important;
+  animation:tactileScorePulse .34s ease;
+}
+
+@keyframes tactileScorePulse{
+  0%{transform:scale(1)}
+  45%{transform:scale(1.12)}
+  100%{transform:scale(1)}
+}
+
+#tactileFeedback{
+  position:absolute !important;
+  left:50% !important;
+  bottom:132px !important;
+  transform:translateX(-50%) !important;
+  min-height:18px !important;
+  font-size:13px !important;
+  font-weight:850 !important;
+  letter-spacing:.055em !important;
+  pointer-events:none !important;
+  z-index:22 !important;
+}
+
+#tactileFeedback.is-correct{
+  color:#18843a !important;
+}
+
+#tactileFeedback.is-wrong{
+  color:#d52738 !important;
+}
+
+#stage.tactile-mode.tactile-paused #tactileChoices{
+  opacity:.48 !important;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width:700px){
+  #gameModeSelector{
+    gap:7px !important;
+  }
+
+  #gameModeSelector .game-mode-option{
+    min-height:50px !important;
+    padding:7px 8px !important;
+    border-radius:12px !important;
+  }
+
+  #gameModeSelector .game-mode-title{
+    font-size:11px !important;
+  }
+
+  #gameModeSelector .game-mode-description{
+    font-size:8px !important;
+  }
+
+  #tactileTarget{
+    top:45% !important;
+    width:clamp(124px,31vmin,188px) !important;
+    height:clamp(124px,31vmin,188px) !important;
+    border-radius:22px !important;
+  }
+
+  #tactileScore{
+    bottom:76px !important;
+    gap:6px !important;
+  }
+
+  #tactileScore .tactile-score-item{
+    min-width:96px !important;
+    min-height:35px !important;
+    padding:4px 7px !important;
+    gap:5px !important;
+  }
+
+  #tactileScore .tactile-score-label{
+    font-size:7.5px !important;
+  }
+
+  #tactileScore strong{
+    font-size:18px !important;
+  }
+
+  #tactileFeedback{
+    bottom:116px !important;
+    font-size:11px !important;
+  }
+}
+
+@media (max-height:520px){
+  #tactileTarget{
+    top:44% !important;
+    width:min(29vh,150px) !important;
+    height:min(29vh,150px) !important;
+    border-radius:18px !important;
+  }
+
+  #tactileScore{
+    bottom:64px !important;
+  }
+
+  #tactileScore .tactile-score-item{
+    min-width:90px !important;
+    min-height:31px !important;
+  }
+
+  #tactileFeedback{
+    bottom:99px !important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  #tactileChoices .tactile-choice,
+  #tactileChoices .tactile-choice-source,
+  #tactileTarget,
+  #tactileScore .tactile-score-item{
+    animation:none !important;
+    transition:none !important;
+  }
+}
+</style>
