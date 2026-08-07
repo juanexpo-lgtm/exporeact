@@ -15434,3 +15434,483 @@ html[lang="fr"] #countdown .countdown-go{
 }
 </style>
 
+
+
+<style id="expoReactPanelPolishWordsV1">
+/* ==========================================================
+   ELIGE MODO: MÁS DISCRETO
+   ========================================================== */
+#gameModeSelector .mode-choice-label{
+  font-size:16px !important;
+  font-weight:480 !important;
+  line-height:1 !important;
+  letter-spacing:.035em !important;
+}
+
+/* Texto siempre negro al pasar por cualquier botón de modo. */
+@media (hover:hover) and (pointer:fine){
+  #gameModeSelector .game-mode-option:hover,
+  #gameModeSelector .game-mode-option:hover .game-mode-title{
+    color:#111 !important;
+  }
+}
+
+/* ==========================================================
+   FILA INFERIOR:
+   IDIOMA + SONIDO PEGADOS AL MARGEN IZQUIERDO
+   REINICIO + CASA PEGADOS AL MARGEN DERECHO
+   START CENTRADO
+   ========================================================== */
+.start-row{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  min-height:48px !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:visible !important;
+}
+
+.start-row #soundToggleBtn{
+  position:absolute !important;
+  left:0 !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+}
+
+.start-row #languageStub{
+  position:absolute !important;
+  left:54px !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  margin:0 !important;
+  overflow:visible !important;
+}
+
+.start-row #start{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  margin:0 !important;
+}
+
+.start-row .start-actions{
+  position:absolute !important;
+  right:0 !important;
+  top:50% !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+  margin:0 !important;
+}
+
+/* ==========================================================
+   VELOCIDAD / REPETICIONES:
+   MISMO TAMAÑO TIPOGRÁFICO QUE LOS CARTELES "ELIGE..."
+   ========================================================== */
+.control-mini-label{
+  width:max-content !important;
+  min-width:0 !important;
+  height:auto !important;
+  min-height:32px !important;
+  padding:5px 18px !important;
+  border-radius:999px !important;
+  font-family:"Manrope",sans-serif !important;
+  font-size:19px !important;
+  font-weight:500 !important;
+  line-height:1.15 !important;
+  letter-spacing:-.01em !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  background:
+    linear-gradient(
+      135deg,
+      #ff4a55 0%,
+      #ff1e33 28%,
+      #d1001f 62%,
+      #8b0016 100%
+    ) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.35) !important;
+  box-shadow:
+    7px 8px 17px rgba(90,90,90,.24),
+    inset 0 1px 0 rgba(255,255,255,.52),
+    inset 0 -7px 13px rgba(120,0,0,.18) !important;
+}
+
+.speed-row.speed-row-with-repetitions{
+  gap:58px !important;
+  min-height:84px !important;
+}
+
+/* ==========================================================
+   INFINITO: TODO LO GRANDE QUE PERMITE LA FILA
+   ========================================================== */
+#repValue{
+  min-width:70px !important;
+  height:40px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  line-height:1 !important;
+}
+
+#repValue.is-infinity{
+  font-size:54px !important;
+  font-weight:430 !important;
+  line-height:.72 !important;
+  letter-spacing:-.04em !important;
+  transform:translateY(-1px) !important;
+}
+
+/* ==========================================================
+   TARJETAS DE SONIDO: SOLO LA PALABRA QUE SE OYE
+   ========================================================== */
+#sounds .sound-card{
+  overflow:visible !important;
+}
+
+#sounds .sound-card .sound-card-content{
+  width:100% !important;
+  height:100% !important;
+  padding:3px 4px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+}
+
+#sounds .sound-card .voice-uploaded-icon,
+#sounds .sound-card .whistle-uploaded-icon,
+#sounds .sound-card .spoken-speaker-icon,
+#sounds .sound-card .sound-number{
+  display:none !important;
+}
+
+#sounds .sound-card .sound-word-label{
+  display:block !important;
+  width:100% !important;
+  color:#111 !important;
+  font-family:"Manrope",sans-serif !important;
+  font-size:13px !important;
+  font-weight:650 !important;
+  line-height:1 !important;
+  letter-spacing:-.025em !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+}
+
+#sounds .sound-card:has(input:checked) .sound-word-label{
+  color:#111 !important;
+}
+
+/* Las opciones táctiles de sonidos no direccionales heredan el texto limpio. */
+#tactileChoices .tactile-choice-source.sound-card .sound-word-label{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  height:100% !important;
+  font-size:13px !important;
+  font-weight:650 !important;
+  line-height:1 !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+}
+
+/* ==========================================================
+   TOOLTIPS DE LOS MODOS
+   ========================================================== */
+#gameModeSelector{
+  overflow:visible !important;
+}
+
+#gameModeSelector .game-mode-option{
+  overflow:visible !important;
+  position:relative !important;
+}
+
+#gameModeSelector .game-mode-option::after{
+  content:attr(data-mode-tooltip) !important;
+  position:absolute !important;
+  left:50% !important;
+  bottom:calc(100% + 10px) !important;
+  transform:translateX(-50%) translateY(4px) !important;
+  min-width:max-content !important;
+  max-width:260px !important;
+  padding:8px 11px !important;
+  border-radius:9px !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  background:rgba(20,20,23,.84) !important;
+  color:#fff !important;
+  font-family:"Manrope",sans-serif !important;
+  font-size:10.5px !important;
+  font-weight:650 !important;
+  line-height:1.15 !important;
+  letter-spacing:.025em !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:blur(9px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(9px) saturate(125%) !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:
+    opacity .16s ease,
+    transform .16s ease,
+    visibility .16s ease !important;
+  z-index:5000 !important;
+}
+
+@media (hover:hover) and (pointer:fine){
+  #gameModeSelector .game-mode-option:hover::after{
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:translateX(-50%) translateY(0) !important;
+  }
+}
+
+@media (max-width:700px){
+  #gameModeSelector .mode-choice-label{
+    font-size:14px !important;
+  }
+
+  .start-row #languageStub{
+    left:50px !important;
+  }
+
+  .start-row .start-actions{
+    gap:6px !important;
+  }
+
+  .control-mini-label{
+    min-height:29px !important;
+    padding:4px 14px !important;
+    font-size:16px !important;
+  }
+
+  .speed-row.speed-row-with-repetitions{
+    gap:36px !important;
+    min-height:76px !important;
+  }
+
+  #repValue.is-infinity{
+    font-size:48px !important;
+  }
+
+  #sounds .sound-card .sound-word-label{
+    font-size:11.5px !important;
+  }
+}
+</style>
+
+<script id="expoReactPanelPolishWordsScriptV1">
+(function(){
+  const MODE_TEXT={
+    es:{
+      sport:'DEPORTIVO',
+      touch:'TÁCTIL',
+      sportTip:'REACCIONA CON MOVIMIENTOS',
+      touchTip:'REACCIONA TOCANDO LA PANTALLA',
+      speed:'VELOCIDAD',
+      repetitions:'REPETICIONES'
+    },
+    en:{
+      sport:'SPORT',
+      touch:'TOUCH',
+      sportTip:'REACT WITH MOVEMENT',
+      touchTip:'REACT BY TOUCHING THE SCREEN',
+      speed:'SPEED',
+      repetitions:'REPETITIONS'
+    },
+    fr:{
+      sport:'SPORT',
+      touch:'TACTILE',
+      sportTip:'RÉAGIS EN MOUVEMENT',
+      touchTip:'RÉAGIS EN TOUCHANT L’ÉCRAN',
+      speed:'VITESSE',
+      repetitions:'RÉPÉTITIONS'
+    }
+  };
+
+  /*
+    Estas palabras NO se traducen con la interfaz:
+    identifican exactamente el contenido del audio.
+  */
+  const SOUND_WORDS=[
+    'UNO',
+    'DOS',
+    'TRES',
+    'CUATRO',
+    'CINCO',
+    'SILBATO',
+    'IZQUIERDA',
+    'DERECHA',
+    'ADELANTE',
+    'ATRÁS',
+    'SALTA',
+    'STOP'
+  ];
+
+  function languageKey(){
+    const raw=String(
+      window.expoReactLanguage ||
+      document.documentElement.lang ||
+      navigator.language ||
+      'es'
+    ).toLowerCase();
+
+    if(raw.startsWith('fr')) return 'fr';
+    if(raw.startsWith('en')) return 'en';
+    return 'es';
+  }
+
+  function currentText(){
+    return MODE_TEXT[languageKey()] || MODE_TEXT.es;
+  }
+
+  function applySoundWords(){
+    const cards=[
+      ...document.querySelectorAll('#sounds .sound-card')
+    ];
+
+    cards.forEach((card,index)=>{
+      const content=card.querySelector('.sound-card-content');
+      if(!content) return;
+
+      const word=SOUND_WORDS[index] || '';
+
+      let label=content.querySelector('.sound-word-label');
+      if(!label){
+        content.replaceChildren();
+        label=document.createElement('span');
+        label.className='sound-word-label';
+        content.appendChild(label);
+      }
+
+      if(label.textContent!==word){
+        label.textContent=word;
+      }
+
+      if(word){
+        card.setAttribute('aria-label',word);
+        card.setAttribute('title',word);
+      }
+    });
+  }
+
+  function syncModeAndControlTexts(){
+    const text=currentText();
+
+    const sport=document.querySelector(
+      '#gameModeSelector [data-game-mode="movement"]'
+    );
+    const touch=document.querySelector(
+      '#gameModeSelector [data-game-mode="tactile"]'
+    );
+
+    const sportTitle=sport?.querySelector('.game-mode-title');
+    const touchTitle=touch?.querySelector('.game-mode-title');
+
+    if(sportTitle && sportTitle.textContent!==text.sport){
+      sportTitle.textContent=text.sport;
+    }
+
+    if(touchTitle && touchTitle.textContent!==text.touch){
+      touchTitle.textContent=text.touch;
+    }
+
+    if(sport){
+      sport.setAttribute('data-mode-tooltip',text.sportTip);
+      sport.setAttribute('title',text.sportTip);
+    }
+
+    if(touch){
+      touch.setAttribute('data-mode-tooltip',text.touchTip);
+      touch.setAttribute('title',text.touchTip);
+    }
+
+    const speedLabel=document.querySelector('.speed-mini-label');
+    const repsLabel=document.querySelector('.repetitions-mini-label');
+
+    if(speedLabel && speedLabel.textContent!==text.speed){
+      speedLabel.textContent=text.speed;
+    }
+
+    if(repsLabel && repsLabel.textContent!==text.repetitions){
+      repsLabel.textContent=text.repetitions;
+    }
+  }
+
+  function syncInfinity(){
+    const value=document.getElementById('repValue');
+    if(!value) return;
+
+    value.classList.toggle(
+      'is-infinity',
+      value.textContent.trim()==='∞'
+    );
+  }
+
+  function syncAll(){
+    applySoundWords();
+    syncModeAndControlTexts();
+    syncInfinity();
+  }
+
+  const repValue=document.getElementById('repValue');
+  if(repValue){
+    new MutationObserver(syncInfinity).observe(
+      repValue,
+      {
+        childList:true,
+        characterData:true,
+        subtree:true
+      }
+    );
+  }
+
+  /*
+    Observamos el atributo lang para cubrir todos los caminos de cambio
+    de idioma existentes en este HTML, incluso los listeners antiguos
+    que guardaron una referencia previa al selector de idioma.
+  */
+  new MutationObserver(()=>{
+    requestAnimationFrame(syncModeAndControlTexts);
+  }).observe(
+    document.documentElement,
+    {
+      attributes:true,
+      attributeFilter:['lang']
+    }
+  );
+
+  document.getElementById('languageStub')?.addEventListener(
+    'click',
+    ()=>requestAnimationFrame(()=>{
+      syncModeAndControlTexts();
+      applySoundWords();
+    })
+  );
+
+  const previousLanguageSetter=window.expoReactSetLanguage;
+  if(typeof previousLanguageSetter==='function'){
+    window.expoReactSetLanguage=function(language){
+      previousLanguageSetter(language);
+      requestAnimationFrame(syncAll);
+    };
+  }
+
+  syncAll();
+  requestAnimationFrame(syncAll);
+})();
+</script>
+
