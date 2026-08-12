@@ -9772,12 +9772,21 @@ html[lang^="fr-"] #controls #exitBtn{
   -webkit-text-fill-color:#fff !important;
 }
 
-#stage.tactile-mode #tactileInfoRow .tactile-score-correct strong,
-#stage.tactile-mode #tactileInfoRow .tactile-score-missed strong,
-#stage.tactile-mode #tactileInfoRow .tactile-score-average strong,
-#stage.tactile-mode #tactileMissedCount{
+#stage.tactile-mode #tactileInfoRow .tactile-score-correct strong{
   color:#fff !important;
   -webkit-text-fill-color:#fff !important;
+}
+
+#stage.tactile-mode #tactileInfoRow .tactile-score-missed .tactile-score-label,
+#stage.tactile-mode #tactileInfoRow .tactile-score-average .tactile-score-label,
+#stage.tactile-mode #tactileInfoRow .tactile-score-missed strong,
+#stage.tactile-mode #tactileInfoRow .tactile-score-average strong,
+#stage.tactile-mode #tactileInfoRow #tactileMissedCount,
+#stage.tactile-mode #tactileInfoRow #tactileAverageTime{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  text-shadow:none !important;
+  opacity:1 !important;
 }
 
 
@@ -9947,6 +9956,750 @@ html:-webkit-full-screen #stage #movementColorPanel{
   }
 }
 </style>
+
+<style id="expoReactTactileInfoPastelBackgrounds">
+/* Barra superior de la secuencia táctil:
+   PÉRDIDAS = amarillo suave translúcido
+   MEDIA RT = azul suave translúcido */
+#stage.tactile-mode #tactileInfoRow .tactile-score-missed{
+  background:rgba(255,196,0,.27) !important;
+  border:none !important;
+}
+
+#stage.tactile-mode #tactileInfoRow .tactile-score-average{
+  background:rgba(78,156,255,.23) !important;
+  border:none !important;
+}
+</style>
+
+
+<style id="expoReactTactileInfoBlackValues">
+/* Valores numéricos reales en negro para PÉRDIDAS y MEDIA RT. */
+#stage.tactile-mode #tactileMissedCount,
+#stage.tactile-mode #tactileAverageTime{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  text-shadow:none !important;
+  opacity:1 !important;
+}
+</style>
+
+
+<style id="expoReactRequestedScorePaletteFinal">
+/* PALETA EXACTA SOLICITADA
+   ACIERTOS  #DDFFB3
+   FALLOS    #FFDED9
+   PERDIDAS  #F3FA91
+   MEDIA     #D4FFFF
+*/
+
+/* Fila informativa durante la secuencia */
+#stage.tactile-mode #tactileInfoRow .tactile-score-correct{
+  background:#DDFFB3 !important;
+  color:#000 !important;
+}
+#stage.tactile-mode #tactileInfoRow .tactile-score-wrong{
+  background:#FFDED9 !important;
+  color:#000 !important;
+}
+#stage.tactile-mode #tactileInfoRow .tactile-score-missed{
+  background:#F3FA91 !important;
+  border:none !important;
+  color:#000 !important;
+}
+#stage.tactile-mode #tactileInfoRow .tactile-score-average{
+  background:#D4FFFF !important;
+  border:none !important;
+  color:#000 !important;
+}
+
+/* Texto y números negros en los cuatro recuadros */
+#stage.tactile-mode #tactileInfoRow .tactile-score-correct .tactile-score-label,
+#stage.tactile-mode #tactileInfoRow .tactile-score-wrong .tactile-score-label,
+#stage.tactile-mode #tactileInfoRow .tactile-score-missed .tactile-score-label,
+#stage.tactile-mode #tactileInfoRow .tactile-score-average .tactile-score-label,
+#stage.tactile-mode #tactileInfoRow .tactile-score-correct strong,
+#stage.tactile-mode #tactileInfoRow .tactile-score-wrong strong,
+#stage.tactile-mode #tactileInfoRow .tactile-score-missed strong,
+#stage.tactile-mode #tactileInfoRow .tactile-score-average strong,
+#stage.tactile-mode #tactileCorrectCount,
+#stage.tactile-mode #tactileIncorrectCount,
+#stage.tactile-mode #tactileMissedCount,
+#stage.tactile-mode #tactileAverageTime{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  text-shadow:none !important;
+  opacity:1 !important;
+}
+
+/* Resumen de la calificación final: cuatro recuadros */
+.tactile-final-grade-stats{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+.tactile-final-grade-stats > span:nth-child(1){
+  background:#DDFFB3 !important;
+}
+.tactile-final-grade-stats > span:nth-child(2){
+  background:#FFDED9 !important;
+}
+.tactile-final-grade-stats > span:nth-child(3){
+  background:#F3FA91 !important;
+}
+.tactile-final-grade-stats > span:nth-child(4){
+  background:#D4FFFF !important;
+}
+.tactile-final-grade-stats > span,
+.tactile-final-grade-stats small,
+.tactile-final-grade-stats strong{
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  text-shadow:none !important;
+}
+</style>
+
+
+<style id="expoReactFinalGradeHorizontalRectangles">
+/* Resumen final: cuatro rectángulos horizontales.
+   Etiqueta y valor en la misma línea. */
+#tactileFinalGrade{
+  width:min(520px,calc(100vw - 32px)) !important;
+}
+
+.tactile-final-grade-stats{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+
+.tactile-final-grade-stats > span{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:6px !important;
+  min-width:0 !important;
+  min-height:38px !important;
+  height:auto !important;
+  aspect-ratio:auto !important;
+  padding:7px 10px !important;
+  border-radius:10px !important;
+  box-sizing:border-box !important;
+  white-space:nowrap !important;
+}
+
+.tactile-final-grade-stats small,
+.tactile-final-grade-stats strong{
+  display:inline-flex !important;
+  align-items:center !important;
+  margin:0 !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+
+.tactile-final-grade-stats small{
+  font-size:10px !important;
+}
+
+.tactile-final-grade-stats strong{
+  font-size:20px !important;
+}
+
+/* PÉRDIDAS: nuevo fondo solicitado. */
+.tactile-final-grade-stats > span:nth-child(3){
+  background:#F3FA91 !important;
+}
+
+@media (max-width:520px){
+  #tactileFinalGrade{
+    width:min(480px,calc(100vw - 20px)) !important;
+  }
+
+  .tactile-final-grade-stats{
+    gap:5px !important;
+  }
+
+  .tactile-final-grade-stats > span{
+    gap:4px !important;
+    min-height:34px !important;
+    padding:6px 5px !important;
+    border-radius:9px !important;
+  }
+
+  .tactile-final-grade-stats small{
+    font-size:8px !important;
+    letter-spacing:.02em !important;
+  }
+
+  .tactile-final-grade-stats strong{
+    font-size:17px !important;
+  }
+}
+</style>
+
+
+<style id="expoReactFinalGradeVerticalValuesShadow">
+/* Resumen final:
+   - etiqueta arriba
+   - valor debajo
+   - rectángulos conservados
+   - sombra gris suave tipo tarjeta
+*/
+#tactileFinalGrade .tactile-final-grade-stats > span{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+
+  min-width:0 !important;
+  min-height:54px !important;
+  height:auto !important;
+  aspect-ratio:auto !important;
+
+  padding:7px 10px !important;
+  border-radius:10px !important;
+  box-sizing:border-box !important;
+
+  box-shadow:
+    4px 5px 12px rgba(0,0,0,.14),
+    2px 2px 4px rgba(0,0,0,.06) !important;
+}
+
+#tactileFinalGrade .tactile-final-grade-stats small,
+#tactileFinalGrade .tactile-final-grade-stats strong{
+  display:block !important;
+  margin:0 !important;
+  text-align:center !important;
+  line-height:1 !important;
+}
+
+#tactileFinalGrade .tactile-final-grade-stats small{
+  font-size:10px !important;
+}
+
+#tactileFinalGrade .tactile-final-grade-stats strong{
+  font-size:20px !important;
+}
+
+@media (max-width:520px){
+  #tactileFinalGrade .tactile-final-grade-stats > span{
+    min-height:50px !important;
+    padding:6px 5px !important;
+    gap:3px !important;
+    border-radius:9px !important;
+  }
+
+  #tactileFinalGrade .tactile-final-grade-stats small{
+    font-size:8px !important;
+  }
+
+  #tactileFinalGrade .tactile-final-grade-stats strong{
+    font-size:17px !important;
+  }
+}
+</style>
+
+
+<style id="expoReactResponsivePCiPadIPhoneV1">
+/* ============================================================
+   EXPO REACT 2.0 · ADAPTACIÓN PC / iPAD / iPHONE
+   - PC conserva el aspecto existente.
+   - iPad mantiene el panel de 600 px cuando cabe y se adapta en Split View.
+   - iPhone usa panel responsive con scroll interno, sin miniaturizar toda la UI.
+   ============================================================ */
+:root{
+  --expo-vw:100vw;
+  --expo-vh:100dvh;
+  --expo-safe-top:max(0px,env(safe-area-inset-top));
+  --expo-safe-right:max(0px,env(safe-area-inset-right));
+  --expo-safe-bottom:max(0px,env(safe-area-inset-bottom));
+  --expo-safe-left:max(0px,env(safe-area-inset-left));
+}
+@supports not (height:100dvh){
+  :root{--expo-vh:100vh;}
+}
+
+html,body{
+  min-height:100dvh !important;
+  overscroll-behavior:none !important;
+  -webkit-text-size-adjust:100% !important;
+}
+
+button,
+a,
+label,
+input{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+/* ---- iPHONE y anchos compactos / Split View estrecho ---- */
+@media (max-width:600px), (max-width:1000px) and (max-height:520px) and (pointer:coarse){
+  #cfg{
+    width:min(600px,calc(var(--expo-vw) - 20px)) !important;
+    min-width:0 !important;
+    max-width:calc(var(--expo-vw) - 20px) !important;
+    height:auto !important;
+    max-height:calc(
+      var(--expo-vh)
+      - max(10px,var(--expo-safe-top))
+      - max(10px,var(--expo-safe-bottom))
+    ) !important;
+    padding:14px !important;
+    border-radius:20px !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+    scrollbar-width:none !important;
+    transform:translate(-50%,-50%) !important;
+    transform-origin:center center !important;
+    box-sizing:border-box !important;
+    align-content:start !important;
+  }
+  #cfg::-webkit-scrollbar{display:none !important;}
+  body.training-transition #cfg{
+    transform:translate(-50%,-50%) scale(.985) !important;
+  }
+
+  #cfg .banner{
+    padding:13px 12px !important;
+    border-radius:22px !important;
+  }
+  #cfg .banner-main-title{
+    font-size:clamp(27px,8vw,34px) !important;
+    line-height:.95 !important;
+  }
+  #cfg .banner-subtitle{
+    font-size:10px !important;
+    letter-spacing:.11em !important;
+    margin-top:6px !important;
+  }
+
+  #cfg{
+    row-gap:9px !important;
+  }
+  #cfg .section-title{
+    font-size:15px !important;
+    padding:5px 13px !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  #gameModeSelector{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+    width:100% !important;
+    margin:0 !important;
+  }
+  #gameModeSelector .game-mode-option{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:46px !important;
+    padding:8px 6px !important;
+    border-radius:13px !important;
+  }
+  #gameModeSelector .game-mode-title{
+    font-size:clamp(11px,3.4vw,14px) !important;
+    line-height:1.05 !important;
+    white-space:normal !important;
+  }
+
+  /* Colores y formas: tamaño táctil real, con reflujo si el teléfono es estrecho. */
+  #colors,
+  #shapes{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    justify-content:center !important;
+    gap:6px !important;
+  }
+  #colors .color-card,
+  #shapes .color-card{
+    width:52px !important;
+    min-width:52px !important;
+    height:52px !important;
+    min-height:52px !important;
+    flex:0 0 52px !important;
+  }
+  #colors .color-card .swatch{
+    width:46px !important;
+    height:40px !important;
+  }
+  #shapes .color-card .swatch{
+    width:48px !important;
+    height:44px !important;
+  }
+  #shapes .shape-preview{
+    width:46px !important;
+    height:46px !important;
+  }
+  #shapes .shape-preview svg{
+    width:40px !important;
+    height:40px !important;
+  }
+
+  /* Flechas: 4 + 4 en iPhone en vez de ocho miniaturas en una sola fila. */
+  #arrows{
+    grid-template-columns:repeat(4,56px) !important;
+    justify-content:center !important;
+    gap:8px !important;
+  }
+  #arrows .arrow-card{
+    width:56px !important;
+    min-width:56px !important;
+    height:56px !important;
+    min-height:56px !important;
+  }
+
+  #numbers{
+    grid-template-columns:repeat(4,64px) !important;
+    justify-content:center !important;
+    gap:8px !important;
+  }
+  #numbers .number-card{
+    width:64px !important;
+    min-width:64px !important;
+    height:62px !important;
+    min-height:62px !important;
+  }
+  #numbers .number-card::before{
+    width:60px !important;
+    height:50px !important;
+  }
+  #numbers .number-card span{
+    font-size:28px !important;
+  }
+
+  /* Voces/sonidos: cuatro columnas táctiles; en 320 px pasa a tres. */
+  #sounds{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    grid-auto-rows:60px !important;
+    column-gap:6px !important;
+    row-gap:6px !important;
+    width:100% !important;
+  }
+  #sounds .sound-card,
+  #sounds .sound-card:nth-child(1),
+  #sounds .sound-card:nth-child(6),
+  #sounds .sound-card:nth-child(11){
+    width:100% !important;
+    min-width:0 !important;
+    max-width:78px !important;
+    height:60px !important;
+    min-height:60px !important;
+    max-height:60px !important;
+  }
+  #sounds .sound-card .sound-card-content{
+    width:min(72px,100%) !important;
+    min-width:0 !important;
+    max-width:72px !important;
+    height:50px !important;
+    min-height:50px !important;
+    padding:3px 4px !important;
+  }
+
+  .speed-row,
+  .speed-row.speed-row-with-repetitions{
+    min-height:48px !important;
+  }
+  #minus,
+  #plus,
+  #repMinus,
+  #repPlus{
+    min-width:44px !important;
+    width:44px !important;
+    min-height:44px !important;
+    height:44px !important;
+  }
+
+  /* Acciones finales: START en una fila; controles auxiliares debajo. */
+  .start-row{
+    display:grid !important;
+    grid-template-columns:repeat(4,44px) !important;
+    grid-template-rows:auto 46px !important;
+    justify-content:center !important;
+    align-items:center !important;
+    column-gap:8px !important;
+    row-gap:7px !important;
+    min-height:0 !important;
+  }
+  .start-row #start{
+    grid-column:1 / -1 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    width:min(220px,100%) !important;
+    min-width:0 !important;
+    max-width:220px !important;
+    height:46px !important;
+    min-height:46px !important;
+    margin:0 !important;
+    font-size:21px !important;
+  }
+  .start-row #soundToggleBtn{
+    grid-column:1 !important;
+    grid-row:2 !important;
+    justify-self:center !important;
+  }
+  .start-row #languageStub{
+    grid-column:2 !important;
+    grid-row:2 !important;
+    justify-self:center !important;
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    top:auto !important;
+    bottom:auto !important;
+    translate:none !important;
+  }
+  .start-row .start-actions{
+    grid-column:3 / 5 !important;
+    grid-row:2 !important;
+    justify-self:center !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:8px !important;
+    width:auto !important;
+    min-width:0 !important;
+  }
+  #soundToggleBtn,
+  #reset,
+  #homeLink,
+  #languageStub,
+  #languageStub .lang-current{
+    width:44px !important;
+    min-width:44px !important;
+    height:44px !important;
+    min-height:44px !important;
+    flex-basis:44px !important;
+  }
+}
+
+@media (min-width:601px) and (max-width:1000px) and (max-height:520px) and (pointer:coarse){
+  #cfg{
+    padding:10px 14px !important;
+    row-gap:6px !important;
+  }
+  #cfg .banner{
+    padding:10px 12px !important;
+  }
+  #cfg .banner-main-title{
+    font-size:27px !important;
+  }
+  #cfg .banner-subtitle{
+    font-size:9px !important;
+    margin-top:4px !important;
+  }
+  #cfg .section-title{
+    font-size:13px !important;
+    padding:4px 12px !important;
+  }
+  #arrows{
+    grid-template-columns:repeat(8,56px) !important;
+    gap:7px !important;
+  }
+  #sounds{
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    column-gap:6px !important;
+    row-gap:5px !important;
+  }
+  #colors,
+  #shapes{
+    flex-wrap:nowrap !important;
+  }
+}
+
+@media (max-width:340px){
+  #cfg{padding:12px 10px !important;}
+  #sounds{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+  #gameModeSelector .game-mode-title{
+    font-size:10.5px !important;
+  }
+}
+
+/* ---- Controles de entrenamiento: área táctil cómoda en iPhone/iPad ---- */
+@media (pointer:coarse){
+  #controls #pauseBtn{
+    min-width:44px !important;
+    width:44px !important;
+    min-height:44px !important;
+    height:44px !important;
+  }
+  #controls #minusStage,
+  #controls #plusStage{
+    min-width:40px !important;
+    width:40px !important;
+    min-height:40px !important;
+    height:40px !important;
+  }
+  #controls #speedBadge,
+  #controls #stimCounter,
+  #controls #exitBtn{
+    min-height:44px !important;
+    height:44px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  #fullscreenBtn{
+    width:44px !important;
+    min-width:44px !important;
+    height:44px !important;
+    min-height:44px !important;
+  }
+  #tactileChoices .tactile-choice{
+    -webkit-tap-highlight-color:transparent !important;
+    touch-action:manipulation !important;
+  }
+}
+
+@media (pointer:coarse) and (max-height:520px){
+  #controls #pauseBtn{
+    min-width:40px !important;
+    width:40px !important;
+    min-height:40px !important;
+    height:40px !important;
+  }
+  #controls #minusStage,
+  #controls #plusStage{
+    min-width:36px !important;
+    width:36px !important;
+    min-height:36px !important;
+    height:36px !important;
+  }
+  #controls #speedBadge,
+  #controls #stimCounter,
+  #controls #exitBtn{
+    min-height:40px !important;
+    height:40px !important;
+  }
+  #fullscreenBtn{
+    width:40px !important;
+    min-width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+  }
+}
+
+@media (max-width:600px){
+  #controls{
+    grid-template-columns:44px 128px 54px 54px !important;
+    column-gap:4px !important;
+    width:min(calc(100vw - 12px),296px) !important;
+    max-width:calc(100vw - 12px) !important;
+  }
+  #controls > .stage-speed-control{
+    width:128px !important;
+    min-width:128px !important;
+    gap:2px !important;
+  }
+  #controls #speedBadge{
+    width:44px !important;
+    min-width:44px !important;
+    max-width:44px !important;
+    padding-inline:2px !important;
+  }
+  #controls #stimCounter{
+    width:54px !important;
+    min-width:54px !important;
+    max-width:54px !important;
+    padding-inline:3px !important;
+  }
+  #controls #exitBtn{
+    width:54px !important;
+    min-width:54px !important;
+    max-width:54px !important;
+    padding-inline:4px !important;
+  }
+}
+
+/* En iPhone vertical, la fila informativa gana legibilidad sin cambiar orden/colores. */
+@media (max-width:600px) and (orientation:portrait){
+  #stage.tactile-mode #tactileInfoRow{
+    width:min(calc(100vw - 14px),480px) !important;
+    max-width:calc(100vw - 14px) !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    grid-template-rows:40px !important;
+    column-gap:3px !important;
+  }
+  #stage.tactile-mode #tactileInfoRow .tactile-score-item{
+    height:38px !important;
+    min-height:38px !important;
+    padding:3px 2px !important;
+    border-radius:9px !important;
+    flex-direction:column !important;
+    gap:1px !important;
+  }
+  #stage.tactile-mode #tactileInfoRow .tactile-score-label{
+    font-size:9px !important;
+    line-height:1 !important;
+    letter-spacing:.01em !important;
+  }
+  #stage.tactile-mode #tactileInfoRow .tactile-score-item strong{
+    font-size:14px !important;
+    line-height:1 !important;
+  }
+  #stage.tactile-mode #tactileInfoRow #timerBox{
+    height:30px !important;
+    min-height:30px !important;
+    align-self:center !important;
+    font-size:14px !important;
+    padding:1px 2px !important;
+  }
+}
+
+/* Resumen final: 2x2 en iPhone/ventanas estrechas; 4 en línea en iPad/PC. */
+@media (max-width:600px) and (orientation:portrait){
+  #tactileFinalGrade{
+    width:min(430px,calc(100vw - 22px)) !important;
+    max-height:calc(var(--expo-vh) - 24px) !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+  #tactileFinalGrade .tactile-final-grade-stats{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+  #tactileFinalGrade .tactile-final-grade-stats > span{
+    min-height:58px !important;
+    padding:8px 7px !important;
+  }
+  #tactileFinalGrade .tactile-final-grade-stats small{
+    font-size:10.5px !important;
+  }
+  #tactileFinalGrade .tactile-final-grade-stats strong{
+    font-size:20px !important;
+  }
+}
+
+/* Hover solo debe aportar feedback en dispositivos que realmente tienen hover. */
+@media (hover:none){
+  #colors .color-card:not(:has(input:checked)):hover .swatch,
+  #shapes .color-card:not(:has(input:checked)):hover .swatch,
+  .number-card:not(:has(input:checked)):hover::before,
+  .arrow-card:not(:has(input:checked)):hover,
+  .sound-card:not(:has(input:checked)):hover{
+    transform:none !important;
+  }
+  #start:hover,
+  #reset:hover,
+  #soundToggleBtn:hover,
+  #minus:hover,
+  #plus:hover,
+  #repMinus:hover,
+  #repPlus:hover,
+  #pauseBtn:hover,
+  #exitBtn:hover,
+  #minusStage:hover,
+  #plusStage:hover{
+    filter:none !important;
+    transform:none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -10052,6 +10805,7 @@ html:-webkit-full-screen #stage #movementColorPanel{
   <div class="tactile-final-grade-stats">
     <span><small id="tactileFinalHitsLabel">ACIERTOS</small><strong id="tactileFinalHits">0</strong></span>
     <span><small id="tactileFinalWrongLabel">FALLOS</small><strong id="tactileFinalWrong">0</strong></span>
+    <span><small id="tactileFinalMissedLabel">PERDIDAS</small><strong id="tactileFinalMissed">0</strong></span>
     <span><small id="tactileFinalAverageLabel">MEDIA</small><strong id="tactileFinalAverage">0.00</strong></span>
   </div>
   <button type="button" id="tactileReplayBtn">JUGAR DE NUEVO</button>
@@ -11612,7 +12366,7 @@ function createSoftClick(context, startTime) {
   osc.frequency.exponentialRampToValueAtTime(760, startTime + 0.045);
 
   gain.gain.setValueAtTime(0.0001, startTime);
-  gain.gain.exponentialRampToValueAtTime(0.045, startTime + 0.003);
+  gain.gain.exponentialRampToValueAtTime(0.11, startTime + 0.003);
   gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.045);
 
   osc.connect(gain).connect(context.destination);
@@ -11675,11 +12429,11 @@ function createHighControlClick(context, startTime) {
   osc2.frequency.exponentialRampToValueAtTime(1900, startTime + 0.025);
 
   gain1.gain.setValueAtTime(0.0001, startTime);
-  gain1.gain.exponentialRampToValueAtTime(0.17, startTime + 0.002);
+  gain1.gain.exponentialRampToValueAtTime(0.28, startTime + 0.002);
   gain1.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.045);
 
   gain2.gain.setValueAtTime(0.0001, startTime);
-  gain2.gain.exponentialRampToValueAtTime(0.07, startTime + 0.002);
+  gain2.gain.exponentialRampToValueAtTime(0.13, startTime + 0.002);
   gain2.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.03);
 
   osc1.connect(gain1).connect(context.destination);
@@ -11877,284 +12631,137 @@ try {
 }
 ;
 
-/* ===== MÓDULO CONSOLIDADO: inline-04 ===== */
-try {
-/* Ajuste robusto para Safari móvil, iPhone, iPad y Google Sites */
-(function () {
-  const cfg = document.getElementById("cfg");
-  if (!cfg) return;
-
-  let rafId = 0;
-
-  function viewportSize() {
-    const vv = window.visualViewport;
-    return {
-      width: vv ? vv.width : document.documentElement.clientWidth,
-      height: vv ? vv.height : document.documentElement.clientHeight
-    };
-  }
-
-  function fitExpoReactMobile() {
-    cancelAnimationFrame(rafId);
-
-    rafId = requestAnimationFrame(() => {
-      const viewport = viewportSize();
-
-      /*
-        Tamaño natural del panel:
-        ancho fijo de diseño = 600 px.
-        scrollHeight conserva la altura completa aunque el panel esté escalado.
-      */
-      const naturalWidth = 600;
-      const naturalHeight = Math.max(cfg.scrollHeight, cfg.offsetHeight, 760);
-
-      /*
-        Más margen lateral en iPhone para que sombras y tarjetas nunca
-        queden cortadas. En iPad el margen puede ser algo menor.
-      */
-      const narrow = viewport.width <= 480;
-      const sidePadding = narrow ? 20 : 24;
-      const verticalPadding = narrow ? 16 : 22;
-
-      const usableWidth = Math.max(240, viewport.width - sidePadding * 2);
-      const usableHeight = Math.max(260, viewport.height - verticalPadding * 2);
-
-      const fitX = usableWidth / naturalWidth;
-      const fitY = usableHeight / naturalHeight;
-
-      /*
-        Siempre manda la dimensión más restrictiva.
-        No se amplía por encima de 1 para evitar que iPad corte el panel.
-      */
-      let fit = Math.min(fitX, fitY, 1);
-
-      /* Pequeño margen de seguridad extra para Safari/iFrame */
-      fit *= narrow ? 0.96 : 0.98;
-      fit = Math.max(0.28, fit);
-
-      cfg.style.setProperty("--mobile-fit", fit.toFixed(4));
-
-      /*
-        visualViewport puede desplazarse cuando Safari muestra/oculta barras.
-        Centramos respecto a su zona visible real.
-      */
-      if (window.visualViewport) {
-        const vv = window.visualViewport;
-        cfg.style.left = (vv.offsetLeft + vv.width / 2) + "px";
-        cfg.style.top = (vv.offsetTop + vv.height / 2) + "px";
-      } else {
-        cfg.style.left = "50%";
-        cfg.style.top = "50%";
-      }
-    });
-  }
-
-  window.addEventListener("load", fitExpoReactMobile, { passive:true });
-  window.addEventListener("resize", fitExpoReactMobile, { passive:true });
-  window.addEventListener("orientationchange", () => {
-    setTimeout(fitExpoReactMobile, 80);
-    setTimeout(fitExpoReactMobile, 350);
-  }, { passive:true });
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", fitExpoReactMobile, { passive:true });
-    window.visualViewport.addEventListener("scroll", fitExpoReactMobile, { passive:true });
-  }
-
-  if (window.ResizeObserver) {
-    const resizeObserver = new ResizeObserver(fitExpoReactMobile);
-    resizeObserver.observe(cfg);
-  }
-
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(fitExpoReactMobile);
-  }
-
-  fitExpoReactMobile();
-  setTimeout(fitExpoReactMobile, 120);
-  setTimeout(fitExpoReactMobile, 700);
-})();
-} catch (error) {
-  console.error("EXPO · módulo inline-04", error);
-}
-;
-
-/* ===== MÓDULO CONSOLIDADO: expo-react-fit-total-script ===== */
+/* ===== MÓDULO CONSOLIDADO: expo-react-responsive-unificado-v1 ===== */
 try {
 (function(){
+  const root=document.documentElement;
   const cfg=document.getElementById('cfg');
+  const stage=document.getElementById('stage');
+  const countdown=document.getElementById('countdown');
+  const fullscreenBtn=document.getElementById('fullscreenBtn');
   if(!cfg) return;
-  let raf=0;
 
-  function getViewport(){
+  let raf=0;
+  let burstA=0;
+  let burstB=0;
+
+  function viewport(){
     const vv=window.visualViewport;
     return {
-      width:Math.max(1, vv ? vv.width : document.documentElement.clientWidth || window.innerWidth),
-      height:Math.max(1, vv ? vv.height : document.documentElement.clientHeight || window.innerHeight),
+      width:Math.max(1,vv ? vv.width : (document.documentElement.clientWidth || window.innerWidth || 1)),
+      height:Math.max(1,vv ? vv.height : (document.documentElement.clientHeight || window.innerHeight || 1)),
       left:vv ? vv.offsetLeft : 0,
       top:vv ? vv.offsetTop : 0
     };
   }
 
-  function fitAll(){
+  function isCoarsePointer(){
+    return !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+  }
+
+  function applyViewport(){
     cancelAnimationFrame(raf);
-    raf=requestAnimationFrame(function(){
-      const vp=getViewport();
-      document.documentElement.style.setProperty('--expo-vw',vp.width+'px');
-      document.documentElement.style.setProperty('--expo-vh',vp.height+'px');
+    raf=requestAnimationFrame(()=>{
+      const vp=viewport();
+      const compact=vp.width<=600 || (isCoarsePointer() && vp.width<=1000 && vp.height<=520);
+      const tablet=!compact && vp.width<=1366 && (isCoarsePointer() || vp.width<=1100);
 
-      /* Medición natural sin escala */
-      cfg.style.setProperty('--expo-fit','1');
-      const naturalWidth=Math.max(600,cfg.scrollWidth,cfg.offsetWidth);
-      const naturalHeight=Math.max(1,cfg.scrollHeight,cfg.offsetHeight);
+      root.style.setProperty('--expo-vw',vp.width+'px');
+      root.style.setProperty('--expo-vh',vp.height+'px');
+      root.classList.toggle('expo-compact-ui',compact);
+      root.classList.toggle('expo-tablet-ui',tablet);
 
-      const narrow=vp.width<520;
-      const padX=narrow ? 10 : 16;
-      const padY=narrow ? 10 : 16;
-      const usableW=Math.max(220,vp.width-padX*2);
-      const usableH=Math.max(240,vp.height-padY*2);
-
-      /* Usa la dimensión más restrictiva y aprovecha casi todo el cuadro */
-      let fit=Math.min(usableW/naturalWidth,usableH/naturalHeight);
-      fit=Math.max(.20,Math.min(fit,1.35));
-      cfg.style.setProperty('--expo-fit',fit.toFixed(5));
-
-      /* Centrado respecto al viewport visible real de Safari */
-      cfg.style.left=(vp.left+vp.width/2)+'px';
-      cfg.style.top=(vp.top+vp.height/2)+'px';
-
-      const stage=document.getElementById('stage');
-      const countdown=document.getElementById('countdown');
-      [stage,countdown].forEach(function(el){
+      /* Stage y cuenta atrás siempre siguen el viewport visible real de Safari. */
+      [stage,countdown].forEach(el=>{
         if(!el) return;
         el.style.left=vp.left+'px';
         el.style.top=vp.top+'px';
         el.style.width=vp.width+'px';
         el.style.height=vp.height+'px';
       });
+
+      /*
+        En ancho compacto (iPhone y Split View estrecho de iPad) el panel
+        deja de reducirse como una captura de PC y pasa a ser responsive/scrollable.
+        En iPad completo y PC se conserva el diseño base de 600 px y solo se
+        escala cuando la altura o el ancho disponibles realmente lo exigen.
+      */
+      if(compact){
+        cfg.style.setProperty('--expo-fit','1');
+      }else{
+        cfg.style.setProperty('--expo-fit','1');
+        const naturalWidth=Math.max(600,cfg.scrollWidth,cfg.offsetWidth);
+        const naturalHeight=Math.max(1,cfg.scrollHeight,cfg.offsetHeight);
+        const padX=tablet ? 20 : 24;
+        const padY=vp.height<=720 ? 14 : 20;
+        const usableW=Math.max(320,vp.width-padX*2);
+        const usableH=Math.max(420,vp.height-padY*2);
+        let maxScale=1;
+        if(tablet && vp.height>=800) maxScale=1.08;
+        if(!tablet && vp.width>=1200 && vp.height>=900) maxScale=1.12;
+        let fit=Math.min(usableW/naturalWidth,usableH/naturalHeight,maxScale);
+        fit=Math.max(.42,fit);
+        cfg.style.setProperty('--expo-fit',fit.toFixed(4));
+      }
+
+      cfg.style.left=(vp.left+vp.width/2)+'px';
+      cfg.style.top=(vp.top+vp.height/2)+'px';
     });
   }
 
-  window.addEventListener('load',fitAll,{passive:true});
-  window.addEventListener('resize',fitAll,{passive:true});
-  window.addEventListener('orientationchange',function(){
-    setTimeout(fitAll,60);
-    setTimeout(fitAll,320);
-    setTimeout(fitAll,800);
-  },{passive:true});
-  if(window.visualViewport){
-    visualViewport.addEventListener('resize',fitAll,{passive:true});
-    visualViewport.addEventListener('scroll',fitAll,{passive:true});
-  }
-  if(window.ResizeObserver){
-    const ro=new ResizeObserver(fitAll);
-    ro.observe(cfg);
-    ro.observe(document.documentElement);
-  }
-  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(fitAll);}
-  fitAll();
-  setTimeout(fitAll,100);
-  setTimeout(fitAll,500);
-})();
-} catch (error) {
-  console.error("EXPO · módulo expo-react-fit-total-script", error);
-}
-;
-
-/* ===== MÓDULO CONSOLIDADO: inline-06 ===== */
-try {
-(function(){
-  const cfg = document.getElementById("cfg");
-  const stage = document.getElementById("stage");
-  const fullscreenBtn = document.getElementById("fullscreenBtn");
-  if(!cfg) return;
-
-  let raf = 0;
-
-  function viewport(){
-    const vv = window.visualViewport;
-    return {
-      width: vv ? vv.width : document.documentElement.clientWidth,
-      height: vv ? vv.height : document.documentElement.clientHeight,
-      offsetLeft: vv ? vv.offsetLeft : 0,
-      offsetTop: vv ? vv.offsetTop : 0
-    };
-  }
-
-  function fitApp(){
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(()=>{
-      const vp = viewport();
-
-      /* Medición natural del panel */
-      const naturalWidth = 600;
-      const naturalHeight = Math.max(cfg.scrollHeight, cfg.offsetHeight, 760);
-
-      const side = vp.width <= 480 ? 14 : 20;
-      const vertical = vp.height <= 520 ? 10 : 16;
-
-      const fitX = (vp.width - side * 2) / naturalWidth;
-      const fitY = (vp.height - vertical * 2) / naturalHeight;
-
-      let fit = Math.min(fitX, fitY);
-
-      /* En pantallas grandes puede ampliarse ligeramente */
-      const maxFit = vp.width >= 1100 && vp.height >= 850 ? 1.12 : 1;
-      fit = Math.max(.28, Math.min(fit, maxFit));
-
-      cfg.style.setProperty("--app-fit", fit.toFixed(4));
-      cfg.style.left = (vp.offsetLeft + vp.width / 2) + "px";
-      cfg.style.top = (vp.offsetTop + vp.height / 2) + "px";
-    });
+  function scheduleViewportBurst(){
+    applyViewport();
+    clearTimeout(burstA);
+    clearTimeout(burstB);
+    burstA=setTimeout(applyViewport,90);
+    burstB=setTimeout(applyViewport,360);
   }
 
   function syncTrainingState(){
-    const visible = stage && getComputedStyle(stage).display !== "none";
-    document.body.classList.toggle("training-active", visible);
-    if(fullscreenBtn) fullscreenBtn.style.display = visible ? "flex" : "none";
+    const visible=!!(stage && getComputedStyle(stage).display!=='none');
+    document.body.classList.toggle('training-active',visible);
+    if(fullscreenBtn) fullscreenBtn.style.display=visible ? 'flex' : 'none';
   }
 
   async function toggleFullscreen(){
     try{
-      if(!document.fullscreenElement){
-        const target = document.documentElement;
+      const active=document.fullscreenElement || document.webkitFullscreenElement;
+      if(!active){
+        const target=document.documentElement;
         if(target.requestFullscreen){
-          await target.requestFullscreen({navigationUI:"hide"});
+          await target.requestFullscreen({navigationUI:'hide'});
         }else if(target.webkitRequestFullscreen){
           target.webkitRequestFullscreen();
         }
-      }else{
-        if(document.exitFullscreen){
-          await document.exitFullscreen();
-        }else if(document.webkitExitFullscreen){
-          document.webkitExitFullscreen();
-        }
+      }else if(document.exitFullscreen){
+        await document.exitFullscreen();
+      }else if(document.webkitExitFullscreen){
+        document.webkitExitFullscreen();
       }
     }catch(err){
-      console.warn("No se pudo activar pantalla completa:", err);
+      /* En iPhone/iframes el fullscreen puede no estar disponible. El layout
+         no depende de que tenga éxito, por lo que simplemente continúa. */
+      console.warn('No se pudo activar pantalla completa:',err);
     }
   }
 
-  fullscreenBtn?.addEventListener("click", toggleFullscreen);
+  fullscreenBtn?.addEventListener('click',toggleFullscreen);
 
-  window.addEventListener("load", ()=>{
-    fitApp();
+  window.addEventListener('load',()=>{
+    applyViewport();
     syncTrainingState();
-  }, {passive:true});
-  window.addEventListener("resize", fitApp, {passive:true});
-  window.addEventListener("orientationchange", ()=>{
-    setTimeout(fitApp,80);
-    setTimeout(fitApp,350);
-  }, {passive:true});
+  },{passive:true});
+  window.addEventListener('resize',scheduleViewportBurst,{passive:true});
+  window.addEventListener('orientationchange',scheduleViewportBurst,{passive:true});
 
   if(window.visualViewport){
-    window.visualViewport.addEventListener("resize", fitApp, {passive:true});
-    window.visualViewport.addEventListener("scroll", fitApp, {passive:true});
+    window.visualViewport.addEventListener('resize',scheduleViewportBurst,{passive:true});
+    window.visualViewport.addEventListener('scroll',applyViewport,{passive:true});
   }
 
   if(window.ResizeObserver){
-    const ro = new ResizeObserver(()=>{
-      fitApp();
+    const ro=new ResizeObserver(()=>{
+      applyViewport();
       syncTrainingState();
     });
     ro.observe(cfg);
@@ -12162,127 +12769,32 @@ try {
   }
 
   if(window.MutationObserver && stage){
-    const mo = new MutationObserver(syncTrainingState);
-    mo.observe(stage,{attributes:true,attributeFilter:["style","class"]});
+    const mo=new MutationObserver(syncTrainingState);
+    mo.observe(stage,{attributes:true,attributeFilter:['style','class']});
   }
 
-  document.addEventListener("fullscreenchange", ()=>{
+  function onFullscreenChange(){
     if(fullscreenBtn){
-      fullscreenBtn.title = document.fullscreenElement
-        ? "Salir de pantalla completa"
-        : "Pantalla completa";
-      fullscreenBtn.setAttribute(
-        "aria-label",
-        document.fullscreenElement
-          ? "Salir de pantalla completa"
-          : "Pantalla completa"
-      );
+      const active=!!(document.fullscreenElement || document.webkitFullscreenElement);
+      const label=active ? 'Salir de pantalla completa' : 'Pantalla completa';
+      fullscreenBtn.title=label;
+      fullscreenBtn.setAttribute('aria-label',label);
     }
-    fitApp();
-  });
+    scheduleViewportBurst();
+  }
+  document.addEventListener('fullscreenchange',onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange',onFullscreenChange);
 
   if(document.fonts && document.fonts.ready){
-    document.fonts.ready.then(fitApp);
+    document.fonts.ready.then(applyViewport);
   }
 
-  fitApp();
-  setTimeout(fitApp,120);
-  setTimeout(fitApp,700);
+  applyViewport();
+  setTimeout(applyViewport,120);
+  setTimeout(applyViewport,600);
 })();
 } catch (error) {
-  console.error("EXPO · módulo inline-06", error);
-}
-;
-
-/* ===== MÓDULO CONSOLIDADO: inline-07 ===== */
-try {
-/* Ajuste final para PC, iPhone e iPad */
-(function(){
-  const cfg = document.getElementById("cfg");
-  if(!cfg) return;
-
-  let rafId = 0;
-
-  function getViewport(){
-    const vv = window.visualViewport;
-    return {
-      width: vv ? vv.width : document.documentElement.clientWidth,
-      height: vv ? vv.height : document.documentElement.clientHeight,
-      offsetLeft: vv ? vv.offsetLeft : 0,
-      offsetTop: vv ? vv.offsetTop : 0
-    };
-  }
-
-  function fitExpoReact(){
-    cancelAnimationFrame(rafId);
-
-    rafId = requestAnimationFrame(()=>{
-      const vp = getViewport();
-
-      /*
-        Se mide el panel en su tamaño natural. El ancho de diseño es
-        600 px; la altura real se obtiene del contenido completo.
-      */
-      const naturalWidth = 600;
-      const naturalHeight = Math.max(cfg.scrollHeight, cfg.offsetHeight, 760);
-
-      const isPhone = vp.width <= 480;
-      const isTablet = vp.width >= 700 && vp.width <= 1400;
-
-      const sidePadding = isPhone ? 14 : isTablet ? 20 : 24;
-      const verticalPadding = vp.height <= 520 ? 10 : isPhone ? 14 : 20;
-
-      const usableWidth = Math.max(260, vp.width - sidePadding * 2);
-      const usableHeight = Math.max(300, vp.height - verticalPadding * 2);
-
-      const fitX = usableWidth / naturalWidth;
-      const fitY = usableHeight / naturalHeight;
-
-      let maxScale = 1;
-      if(isTablet && vp.height >= 800) maxScale = 1.08;
-      if(vp.width >= 1200 && vp.height >= 900) maxScale = 1.12;
-
-      let fit = Math.min(fitX, fitY, maxScale);
-
-      /* Margen de seguridad para Safari móvil y sombras */
-      if(isPhone) fit *= .97;
-      else if(isTablet) fit *= .985;
-
-      fit = Math.max(.28, fit);
-
-      cfg.style.setProperty("--expo-fit", fit.toFixed(4));
-      cfg.style.left = (vp.offsetLeft + vp.width / 2) + "px";
-      cfg.style.top = (vp.offsetTop + vp.height / 2) + "px";
-    });
-  }
-
-  window.addEventListener("load", fitExpoReact, {passive:true});
-  window.addEventListener("resize", fitExpoReact, {passive:true});
-  window.addEventListener("orientationchange", ()=>{
-    setTimeout(fitExpoReact, 80);
-    setTimeout(fitExpoReact, 350);
-  }, {passive:true});
-
-  if(window.visualViewport){
-    window.visualViewport.addEventListener("resize", fitExpoReact, {passive:true});
-    window.visualViewport.addEventListener("scroll", fitExpoReact, {passive:true});
-  }
-
-  if(window.ResizeObserver){
-    const observer = new ResizeObserver(fitExpoReact);
-    observer.observe(cfg);
-  }
-
-  if(document.fonts && document.fonts.ready){
-    document.fonts.ready.then(fitExpoReact);
-  }
-
-  fitExpoReact();
-  setTimeout(fitExpoReact,120);
-  setTimeout(fitExpoReact,600);
-})();
-} catch (error) {
-  console.error("EXPO · módulo inline-07", error);
+  console.error('EXPO · módulo responsive unificado',error);
 }
 ;
 
@@ -12474,8 +12986,8 @@ try {
     const span=document.createElement('span');
     span.className='tactile-score-item tactile-score-average';
     span.innerHTML=`
-      <span class="tactile-score-label">MEDIA RT</span>
-      <strong id="tactileAverageTime">0.00</strong>`;
+      <span class="tactile-score-label" style="color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important;">MEDIA RT</span>
+      <strong id="tactileAverageTime" style="color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important;">0.00</strong>`;
     score.appendChild(span);
   }
 
@@ -12921,7 +13433,7 @@ try {
       commandNames:{
         izda:"LEFT",
         dcha:"RIGHT",
-        adelante:"FORWARD",
+        adelante:"FWD",
         atras:"BACK",
         salta:"JUMP",
         stop:"STOP"
@@ -14389,8 +14901,8 @@ try {
       item=document.createElement('span');
       item.className='tactile-score-item tactile-score-missed';
       item.innerHTML=`
-        <span class="tactile-score-label">PERDIDAS</span>
-        <strong id="tactileMissedCount">0</strong>
+        <span class="tactile-score-label" style="color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important;">PERDIDAS</span>
+        <strong id="tactileMissedCount" style="color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important;">0</strong>
       `;
       score.appendChild(item);
     }
@@ -15194,7 +15706,7 @@ try {
   });
 
   /* ========================================================
-     DOBLE SILBATO FINAL
+     SONIDO FINAL (el cierre por repeticiones usa el mismo beep del YA/GO)
      ======================================================== */
   let finishAudio=null;
 
@@ -15333,7 +15845,8 @@ try {
         button.disabled=true;
       });
 
-    await playFinishWhistleTwice(sessionId);
+    /* Mismo sonido exacto que el YA/GO de la cuenta atrás. */
+    beep(500);
   }
 
   function reachedRepetitionLimit(){
@@ -16780,7 +17293,7 @@ try {
     ],
     en:[
       'ONE','TWO','THREE','FOUR','FIVE',null,
-      'LEFT','RIGHT','FORWARD','BACK','JUMP','STOP'
+      'LEFT','RIGHT','FWD','BACK','JUMP','STOP'
     ],
     fr:[
       'UN','DEUX','TROIS','QUATRE','CINQ',null,
@@ -16961,7 +17474,7 @@ try {
       choose:'SELECT MODE',
       sounds:[
         'ONE','TWO','THREE','FOUR','FIVE',null,
-        'LEFT','RIGHT','FRONT','BACK','JUMP','STOP'
+        'LEFT','RIGHT','FWD','BACK','JUMP','STOP'
       ]
     },
     fr:{
@@ -17136,6 +17649,7 @@ try {
     ADELANTE:10,
     FRONT:10,
     FORWARD:10,
+    FWD:10,
     AVANT:10,
 
     ATRAS:11,
@@ -17264,7 +17778,7 @@ try {
     ],
     en:[
       '1','2','3','4','5',null,
-      'LEFT','RIGHT','FRONT','BACK','JUMP','STOP'
+      'LEFT','RIGHT','FWD','BACK','JUMP','STOP'
     ],
     fr:[
       '1','2','3','4','5',null,
@@ -17482,6 +17996,7 @@ try {
       title:'CALIFICACIÓN',
       hits:'ACIERTOS',
       wrong:'FALLOS',
+      missed:'PERDIDAS',
       average:'MEDIA',
       replay:'JUGAR DE NUEVO',
       bands:['INSUFICIENTE','MEJORABLE','ACEPTABLE','BUENO','MUY BUENO','EXCELENTE']
@@ -17490,6 +18005,7 @@ try {
       title:'SCORE',
       hits:'HITS',
       wrong:'MISSES',
+      missed:'MISSED',
       average:'AVG',
       replay:'PLAY AGAIN',
       bands:['INSUFFICIENT','NEEDS IMPROVEMENT','ACCEPTABLE','GOOD','VERY GOOD','EXCELLENT']
@@ -17498,6 +18014,7 @@ try {
       title:'NOTE',
       hits:'RÉUSSITES',
       wrong:'ERREURS',
+      missed:'RATÉS',
       average:'MOY.',
       replay:'REJOUER',
       bands:['INSUFFISANT','À AMÉLIORER','ACCEPTABLE','BON','TRÈS BON','EXCELLENT']
@@ -17544,6 +18061,9 @@ try {
     const wrong=Number(
       document.getElementById('tactileIncorrectCount')?.textContent || 0
     );
+    const missed=Number(
+      document.getElementById('tactileMissedCount')?.textContent || 0
+    );
 
     const reactionCount=Number(window.tactileReactionCount || 0);
     const reactionTotal=Number(window.tactileReactionTotal || 0);
@@ -17557,15 +18077,60 @@ try {
       reactionCount
     );
 
-    const answered=correct+wrong;
-    const precision=
-      answered>0
-        ? 10*Math.pow(correct/answered,2)
+    /* =========================================================
+       BAREMO FINAL EQUILIBRADO
+
+       1) EJECUCIÓN PERFECTA (0 fallos y 0 pérdidas):
+          la velocidad es decisiva.
+          Nota = 6 + 4*(velocidad/10)
+          Con la escala actual de velocidad:
+          - velocidad 4  -> 7.6
+          - velocidad 5  -> 8.0
+          - velocidad 7  -> 8.8
+          - velocidad 8  -> 9.2
+          - velocidad 9  -> 9.6
+          - velocidad 10 -> 10.0
+
+       2) SI HAY FALLOS O PÉRDIDAS:
+          primero manda la eficacia.
+          Eficacia = 10*aciertos /
+                     (aciertos + 1.5*fallos + 2*pérdidas)
+
+          La velocidad solo puede aportar una bonificación pequeña
+          y proporcional al porcentaje real de aciertos:
+          bonus = ((velocidad-5)/5) * 0.5 * ratioAciertos
+
+          Así, una ejecución rápida nunca compensa muchos errores.
+       ========================================================= */
+
+    const totalAttempts=correct+wrong+missed;
+    const hitRatio=
+      totalAttempts>0
+        ? correct/totalAttempts
         : 0;
 
-    const finalScore=Math.max(
+    let finalScore=0;
+
+    if(totalAttempts>0 && wrong===0 && missed===0){
+      /* Sin errores: la velocidad diferencia claramente la nota. */
+      finalScore=6+(4*(speed/10));
+    }else if(totalAttempts>0){
+      /* Con errores: precisión dominante; fallos y pérdidas penalizan. */
+      const efficiency=
+        10*correct/
+        (correct+(1.5*wrong)+(2*missed));
+
+      const speedBonus=
+        ((speed-5)/5) *
+        0.5 *
+        hitRatio;
+
+      finalScore=efficiency+speedBonus;
+    }
+
+    finalScore=Math.max(
       0,
-      Math.min(10,(speed*.70)+(precision*.30))
+      Math.min(10,finalScore)
     );
 
     const setText=(id,value)=>{
@@ -17586,9 +18151,11 @@ try {
     );
     setText('tactileFinalHitsLabel',text.hits);
     setText('tactileFinalWrongLabel',text.wrong);
+    setText('tactileFinalMissedLabel',text.missed);
     setText('tactileFinalAverageLabel',text.average);
     setText('tactileFinalHits',correct);
     setText('tactileFinalWrong',wrong);
+    setText('tactileFinalMissed',missed);
     setText('tactileFinalAverage',`${averageSeconds.toFixed(2)} seg`);
     setText('tactileReplayBtn',text.replay);
 
@@ -17867,6 +18434,31 @@ try {
   border:0 !important;
   box-shadow:none !important;
 }
+
+/* Silbato en opciones táctiles: solo su icono, sin altavoz ni texto. */
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice.is-panel-whistle-choice{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice.is-panel-whistle-choice
+.whistle-uploaded-icon{
+  display:block !important;
+  width:76% !important;
+  height:76% !important;
+  max-width:54px !important;
+  max-height:54px !important;
+  margin:0 !important;
+  padding:0 !important;
+  object-fit:contain !important;
+  filter:none !important;
+  transform:none !important;
+  pointer-events:none !important;
+}
+
 </style>
 
 
@@ -17930,6 +18522,37 @@ try {
     /* Solo modifica estímulos que realmente proceden del panel de sonidos. */
     if(!sourceCard) return button;
 
+    /* El silbato conserva su icono propio: no se convierte en altavoz+texto. */
+    const whistleIcon = sourceCard.querySelector(".whistle-uploaded-icon");
+    if(whistleIcon){
+      const clonedWhistle = whistleIcon.cloneNode(true);
+      clonedWhistle.removeAttribute("id");
+
+      button.replaceChildren(clonedWhistle);
+      button.classList.add(
+        "is-panel-audio-choice",
+        "is-panel-whistle-choice"
+      );
+      button.classList.remove(
+        "is-voice-arrow",
+        "is-voice-number-choice",
+        "is-whistle-choice",
+        "is-number-only-choice",
+        "is-shape-only-choice",
+        "is-command-audio-choice",
+        "is-spanish-command-audio-choice"
+      );
+
+      button.dataset.type = "sound";
+      button.dataset.originalType = "sound";
+      delete button.dataset.voiceArrow;
+
+      button.setAttribute("aria-label","Silbato");
+      button.setAttribute("title","Silbato");
+
+      return button;
+    }
+
     const labelText = panelSoundLabel(sourceCard,index);
 
     const content = document.createElement("span");
@@ -17960,14 +18583,55 @@ try {
       .trim()
       .toUpperCase();
 
-    const isCommandAudio = new Set([
+    const spanishCommandAudioLabels = new Set([
       "DCHA",
+      "DERECHA",
       "IZDA",
+      "IZQUIERDA",
       "ADEL",
+      "ADELANTE",
       "ATRAS",
       "SALTA",
       "STOP"
-    ]).has(normalizedAudioLabel);
+    ]);
+
+    const englishCommandAudioLabels = new Set([
+      "RIGHT",
+      "LEFT",
+      "FRONT",
+      "FORWARD",
+      "FWD",
+      "BACK",
+      "JUMP",
+      "STOP"
+    ]);
+
+    const frenchCommandAudioLabels = new Set([
+      "DROITE",
+      "GAUCHE",
+      "AVANT",
+      "ARRIERE",
+      "SAUTE",
+      "STOP"
+    ]);
+
+    const isCommandAudio =
+      spanishCommandAudioLabels.has(normalizedAudioLabel) ||
+      englishCommandAudioLabels.has(normalizedAudioLabel) ||
+      frenchCommandAudioLabels.has(normalizedAudioLabel);
+
+    const activeAudioLanguage = String(
+      window.expoReactLanguage ||
+      document.documentElement.lang ||
+      "es"
+    ).toLowerCase();
+
+    const isSpanishCommandAudio =
+      spanishCommandAudioLabels.has(normalizedAudioLabel) &&
+      (
+        normalizedAudioLabel !== "STOP" ||
+        activeAudioLanguage.startsWith("es")
+      );
 
     if(/^\d+$/.test(labelText)){
       label.classList.add("is-numeric");
@@ -17981,6 +18645,11 @@ try {
     if(isCommandAudio){
       content.classList.add("is-command-layout");
       button.classList.add("is-command-audio-choice");
+    }
+
+    if(isSpanishCommandAudio){
+      content.classList.add("is-spanish-command-layout");
+      button.classList.add("is-spanish-command-audio-choice");
     }
 
     content.append(speaker,label);
@@ -18218,6 +18887,93 @@ try {
 
 /* STOP usa el mismo formato vertical ya aplicado a los demás comandos:
    altavoz arriba y texto debajo. */
+</style>
+
+
+<style id="expoReactTactileAudioLayoutRefinementAug12">
+/* ============================================================
+   SECUENCIA · refinamiento visual de opciones de AUDIO
+   - Los números quedan más cerca del altavoz.
+   - Los comandos ES cortos ganan tamaño.
+   - EN/FR usan también altavoz arriba + texto debajo.
+   - No cambia el tamaño exterior de .tactile-choice.
+   ============================================================ */
+
+/* AUDIO NUMÉRICO: conserva el formato horizontal y desplaza solo
+   el número hacia el altavoz para que deje de quedar pegado al borde derecho. */
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-numeric-layout
+.tactile-panel-audio-label.is-numeric{
+  transform:translateX(-20%) !important;
+  transform-origin:center !important;
+}
+
+/* Todos los comandos reconocidos en ES / EN / FR:
+   altavoz arriba y texto debajo. */
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout{
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+/* Ajuste para palabras de comando más largas (especialmente francés/inglés). */
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout
+.tactile-panel-audio-label.is-long{
+  font-size:clamp(11px,2.05vmin,17px) !important;
+  letter-spacing:-.065em !important;
+  transform:none !important;
+}
+
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout
+.tactile-panel-audio-label.is-very-long{
+  font-size:clamp(10px,1.8vmin,15px) !important;
+  letter-spacing:-.075em !important;
+  transform:none !important;
+}
+
+/* ESPAÑOL: reserva algo más de alto para el texto y agranda
+   claramente IZDA / DCHA / ADEL / ATRÁS / SALTA / STOP. */
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout.is-spanish-command-layout
+.tactile-panel-audio-speaker{
+  height:60% !important;
+  flex:0 0 60% !important;
+}
+
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout.is-spanish-command-layout
+.tactile-panel-audio-label{
+  height:40% !important;
+  flex:0 0 40% !important;
+  font-size:clamp(15px,2.85vmin,23px) !important;
+  line-height:.9 !important;
+  letter-spacing:-.065em !important;
+}
+
+/* Si en alguna variante española aparece la palabra completa,
+   mantenemos el texto dentro de la tarjeta. */
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout.is-spanish-command-layout
+.tactile-panel-audio-label.is-long{
+  font-size:clamp(13px,2.25vmin,18px) !important;
+}
+
+#stage.tactile-mode #tactileChoices
+.tactile-choice.is-panel-audio-choice
+.tactile-panel-audio-content.is-command-layout.is-spanish-command-layout
+.tactile-panel-audio-label.is-very-long{
+  font-size:clamp(11px,1.95vmin,16px) !important;
+}
 </style>
 
 </body>
