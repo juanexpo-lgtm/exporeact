@@ -6,7 +6,8 @@
 <title>EXPO REACT 2.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 
 
 <style id="expoReactConsolidatedFinal">
@@ -10770,13 +10771,14 @@ input{
     width:100% !important;
     min-width:0 !important;
     max-width:none !important;
-    height:34px !important;
-    min-height:34px !important;
-    padding:3px 5px !important;
-    border-radius:10px !important;
+    height:27px !important;
+    min-height:27px !important;
+    max-height:27px !important;
+    padding:1px 5px !important;
+    border-radius:9px !important;
   }
   #gameModeSelector .game-mode-title{
-    font-size:11px !important;
+    font-size:10.5px !important;
     line-height:1 !important;
   }
   #gameModeSelector .game-mode-description{
@@ -10848,29 +10850,34 @@ input{
   /* NÚMEROS */
   #numbers{
     display:grid !important;
-    grid-template-columns:repeat(4,46px) !important;
+    grid-template-columns:repeat(4,34px) !important;
     justify-content:center !important;
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
-    gap:6px !important;
+    gap:7px !important;
   }
   #cfg #numbers .number-card{
-    width:46px !important;
-    min-width:46px !important;
-    max-width:46px !important;
-    height:41px !important;
-    min-height:41px !important;
-    max-height:41px !important;
-    border-radius:10px !important;
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    border-radius:9px !important;
   }
   #cfg #numbers .number-card::before{
-    width:42px !important;
-    height:35px !important;
-    border-radius:8px !important;
+    width:34px !important;
+    height:34px !important;
+    border-radius:9px !important;
   }
   #cfg #numbers .number-card span{
-    font-size:20px !important;
+    font-size:18px !important;
+  }
+
+  /* Seleccionado: misma proporción visual que las flechas, sin crecer un 20%. */
+  #cfg #numbers .number-card:has(input:checked)::before{
+    transform:translateY(-1px) scale(1.12) !important;
   }
 
   /* FORMAS */
@@ -10881,33 +10888,33 @@ input{
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
-    gap:4px !important;
+    gap:6px !important;
   }
   #cfg #shapes .color-card,
   #cfg #shapes .color-card:hover,
   #cfg #shapes .color-card:has(input:checked),
   #cfg #shapes .color-card:has(input:checked):hover{
-    width:38px !important;
-    min-width:38px !important;
-    max-width:38px !important;
-    height:38px !important;
-    min-height:38px !important;
-    max-height:38px !important;
-    flex:0 0 38px !important;
+    width:32px !important;
+    min-width:32px !important;
+    max-width:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
+    flex:0 0 32px !important;
   }
   #cfg #shapes .color-card .swatch,
   #cfg #shapes .color-card:hover .swatch,
   #cfg #shapes .color-card:has(input:checked) .swatch,
   #cfg #shapes .color-card:has(input:checked):hover .swatch{
-    width:36px !important;
-    height:34px !important;
-    border-radius:8px !important;
+    width:30px !important;
+    height:30px !important;
+    border-radius:7px !important;
   }
   #cfg #shapes .shape-preview,
   #cfg #shapes .color-card:hover .shape-preview,
   #cfg #shapes .color-card:has(input:checked) .shape-preview{
-    width:32px !important;
-    height:32px !important;
+    width:30px !important;
+    height:30px !important;
   }
   #cfg #shapes .shape-preview svg,
   #cfg #shapes .color-card:hover .shape-preview svg,
@@ -11091,6 +11098,13 @@ input{
 
 /* iPhone más bajo: compresión extra */
 @media (max-width:600px) and (pointer:coarse) and (max-height:760px){
+  #gameModeSelector .game-mode-option{
+    height:25px !important;
+    min-height:25px !important;
+    max-height:25px !important;
+    padding:1px 4px !important;
+  }
+
   #cfg{
     padding:6px 7px !important;
     row-gap:2px !important;
@@ -11133,40 +11147,40 @@ input{
     max-height:32px !important;
   }
   #numbers{
-    grid-template-columns:repeat(4,43px) !important;
-    gap:5px !important;
+    grid-template-columns:repeat(4,32px) !important;
+    gap:7px !important;
   }
   #cfg #numbers .number-card{
-    width:43px !important;
-    min-width:43px !important;
-    max-width:43px !important;
-    height:39px !important;
-    min-height:39px !important;
-    max-height:39px !important;
+    width:32px !important;
+    min-width:32px !important;
+    max-width:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
   }
   #cfg #numbers .number-card::before{
-    width:39px !important;
-    height:33px !important;
+    width:32px !important;
+    height:32px !important;
   }
   #cfg #numbers .number-card span{
-    font-size:19px !important;
+    font-size:17px !important;
   }
   #cfg #shapes .color-card,
   #cfg #shapes .color-card:hover,
   #cfg #shapes .color-card:has(input:checked){
-    width:36px !important;
-    min-width:36px !important;
-    max-width:36px !important;
-    height:36px !important;
-    min-height:36px !important;
-    max-height:36px !important;
-    flex-basis:36px !important;
+    width:30px !important;
+    min-width:30px !important;
+    max-width:30px !important;
+    height:30px !important;
+    min-height:30px !important;
+    max-height:30px !important;
+    flex-basis:30px !important;
   }
   #cfg #shapes .color-card .swatch,
   #cfg #shapes .color-card:hover .swatch,
   #cfg #shapes .color-card:has(input:checked) .swatch{
-    width:34px !important;
-    height:32px !important;
+    width:28px !important;
+    height:28px !important;
   }
   #cfg #shapes .shape-preview{
     width:30px !important;
@@ -11639,7 +11653,23 @@ function preloadVoiceAudios(){
   });
 }
 
-preloadVoiceAudios();
+
+function scheduleVoiceAudioPreload(){
+  const warm=()=>{
+    try{ preloadVoiceAudios(); }catch(error){
+      console.warn("EXPO · precarga de audios:",error);
+    }
+  };
+
+  /* El panel se pinta primero; los audios se preparan después en segundo plano. */
+  if("requestIdleCallback" in window){
+    window.requestIdleCallback(warm,{timeout:2500});
+  }else{
+    window.setTimeout(warm,1600);
+  }
+}
+scheduleVoiceAudioPreload();
+
 
 async function run(sessionId){
   const shape = document.getElementById("shape");
@@ -12686,15 +12716,25 @@ document.addEventListener("fullscreenchange",()=>{
   }
 });
 
-const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+let audioCtx=null;
+function getExpoAudioContext(){
+  if(!audioCtx){
+    const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContextClass) return null;
+    audioCtx=new AudioContextClass();
+  }
+  return audioCtx;
+}
 function beep(ms){
- const o=audioCtx.createOscillator();
- const g=audioCtx.createGain();
+ const ctx=getExpoAudioContext();
+ if(!ctx) return;
+ const o=ctx.createOscillator();
+ const g=ctx.createGain();
  o.type='sine'; o.frequency.value=1000;
- o.connect(g); g.connect(audioCtx.destination);
+ o.connect(g); g.connect(ctx.destination);
  g.gain.value=0.25;
  o.start();
- o.stop(audioCtx.currentTime+ms/1000);
+ o.stop(ctx.currentTime+ms/1000);
 }
 async function runCountdown(sessionId){
   const cd=document.getElementById("countdown");
@@ -12849,9 +12889,12 @@ document.getElementById("reset")?.addEventListener("click", () => {
 const selectionSoundToggle = document.getElementById("selectionSoundToggle");
 
 async function ensureAudioReady() {
-  if (audioCtx.state === "suspended") {
-    await audioCtx.resume();
+  const ctx=getExpoAudioContext();
+  if(!ctx) return false;
+  if (ctx.state === "suspended") {
+    await ctx.resume();
   }
+  return true;
 }
 
 function createSoftClick(context, startTime) {
