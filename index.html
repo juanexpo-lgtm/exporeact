@@ -10704,14 +10704,13 @@ input{
 <style id="expoReactIPhoneFrontPanelCompactFinal">
 /* ============================================================
    EXPO REACT 2.0 · PANEL FRONTAL COMPACTO PARA iPHONE
-   Solo afecta a pantallas táctiles estrechas.
-   PC e iPad completo mantienen su diseño.
+   Ajustado para que en vertical no se corte por debajo:
+   tarjetas más pequeñas, proporcionales y con separación real.
    ============================================================ */
 
 @media (max-width:600px) and (pointer:coarse){
-  /* El panel deja de heredar anchos mínimos internos de la versión PC. */
   #cfg{
-    width:min(420px,calc(var(--expo-vw) - 12px)) !important;
+    width:min(408px,calc(var(--expo-vw) - 12px)) !important;
     min-width:0 !important;
     max-width:calc(var(--expo-vw) - 12px) !important;
     grid-template-columns:minmax(0,1fr) !important;
@@ -10720,9 +10719,9 @@ input{
       - max(6px,var(--expo-safe-top))
       - max(6px,var(--expo-safe-bottom))
     ) !important;
-    padding:8px 9px !important;
-    row-gap:4px !important;
-    border-radius:16px !important;
+    padding:7px 8px !important;
+    row-gap:3px !important;
+    border-radius:15px !important;
     overflow-x:hidden !important;
     overflow-y:auto !important;
     box-sizing:border-box !important;
@@ -10734,34 +10733,31 @@ input{
     box-sizing:border-box !important;
   }
 
-  /* Cabecera más contenida. */
   #cfg .banner{
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
-    padding:8px 10px !important;
-    border-radius:18px !important;
+    padding:7px 9px !important;
+    border-radius:16px !important;
     overflow:hidden !important;
   }
   #cfg .banner-main-title{
-    font-size:24px !important;
+    font-size:22px !important;
     line-height:.92 !important;
   }
   #cfg .banner-subtitle{
     max-width:100% !important;
-    font-size:7.8px !important;
-    letter-spacing:.09em !important;
-    line-height:1.05 !important;
-    margin-top:3px !important;
+    font-size:7.1px !important;
+    letter-spacing:.08em !important;
+    line-height:1.03 !important;
+    margin-top:2px !important;
     white-space:normal !important;
   }
 
-  /* Modo: DEPORTIVO y TÁCTIL juntos en una sola fila.
-     Se oculta "ELIGE MODO" porque en iPhone consume ancho/alto innecesario. */
   #gameModeSelector{
     display:grid !important;
     grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:5px !important;
+    gap:4px !important;
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
@@ -10774,21 +10770,19 @@ input{
     width:100% !important;
     min-width:0 !important;
     max-width:none !important;
-    height:36px !important;
-    min-height:36px !important;
+    height:34px !important;
+    min-height:34px !important;
     padding:3px 5px !important;
-    border-radius:11px !important;
+    border-radius:10px !important;
   }
-  #gameModeSelector .game-mode-title,
-  #gameModeSelector .mode-choice-label{
-    font-size:12px !important;
+  #gameModeSelector .game-mode-title{
+    font-size:11px !important;
     line-height:1 !important;
   }
   #gameModeSelector .game-mode-description{
     display:none !important;
   }
 
-  /* Títulos de sección: misma estética, menos altura. */
   #cfg .section-wrap{
     min-width:0 !important;
     max-width:100% !important;
@@ -10797,12 +10791,12 @@ input{
     line-height:1 !important;
   }
   #cfg .section-title{
-    font-size:11.5px !important;
+    font-size:10.5px !important;
     line-height:1 !important;
-    padding:3px 10px !important;
+    padding:2px 8px !important;
   }
 
-  /* COLORES: los seis en una fila. */
+  /* COLORES */
   #colors{
     display:flex !important;
     flex-wrap:nowrap !important;
@@ -10813,24 +10807,24 @@ input{
     gap:4px !important;
   }
   #cfg #colors .color-card{
-    width:44px !important;
-    min-width:44px !important;
-    max-width:44px !important;
-    height:44px !important;
-    min-height:44px !important;
-    max-height:44px !important;
-    flex:0 0 44px !important;
+    width:39px !important;
+    min-width:39px !important;
+    max-width:39px !important;
+    height:39px !important;
+    min-height:39px !important;
+    max-height:39px !important;
+    flex:0 0 39px !important;
   }
   #cfg #colors .color-card .swatch{
-    width:40px !important;
-    height:34px !important;
-    border-radius:9px !important;
+    width:35px !important;
+    height:29px !important;
+    border-radius:8px !important;
   }
 
-  /* FLECHAS: las ocho en una sola fila. */
+  /* FLECHAS */
   #arrows{
     display:grid !important;
-    grid-template-columns:repeat(8,40px) !important;
+    grid-template-columns:repeat(8,34px) !important;
     justify-content:center !important;
     width:100% !important;
     min-width:0 !important;
@@ -10838,47 +10832,48 @@ input{
     gap:3px !important;
   }
   #cfg #arrows .arrow-card{
-    width:40px !important;
-    min-width:40px !important;
-    max-width:40px !important;
-    height:40px !important;
-    min-height:40px !important;
-    max-height:40px !important;
-    border-radius:10px !important;
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    border-radius:9px !important;
   }
   #cfg #arrows .arrow-card svg{
-    width:23px !important;
-    height:23px !important;
+    width:20px !important;
+    height:20px !important;
   }
 
-  /* NÚMEROS: cuatro tarjetas más compactas. */
+  /* NÚMEROS */
   #numbers{
     display:grid !important;
-    grid-template-columns:repeat(4,54px) !important;
+    grid-template-columns:repeat(4,46px) !important;
     justify-content:center !important;
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
-    gap:7px !important;
+    gap:6px !important;
   }
   #cfg #numbers .number-card{
-    width:54px !important;
-    min-width:54px !important;
-    max-width:54px !important;
-    height:48px !important;
-    min-height:48px !important;
-    max-height:48px !important;
+    width:46px !important;
+    min-width:46px !important;
+    max-width:46px !important;
+    height:41px !important;
+    min-height:41px !important;
+    max-height:41px !important;
+    border-radius:10px !important;
   }
   #cfg #numbers .number-card::before{
-    width:50px !important;
-    height:42px !important;
-    border-radius:9px !important;
+    width:42px !important;
+    height:35px !important;
+    border-radius:8px !important;
   }
   #cfg #numbers .number-card span{
-    font-size:23px !important;
+    font-size:20px !important;
   }
 
-  /* FORMAS: las seis en una sola fila y sin las dimensiones grandes de PC. */
+  /* FORMAS */
   #shapes{
     display:flex !important;
     flex-wrap:nowrap !important;
@@ -10892,40 +10887,40 @@ input{
   #cfg #shapes .color-card:hover,
   #cfg #shapes .color-card:has(input:checked),
   #cfg #shapes .color-card:has(input:checked):hover{
-    width:44px !important;
-    min-width:44px !important;
-    max-width:44px !important;
-    height:44px !important;
-    min-height:44px !important;
-    max-height:44px !important;
-    flex:0 0 44px !important;
+    width:38px !important;
+    min-width:38px !important;
+    max-width:38px !important;
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    flex:0 0 38px !important;
   }
   #cfg #shapes .color-card .swatch,
   #cfg #shapes .color-card:hover .swatch,
   #cfg #shapes .color-card:has(input:checked) .swatch,
   #cfg #shapes .color-card:has(input:checked):hover .swatch{
-    width:42px !important;
-    height:40px !important;
-    border-radius:9px !important;
+    width:36px !important;
+    height:34px !important;
+    border-radius:8px !important;
   }
   #cfg #shapes .shape-preview,
   #cfg #shapes .color-card:hover .shape-preview,
   #cfg #shapes .color-card:has(input:checked) .shape-preview{
-    width:40px !important;
-    height:40px !important;
+    width:32px !important;
+    height:32px !important;
   }
   #cfg #shapes .shape-preview svg,
   #cfg #shapes .color-card:hover .shape-preview svg,
   #cfg #shapes .color-card:has(input:checked) .shape-preview svg{
-    width:36px !important;
-    height:36px !important;
+    width:28px !important;
+    height:28px !important;
   }
 
-  /* VOCES Y SONIDOS: seis columnas, dos filas. */
+  /* SONIDOS */
   #sounds{
     display:grid !important;
     grid-template-columns:repeat(6,minmax(0,1fr)) !important;
-    grid-auto-rows:44px !important;
+    grid-auto-rows:38px !important;
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
@@ -10941,119 +10936,115 @@ input{
     width:100% !important;
     min-width:0 !important;
     max-width:none !important;
-    height:44px !important;
-    min-height:44px !important;
-    max-height:44px !important;
-    border-radius:10px !important;
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    border-radius:9px !important;
   }
   #cfg #sounds .sound-card .sound-card-content{
     width:100% !important;
     min-width:0 !important;
     max-width:none !important;
-    height:40px !important;
-    min-height:40px !important;
-    padding:2px 3px !important;
+    height:34px !important;
+    min-height:34px !important;
+    padding:2px 2px !important;
   }
   #cfg #sounds .sound-card .voice-uploaded-icon{
-    max-height:35px !important;
+    max-height:30px !important;
+  }
+  #cfg #sounds .sound-card .whistle-uploaded-icon{
+    max-height:30px !important;
   }
   #cfg #sounds .sound-card .sound-number,
   #cfg #sounds .sound-card .sound-word-label{
-    font-size:17px !important;
+    font-size:14px !important;
   }
 
-  /* VELOCIDAD + REPETICIONES:
-     etiqueta pequeña arriba y controles visibles debajo, sin solapamientos. */
+  /* VELOCIDAD + REPETICIONES */
   .speed-row,
   .speed-row.speed-row-with-repetitions{
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
-    height:56px !important;
-    min-height:56px !important;
+    height:52px !important;
+    min-height:52px !important;
     padding:0 !important;
     margin:0 !important;
     align-items:flex-start !important;
-    gap:8px !important;
+    gap:6px !important;
   }
   .speed-control-group,
   .repetition-control-group{
-    grid-template-columns:32px 64px 32px !important;
-    grid-template-rows:18px 34px !important;
+    grid-template-columns:30px 56px 30px !important;
+    grid-template-rows:16px 30px !important;
     row-gap:2px !important;
     min-width:0 !important;
-    width:136px !important;
+    width:122px !important;
   }
   .control-mini-label{
-    height:18px !important;
-    min-height:18px !important;
-    padding:2px 8px !important;
-    font-size:10px !important;
+    height:16px !important;
+    min-height:16px !important;
+    padding:2px 6px !important;
+    font-size:9px !important;
     line-height:1 !important;
   }
   #minus,
   #plus,
   #repMinus,
   #repPlus{
-    width:32px !important;
-    min-width:32px !important;
-    max-width:32px !important;
-    height:32px !important;
-    min-height:32px !important;
-    max-height:32px !important;
+    width:30px !important;
+    min-width:30px !important;
+    max-width:30px !important;
+    height:30px !important;
+    min-height:30px !important;
+    max-height:30px !important;
     border-radius:7px !important;
-    font-size:23px !important;
+    font-size:21px !important;
   }
   #time,
   #repValue{
-    min-width:54px !important;
-    font-size:18px !important;
+    min-width:50px !important;
+    font-size:16px !important;
     line-height:1 !important;
   }
 
-  /* Fila final: START + sonido + idioma + reset + home en una sola línea. */
+  /* FILA FINAL */
   .start-row{
     display:grid !important;
-    grid-template-columns:140px repeat(4,38px) !important;
-    grid-template-rows:40px !important;
+    grid-template-columns:128px repeat(4,34px) !important;
+    grid-template-rows:36px !important;
     justify-content:center !important;
     align-items:center !important;
     width:100% !important;
     min-width:0 !important;
     max-width:100% !important;
-    height:40px !important;
-    min-height:40px !important;
-    gap:5px !important;
+    height:36px !important;
+    min-height:36px !important;
+    gap:4px !important;
   }
   .start-row #start{
     grid-column:1 !important;
     grid-row:1 !important;
-    width:140px !important;
-    min-width:140px !important;
-    max-width:140px !important;
-    height:40px !important;
-    min-height:40px !important;
+    width:128px !important;
+    min-width:128px !important;
+    max-width:128px !important;
+    height:36px !important;
+    min-height:36px !important;
     margin:0 !important;
-    font-size:18px !important;
+    font-size:16px !important;
   }
-  .start-row #soundToggleBtn{
-    grid-column:2 !important;
-    grid-row:1 !important;
-  }
-  .start-row #languageStub{
-    grid-column:3 !important;
-    grid-row:1 !important;
-  }
+  .start-row #soundToggleBtn{ grid-column:2 !important; grid-row:1 !important; }
+  .start-row #languageStub{ grid-column:3 !important; grid-row:1 !important; }
   .start-row .start-actions{
     grid-column:4 / 6 !important;
     grid-row:1 !important;
     display:grid !important;
-    grid-template-columns:repeat(2,38px) !important;
-    gap:5px !important;
-    width:81px !important;
-    min-width:81px !important;
-    max-width:81px !important;
-    height:38px !important;
+    grid-template-columns:repeat(2,34px) !important;
+    gap:4px !important;
+    width:72px !important;
+    min-width:72px !important;
+    max-width:72px !important;
+    height:34px !important;
   }
 
   .start-row #soundToggleBtn,
@@ -11076,89 +11067,133 @@ input{
   #homeLink,
   #languageStub,
   #languageStub .lang-current{
-    width:38px !important;
-    min-width:38px !important;
-    max-width:38px !important;
-    height:38px !important;
-    min-height:38px !important;
-    max-height:38px !important;
-    flex-basis:38px !important;
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    flex-basis:34px !important;
   }
   #soundToggleBtn .sound-icon{
-    width:26px !important;
-    height:26px !important;
+    width:23px !important;
+    height:23px !important;
   }
   #reset svg{
+    width:23px !important;
+    height:23px !important;
+  }
+  #homeLink .home-link-icon{
     width:25px !important;
     height:25px !important;
   }
-  #homeLink .home-link-icon{
-    width:29px !important;
-    height:29px !important;
-  }
 }
 
-/* iPhone con poca altura: compresión adicional.
-   Se mantiene scroll interno como red de seguridad. */
-@media (max-width:600px) and (pointer:coarse) and (max-height:720px){
+/* iPhone más bajo: compresión extra */
+@media (max-width:600px) and (pointer:coarse) and (max-height:760px){
   #cfg{
-    padding:6px 8px !important;
+    padding:6px 7px !important;
     row-gap:2px !important;
   }
   #cfg .banner{
-    padding:6px 9px !important;
+    padding:6px 8px !important;
   }
   #cfg .banner-main-title{
-    font-size:22px !important;
+    font-size:21px !important;
   }
   #cfg .banner-subtitle{
     display:none !important;
   }
   #cfg .section-title{
-    font-size:10.5px !important;
-    padding:2px 8px !important;
+    font-size:10px !important;
+    padding:2px 7px !important;
   }
-  #gameModeSelector .game-mode-option{
-    height:33px !important;
-    min-height:33px !important;
-  }
-  #cfg #colors .color-card,
-  #cfg #shapes .color-card,
-  #cfg #shapes .color-card:hover,
-  #cfg #shapes .color-card:has(input:checked){
-    width:40px !important;
-    min-width:40px !important;
-    max-width:40px !important;
-    height:40px !important;
-    min-height:40px !important;
-    max-height:40px !important;
-    flex-basis:40px !important;
-  }
-  #arrows{
-    grid-template-columns:repeat(8,37px) !important;
-  }
-  #cfg #arrows .arrow-card{
+  #cfg #colors .color-card{
     width:37px !important;
     min-width:37px !important;
     max-width:37px !important;
     height:37px !important;
     min-height:37px !important;
     max-height:37px !important;
+    flex-basis:37px !important;
+  }
+  #cfg #colors .color-card .swatch{
+    width:33px !important;
+    height:27px !important;
+  }
+  #arrows{
+    grid-template-columns:repeat(8,32px) !important;
+  }
+  #cfg #arrows .arrow-card{
+    width:32px !important;
+    min-width:32px !important;
+    max-width:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
+  }
+  #numbers{
+    grid-template-columns:repeat(4,43px) !important;
+    gap:5px !important;
+  }
+  #cfg #numbers .number-card{
+    width:43px !important;
+    min-width:43px !important;
+    max-width:43px !important;
+    height:39px !important;
+    min-height:39px !important;
+    max-height:39px !important;
+  }
+  #cfg #numbers .number-card::before{
+    width:39px !important;
+    height:33px !important;
+  }
+  #cfg #numbers .number-card span{
+    font-size:19px !important;
+  }
+  #cfg #shapes .color-card,
+  #cfg #shapes .color-card:hover,
+  #cfg #shapes .color-card:has(input:checked){
+    width:36px !important;
+    min-width:36px !important;
+    max-width:36px !important;
+    height:36px !important;
+    min-height:36px !important;
+    max-height:36px !important;
+    flex-basis:36px !important;
+  }
+  #cfg #shapes .color-card .swatch,
+  #cfg #shapes .color-card:hover .swatch,
+  #cfg #shapes .color-card:has(input:checked) .swatch{
+    width:34px !important;
+    height:32px !important;
+  }
+  #cfg #shapes .shape-preview{
+    width:30px !important;
+    height:30px !important;
+  }
+  #cfg #shapes .shape-preview svg{
+    width:26px !important;
+    height:26px !important;
   }
   #sounds{
-    grid-auto-rows:40px !important;
+    grid-auto-rows:36px !important;
   }
   #cfg #sounds .sound-card,
   #cfg #sounds .sound-card:nth-child(1),
   #cfg #sounds .sound-card:nth-child(6),
   #cfg #sounds .sound-card:nth-child(11){
-    height:40px !important;
-    min-height:40px !important;
-    max-height:40px !important;
+    height:36px !important;
+    min-height:36px !important;
+    max-height:36px !important;
   }
   #cfg #sounds .sound-card .sound-card-content{
-    height:37px !important;
-    min-height:37px !important;
+    height:32px !important;
+    min-height:32px !important;
+  }
+  #cfg #sounds .sound-card .sound-number,
+  #cfg #sounds .sound-card .sound-word-label{
+    font-size:13px !important;
   }
 }
 </style>
@@ -11170,7 +11205,7 @@ input{
      ====================================================== -->
 <!-- PANEL DE CONFIGURACIÓN -->
 <div id="cfg">
-<div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div class="banner-subtitle" style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">MEJORX TU VELOCIDAD DE REACCIÓN Y TU AGILIDAD</div></div>
+<div class="banner"><div class="banner-main-title" style="position:relative;z-index:1;">EXPO REACT 2.0</div><div class="banner-subtitle" style="position:relative;z-index:1;font-family:Inter,sans-serif;font-size:13px;font-weight:300;letter-spacing:.16em;text-transform:uppercase;line-height:1.15;margin-top:8px;">MEJORA TU VELOCIDAD DE REACCIÓN Y TU AGILIDAD</div></div>
 <div id="gameModeSelector" class="game-mode-selector" role="group" aria-label="Modo de juego">
   <button type="button" class="game-mode-option is-active" data-game-mode="movement" aria-pressed="true">
     <span class="game-mode-title">MODO MOVIMIENTO</span>
