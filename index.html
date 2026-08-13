@@ -11492,6 +11492,158 @@ input{
 }
 </style>
 
+
+<style id="expoReactIPhoneCardsExactV6">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE VERTICAL V6 · CORRECCIÓN DEFINITIVA
+   Las clases reales son:
+   - FLECHAS: #arrows .arrow-card
+   - NÚMEROS: #numbers .arrow-card
+   - FORMAS:  #shapes .number-card
+   Por eso se igualan aquí los TRES elementos reales.
+   ============================================================ */
+
+@media (max-width:600px) and (orientation:portrait){
+  :root{
+    --expo-iphone-choice-card:34px;
+    --expo-iphone-choice-radius:9px;
+  }
+
+  /* Las tres familias tienen exactamente el mismo cuadro exterior. */
+  #cfg #arrows .arrow-card,
+  #cfg #numbers .arrow-card,
+  #cfg #shapes .number-card{
+    width:var(--expo-iphone-choice-card) !important;
+    min-width:var(--expo-iphone-choice-card) !important;
+    max-width:var(--expo-iphone-choice-card) !important;
+    height:var(--expo-iphone-choice-card) !important;
+    min-height:var(--expo-iphone-choice-card) !important;
+    max-height:var(--expo-iphone-choice-card) !important;
+    flex:0 0 var(--expo-iphone-choice-card) !important;
+    padding:0 !important;
+    margin:0 !important;
+    border-radius:var(--expo-iphone-choice-radius) !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Rejillas con la misma medida real. */
+  #cfg #arrows{
+    grid-template-columns:repeat(8,var(--expo-iphone-choice-card)) !important;
+  }
+
+  #cfg #numbers{
+    grid-template-columns:repeat(4,var(--expo-iphone-choice-card)) !important;
+    gap:7px !important;
+  }
+
+  #cfg #shapes{
+    gap:6px !important;
+  }
+
+  /* NÚMEROS:
+     realmente son .arrow-card; se reduce también el número interior. */
+  #cfg #numbers .arrow-card > span{
+    font-size:18px !important;
+    line-height:1 !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  /* FORMAS:
+     realmente son .number-card y el recuadro visible es ::before.
+     Se iguala al cuadro de flechas sin tocar el icono. */
+  #cfg #shapes .number-card::before{
+    width:var(--expo-iphone-choice-card) !important;
+    min-width:var(--expo-iphone-choice-card) !important;
+    max-width:var(--expo-iphone-choice-card) !important;
+    height:var(--expo-iphone-choice-card) !important;
+    min-height:var(--expo-iphone-choice-card) !important;
+    max-height:var(--expo-iphone-choice-card) !important;
+    border-radius:var(--expo-iphone-choice-radius) !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Cuando están seleccionadas, NÚMEROS y FORMAS crecen
+     exactamente igual que las FLECHAS, no más. */
+  #cfg #numbers .arrow-card:has(input:checked){
+    transform:scale(1.12) !important;
+  }
+
+  #cfg #shapes .number-card:has(input:checked)::before{
+    transform:translateY(-1px) scale(1.12) !important;
+  }
+
+  /* El icono de forma conserva su tamaño actual.
+     Solo se centra dentro del nuevo recuadro. */
+  #cfg #shapes .number-card .shape-preview{
+    position:relative !important;
+    z-index:5 !important;
+    margin:0 !important;
+    padding:0 !important;
+    transform:none !important;
+  }
+
+  /* VOLUMEN:
+     mismo centro vertical antes, durante y después de pulsar.
+     Se anulan todos los translateY heredados. */
+  #cfg .start-row #soundToggleBtn,
+  #cfg .start-row #soundToggleBtn:not(.is-muted),
+  #cfg .start-row #soundToggleBtn.is-muted,
+  #cfg .start-row #soundToggleBtn:hover,
+  #cfg .start-row #soundToggleBtn:active,
+  #cfg .start-row #soundToggleBtn.is-muted:hover,
+  #cfg .start-row #soundToggleBtn.is-muted:active{
+    position:relative !important;
+    top:auto !important;
+    bottom:auto !important;
+    left:auto !important;
+    right:auto !important;
+    translate:none !important;
+    transform-origin:center center !important;
+  }
+
+  #cfg .start-row #soundToggleBtn,
+  #cfg .start-row #soundToggleBtn:not(.is-muted),
+  #cfg .start-row #soundToggleBtn.is-muted{
+    transform:none !important;
+  }
+
+  #cfg .start-row #soundToggleBtn:active,
+  #cfg .start-row #soundToggleBtn.is-muted:active{
+    transform:scale(.96) !important;
+  }
+
+  #cfg .start-row #soundToggleBtn .sound-icon,
+  #cfg .start-row #soundToggleBtn:not(.is-muted) .sound-icon,
+  #cfg .start-row #soundToggleBtn.is-muted .sound-icon,
+  #cfg .start-row #soundToggleBtn:hover .sound-icon,
+  #cfg .start-row #soundToggleBtn:active .sound-icon,
+  #cfg .start-row #soundToggleBtn.is-muted:hover .sound-icon,
+  #cfg .start-row #soundToggleBtn.is-muted:active .sound-icon{
+    position:static !important;
+    margin:0 !important;
+    padding:0 !important;
+    translate:none !important;
+    transform:none !important;
+    rotate:none !important;
+    transform-origin:center center !important;
+  }
+}
+
+/* En iPhone de menor altura, las flechas ya son de 32 px.
+   Números y formas pasan exactamente a esos mismos 32 px. */
+@media (max-width:600px) and (orientation:portrait) and (max-height:760px){
+  :root{
+    --expo-iphone-choice-card:32px;
+    --expo-iphone-choice-radius:8px;
+  }
+
+  #cfg #numbers .arrow-card > span{
+    font-size:17px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -11510,7 +11662,7 @@ input{
     <span class="game-mode-description">Toca la tarjeta que coincide</span>
   </button>
 </div>
-<div class="section-wrap"><div class="section-title">ELIGE XOLORES</div></div><div class="grid colors-grid" id="colors"></div>
+<div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS DE DIRECCIÓN</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FORMAS</div></div><div class="grid colors-grid" id="shapes"></div>
