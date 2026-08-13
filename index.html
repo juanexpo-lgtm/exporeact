@@ -11212,6 +11212,286 @@ input{
 }
 </style>
 
+
+<style id="expoReactIPhonePortraitFitV5">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE VERTICAL V5
+   - Conserva ancho y márgenes laterales.
+   - Gana altura útil sin cambiar la lógica.
+   - FORMAS: recuadro = FLECHAS; icono sin reducir.
+   - Fila final: volumen · idioma · comenzar · reinicio · casa.
+   ============================================================ */
+
+@media (max-width:600px) and (pointer:coarse) and (orientation:portrait){
+
+  /* Solo compactación vertical: no se modifica el ancho del panel. */
+  #cfg{
+    padding-top:5px !important;
+    padding-bottom:5px !important;
+    row-gap:1px !important;
+  }
+
+  #cfg .banner{
+    padding-top:4px !important;
+    padding-bottom:4px !important;
+  }
+
+  #cfg .section-title{
+    padding-top:1px !important;
+    padding-bottom:1px !important;
+    line-height:.95 !important;
+  }
+
+  /* ----------------------------------------------------------
+     FORMAS: mismo recuadro físico que las FLECHAS (34 × 34).
+     Se conservan los tamaños actuales de los iconos.
+     ---------------------------------------------------------- */
+  #shapes{
+    gap:5px !important;
+  }
+
+  #cfg #shapes .color-card,
+  #cfg #shapes .color-card:hover,
+  #cfg #shapes .color-card:has(input:checked),
+  #cfg #shapes .color-card:has(input:checked):hover{
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    flex:0 0 34px !important;
+  }
+
+  #cfg #shapes .color-card .swatch,
+  #cfg #shapes .color-card:hover .swatch,
+  #cfg #shapes .color-card:has(input:checked) .swatch,
+  #cfg #shapes .color-card:has(input:checked):hover .swatch{
+    width:34px !important;
+    height:34px !important;
+    border-radius:9px !important;
+  }
+
+  /* ----------------------------------------------------------
+     Se compactan verticalmente las zonas que más altura consumían.
+     No se cambian sus anchos laterales.
+     ---------------------------------------------------------- */
+  #sounds{
+    grid-auto-rows:34px !important;
+    row-gap:3px !important;
+  }
+
+  #cfg #sounds .sound-card,
+  #cfg #sounds .sound-card:nth-child(1),
+  #cfg #sounds .sound-card:nth-child(6),
+  #cfg #sounds .sound-card:nth-child(11){
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+  }
+
+  #cfg #sounds .sound-card .sound-card-content{
+    height:31px !important;
+    min-height:31px !important;
+  }
+
+  .speed-row,
+  .speed-row.speed-row-with-repetitions{
+    height:46px !important;
+    min-height:46px !important;
+    gap:5px !important;
+  }
+
+  .speed-control-group,
+  .repetition-control-group{
+    grid-template-rows:14px 28px !important;
+    row-gap:1px !important;
+  }
+
+  .control-mini-label{
+    height:14px !important;
+    min-height:14px !important;
+    padding-top:1px !important;
+    padding-bottom:1px !important;
+  }
+
+  #minus,
+  #plus,
+  #repMinus,
+  #repPlus{
+    height:28px !important;
+    min-height:28px !important;
+    max-height:28px !important;
+  }
+
+  /* ----------------------------------------------------------
+     FILA INFERIOR:
+     1 volumen | 2 idioma | 3 comenzar | 4 reinicio | 5 casa
+     ---------------------------------------------------------- */
+  .start-row{
+    grid-template-columns:34px 34px 128px 34px 34px !important;
+    grid-template-rows:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    gap:4px !important;
+  }
+
+  .start-row #soundToggleBtn{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+  }
+
+  .start-row #languageStub{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+  }
+
+  .start-row #start{
+    grid-column:3 !important;
+    grid-row:1 !important;
+    width:128px !important;
+    min-width:128px !important;
+    max-width:128px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  .start-row .start-actions{
+    grid-column:4 / 6 !important;
+    grid-row:1 !important;
+    display:grid !important;
+    grid-template-columns:34px 34px !important;
+    grid-template-rows:34px !important;
+    width:72px !important;
+    min-width:72px !important;
+    max-width:72px !important;
+    height:34px !important;
+    gap:4px !important;
+    justify-self:center !important;
+  }
+
+  .start-row .start-actions #reset{
+    grid-column:1 !important;
+    grid-row:1 !important;
+  }
+
+  .start-row .start-actions #homeLink{
+    grid-column:2 !important;
+    grid-row:1 !important;
+  }
+}
+
+/* iPhone vertical con poca altura: mismo criterio,
+   pero el recuadro de formas sigue exactamente el tamaño de las flechas. */
+@media (max-width:600px) and (pointer:coarse) and (orientation:portrait) and (max-height:760px){
+
+  #cfg{
+    padding-top:3px !important;
+    padding-bottom:3px !important;
+    row-gap:1px !important;
+  }
+
+  #cfg .banner{
+    padding-top:3px !important;
+    padding-bottom:3px !important;
+  }
+
+  /* FLECHAS = 32 × 32 en esta variante; FORMAS también 32 × 32. */
+  #cfg #shapes .color-card,
+  #cfg #shapes .color-card:hover,
+  #cfg #shapes .color-card:has(input:checked),
+  #cfg #shapes .color-card:has(input:checked):hover{
+    width:32px !important;
+    min-width:32px !important;
+    max-width:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
+    flex:0 0 32px !important;
+  }
+
+  #cfg #shapes .color-card .swatch,
+  #cfg #shapes .color-card:hover .swatch,
+  #cfg #shapes .color-card:has(input:checked) .swatch,
+  #cfg #shapes .color-card:has(input:checked):hover .swatch{
+    width:32px !important;
+    height:32px !important;
+    border-radius:8px !important;
+  }
+
+  #sounds{
+    grid-auto-rows:31px !important;
+    row-gap:2px !important;
+  }
+
+  #cfg #sounds .sound-card,
+  #cfg #sounds .sound-card:nth-child(1),
+  #cfg #sounds .sound-card:nth-child(6),
+  #cfg #sounds .sound-card:nth-child(11){
+    height:31px !important;
+    min-height:31px !important;
+    max-height:31px !important;
+  }
+
+  #cfg #sounds .sound-card .sound-card-content{
+    height:29px !important;
+    min-height:29px !important;
+  }
+
+  .speed-row,
+  .speed-row.speed-row-with-repetitions{
+    height:43px !important;
+    min-height:43px !important;
+  }
+
+  .start-row{
+    grid-template-columns:32px 32px 122px 32px 32px !important;
+    grid-template-rows:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+    gap:4px !important;
+  }
+
+  .start-row #start{
+    width:122px !important;
+    min-width:122px !important;
+    max-width:122px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
+    font-size:15px !important;
+  }
+
+  .start-row .start-actions{
+    grid-template-columns:32px 32px !important;
+    grid-template-rows:32px !important;
+    width:68px !important;
+    min-width:68px !important;
+    max-width:68px !important;
+    height:32px !important;
+  }
+
+  #soundToggleBtn,
+  #reset,
+  #homeLink,
+  #languageStub,
+  #languageStub .lang-current{
+    width:32px !important;
+    min-width:32px !important;
+    max-width:32px !important;
+    height:32px !important;
+    min-height:32px !important;
+    max-height:32px !important;
+    flex-basis:32px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
