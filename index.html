@@ -11744,6 +11744,36 @@ input{
 }
 </style>
 
+
+<style id="expoReactIPhoneAutoVerticalV8">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE VERTICAL V8 · AJUSTE AUTOMÁTICO REAL
+
+   IMPORTANTE:
+   - Solo se activa cuando JavaScript detecta iPhone/iPod real.
+   - PC e iPad no reciben esta clase y no cambian.
+   - El alto del panel y el espacio entre filas se calculan según
+     el VisualViewport real de Safari.
+   ============================================================ */
+
+html.expo-iphone-auto-panel #cfg{
+  /* JavaScript escribe estas dos variables en cada recálculo. */
+  height:var(--expo-iphone-auto-panel-height) !important;
+  max-height:var(--expo-iphone-auto-panel-height) !important;
+  row-gap:var(--expo-iphone-auto-row-gap,0px) !important;
+  align-content:start !important;
+  overflow-y:hidden !important;
+}
+
+/* Si en un iPhone excepcionalmente bajo el contenido mínimo no cupiera,
+   nunca dejamos que el panel salga de la pantalla: el fallback permite
+   scroll interno únicamente en ese caso extremo. */
+html.expo-iphone-auto-panel.expo-iphone-auto-overflow #cfg{
+  row-gap:0px !important;
+  overflow-y:auto !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -20048,6 +20078,223 @@ try {
   font-size:clamp(11px,1.95vmin,16px) !important;
 }
 </style>
+
+
+<script id="expoReactIPhoneAutoVerticalScriptV8">
+(() => {
+  "use strict";
+
+  /*
+    AJUSTE AUTOMÁTICO SOLO PARA iPHONE.
+
+    No se usa el ancho como criterio principal para no afectar a iPad
+    en Split View. La clase se añade únicamente si el navegador se
+    identifica como iPhone/iPod y está en orientación vertical.
+  */
+
+  const ua = String(navigator.userAgent || "");
+  const isIPhone = /iPhone|iPod/i.test(ua);
+
+  if (!isIPhone) return;
+
+  const root = document.documentElement;
+  const cfg = document.getElementById("cfg");
+  if (!cfg) return;
+
+  let raf = 0;
+  let lastHeight = -1;
+  let lastGap = -1;
+
+  function getViewport() {
+    const vv = window.visualViewport;
+    return {
+      width: vv ? vv.width : window.innerWidth,
+      height: vv ? vv.height : window.innerHeight
+    };
+  }
+
+  function readSafeAreas() {
+    /*
+      env(safe-area-inset-*) no se puede leer directamente como número
+      desde una custom property. Este pequeño medidor obtiene el valor
+      resuelto por Safari.
+    */
+    const probe = document.createElement("div");
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText = [
+      "position:fixed",
+      "visibility:hidden",
+      "pointer-events:none",
+      "inset:0 auto auto 0",
+      "width:0",
+      "height:0",
+      "padding-top:env(safe-area-inset-top)",
+      "padding-bottom:env(safe-area-inset-bottom)"
+    ].join(";");
+    document.documentElement.appendChild(probe);
+    const cs = getComputedStyle(probe);
+    const top = parseFloat(cs.paddingTop) || 0;
+    const bottom = parseFloat(cs.paddingBottom) || 0;
+    probe.remove();
+    return { top, bottom };
+  }
+
+  let safeAreas = readSafeAreas();
+
+  function visibleDirectRows() {
+    return Array.from(cfg.children).filter(el => {
+      const cs = getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden") return false;
+      const r = el.getBoundingClientRect();
+      return r.height > 0.25;
+    });
+  }
+
+  function resetIPhoneAutoLayout() {
+    root.classList.remove(
+      "expo-iphone-auto-panel",
+      "expo-iphone-auto-overflow"
+    );
+    cfg.style.removeProperty("--expo-iphone-auto-panel-height");
+    cfg.style.removeProperty("--expo-iphone-auto-row-gap");
+    cfg.style.removeProperty("height");
+    cfg.style.removeProperty("max-height");
+    cfg.style.removeProperty("row-gap");
+    cfg.style.removeProperty("overflow-y");
+  }
+
+  function fitIPhonePanel() {
+    raf = 0;
+
+    const vp = getViewport();
+    const portrait = vp.height > vp.width;
+
+    if (!portrait) {
+      resetIPhoneAutoLayout();
+      return;
+    }
+
+    root.classList.add("expo-iphone-auto-panel");
+    root.classList.remove("expo-iphone-auto-overflow");
+
+    /*
+      El panel deja un margen exterior mínimo de 6 px, respetando además
+      notch / Dynamic Island y home indicator.
+    */
+    const outerTop = Math.max(6, safeAreas.top);
+    const outerBottom = Math.max(6, safeAreas.bottom);
+    const targetHeight = Math.max(1, Math.floor(vp.height - outerTop - outerBottom));
+
+    cfg.style.setProperty(
+      "--expo-iphone-auto-panel-height",
+      targetHeight + "px"
+    );
+
+    /*
+      Medición base:
+      ponemos separación 0 para conocer exactamente cuánto ocupan
+      las filas y los paddings del panel sin espacios añadidos.
+    */
+    cfg.style.setProperty("--expo-iphone-auto-row-gap", "0px");
+
+    const cfgStyle = getComputedStyle(cfg);
+    const paddingTop = parseFloat(cfgStyle.paddingTop) || 0;
+    const paddingBottom = parseFloat(cfgStyle.paddingBottom) || 0;
+    const rows = visibleDirectRows();
+
+    const rowsHeight = rows.reduce((sum, el) => {
+      return sum + el.getBoundingClientRect().height;
+    }, 0);
+
+    const innerHeight = Math.max(0, targetHeight - paddingTop - paddingBottom);
+    const gapCount = Math.max(0, rows.length - 1);
+    const freeSpace = innerHeight - rowsHeight;
+
+    let gap = gapCount > 0 ? freeSpace / gapCount : 0;
+
+    /*
+      Si todo cabe, repartimos TODO el espacio sobrante de forma uniforme.
+      Resultado: primera y última fila quedan dentro del panel y todas las
+      filas intermedias se distribuyen automáticamente hasta ocuparlo.
+    */
+    if (gap >= 0) {
+      gap = Math.max(0, gap);
+
+      /* Evita artefactos subpíxel de Safari, sin perder precisión visual. */
+      gap = Math.floor(gap * 100) / 100;
+
+      cfg.style.setProperty(
+        "--expo-iphone-auto-row-gap",
+        gap.toFixed(2) + "px"
+      );
+      root.classList.remove("expo-iphone-auto-overflow");
+    } else {
+      /*
+        Fallback de seguridad para modelos/zoom muy extremos:
+        cero separación y scroll interno. El panel nunca sale del viewport.
+      */
+      cfg.style.setProperty("--expo-iphone-auto-row-gap", "0px");
+      root.classList.add("expo-iphone-auto-overflow");
+      gap = 0;
+    }
+
+    lastHeight = targetHeight;
+    lastGap = gap;
+  }
+
+  function scheduleFit() {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(fitIPhonePanel);
+  }
+
+  /*
+    Safari cambia VisualViewport cuando aparecen/desaparecen sus barras.
+    Recalculamos en todos los eventos relevantes.
+  */
+  window.addEventListener("load", () => {
+    safeAreas = readSafeAreas();
+    scheduleFit();
+    setTimeout(scheduleFit, 80);
+    setTimeout(scheduleFit, 300);
+  }, { passive: true });
+
+  window.addEventListener("resize", scheduleFit, { passive: true });
+  window.addEventListener("orientationchange", () => {
+    safeAreas = readSafeAreas();
+    scheduleFit();
+    setTimeout(scheduleFit, 120);
+    setTimeout(scheduleFit, 420);
+  }, { passive: true });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", scheduleFit, { passive: true });
+    window.visualViewport.addEventListener("scroll", scheduleFit, { passive: true });
+  }
+
+  /*
+    Si cambia una fila (idioma, modo, controles de repeticiones, etc.),
+    se vuelve a medir automáticamente.
+  */
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(scheduleFit);
+    ro.observe(cfg);
+    Array.from(cfg.children).forEach(el => ro.observe(el));
+  }
+
+  if (window.MutationObserver) {
+    const mo = new MutationObserver(scheduleFit);
+    mo.observe(cfg, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style", "hidden"]
+    });
+  }
+
+  /* Primera pasada en cuanto el DOM ya existe. */
+  scheduleFit();
+})();
+</script>
 
 </body>
 </html>
