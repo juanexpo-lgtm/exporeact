@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- EXPO REACT · APP WEB iPHONE -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EXPO REACT">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="application-name" content="EXPO REACT">
+<meta name="theme-color" content="#ffffff">
+
 <title>EXPO REACT 2.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11989,6 +11997,31 @@ html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
     min-width:64px !important;
     max-width:64px !important;
     height:32px !important;
+  }
+}
+</style>
+
+
+<style id="expoReactIPhoneWebAppAndLanguageV14">
+/* SOLO iPhone: pequeño desplazamiento del botón IDIOMA. */
+@media (orientation:portrait){
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    position:relative !important;
+    left:4px !important;
+  }
+}
+
+@media (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    left:3px !important;
+  }
+}
+
+/* En modo app web se conserva el uso completo del viewport y safe areas. */
+@media (display-mode:standalone){
+  html.expo-iphone-device,
+  html.expo-iphone-device body{
+    min-height:100dvh;
   }
 }
 </style>
