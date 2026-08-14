@@ -12246,6 +12246,81 @@ html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
 }
 </style>
 
+
+<style id="expoReactIPhoneEquidistantRowsV16">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V16
+   SOLO iPhone.
+   - Se elimina el apelotonamiento introducido en V15.
+   - Todas las filas del panel vuelven a repartirse verticalmente
+     por el ajuste automático estable V9.
+   - Se neutralizan los márgenes negativos añadidos a títulos/tarjetas.
+   - PC e iPad no cambian.
+   ============================================================ */
+
+@media (orientation:portrait){
+  /* El reparto vertical lo hace V9 con row-gap automático.
+     Aquí solo quitamos cualquier empuje manual hacia arriba/abajo. */
+  html.expo-iphone-device #cfg > #gameModeSelector,
+  html.expo-iphone-device #cfg > .section-wrap,
+  html.expo-iphone-device #cfg > #colors,
+  html.expo-iphone-device #cfg > #arrows,
+  html.expo-iphone-device #cfg > #numbers,
+  html.expo-iphone-device #cfg > #shapes,
+  html.expo-iphone-device #cfg > #sounds,
+  html.expo-iphone-device #cfg > .speed-legacy-heading,
+  html.expo-iphone-device #cfg > .speed-row,
+  html.expo-iphone-device #cfg > .speed-row.speed-row-with-repetitions,
+  html.expo-iphone-device #cfg > .start-row{
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+    transform:none !important;
+    translate:none !important;
+  }
+
+  /* Reset explícito de las subidas manuales de V15. */
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(5),
+  html.expo-iphone-device #cfg > #arrows:nth-child(6),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(7),
+  html.expo-iphone-device #cfg > #numbers:nth-child(8),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(9),
+  html.expo-iphone-device #cfg > #shapes:nth-child(10),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(11),
+  html.expo-iphone-device #cfg > #sounds:nth-child(12){
+    margin-top:0 !important;
+  }
+
+  /* Sin rellenos extra entre cartel y tarjetas:
+     toda la equidistancia la gobierna el row-gap automático del panel. */
+  html.expo-iphone-device #cfg > .section-wrap + .grid,
+  html.expo-iphone-device #cfg > .section-wrap + #colors,
+  html.expo-iphone-device #cfg > .section-wrap + #arrows,
+  html.expo-iphone-device #cfg > .section-wrap + #numbers,
+  html.expo-iphone-device #cfg > .section-wrap + #shapes,
+  html.expo-iphone-device #cfg > .section-wrap + #sounds{
+    margin-top:0 !important;
+  }
+}
+
+/* iPhone de poca altura: mismo criterio. */
+@media (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg > #gameModeSelector,
+  html.expo-iphone-device #cfg > .section-wrap,
+  html.expo-iphone-device #cfg > #colors,
+  html.expo-iphone-device #cfg > #arrows,
+  html.expo-iphone-device #cfg > #numbers,
+  html.expo-iphone-device #cfg > #shapes,
+  html.expo-iphone-device #cfg > #sounds,
+  html.expo-iphone-device #cfg > .speed-legacy-heading,
+  html.expo-iphone-device #cfg > .speed-row,
+  html.expo-iphone-device #cfg > .speed-row.speed-row-with-repetitions,
+  html.expo-iphone-device #cfg > .start-row{
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
