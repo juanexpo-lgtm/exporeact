@@ -12321,6 +12321,83 @@ html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
 }
 </style>
 
+
+<style id="expoReactIPhoneLanguageSpacingAlignV17">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V17
+   SOLO iPhone.
+   - Separar un poco más el botón de idioma del volumen.
+   - En landscape, corregir su alineación vertical en la fila inferior.
+   ============================================================ */
+
+/* Portrait: un poco más de separación entre volumen e idioma. */
+@media (orientation:portrait){
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    position:relative !important;
+    left:6px !important;
+    top:0 !important;
+    bottom:auto !important;
+    transform:none !important;
+    translate:none !important;
+    align-self:center !important;
+    justify-self:center !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub .lang-current{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+}
+
+/* Landscape: misma pequeña separación y corrección total de alineación. */
+@media (orientation:landscape){
+  html.expo-iphone-device #cfg .start-row{
+    align-items:center !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    position:relative !important;
+    left:6px !important;
+    top:0 !important;
+    bottom:auto !important;
+    transform:none !important;
+    translate:none !important;
+    margin:0 !important;
+    align-self:center !important;
+    justify-self:center !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub .lang-current{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    margin:0 !important;
+    transform:none !important;
+    translate:none !important;
+  }
+}
+
+/* iPhone con poca altura: misma idea, un pelín menos de desplazamiento. */
+@media (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    left:5px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
