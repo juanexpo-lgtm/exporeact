@@ -12026,6 +12026,226 @@ html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
 }
 </style>
 
+
+<style id="expoReactIPhoneRefineV15">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V15
+   SOLO iPhone.
+   - DEPORTIVO / TÁCTIL: más cortos y pegados a los extremos.
+   - Se compacta hacia arriba todo lo que va después de COLORES
+     hasta antes del bloque de VELOCIDAD / REPS.
+   - En landscape, la fila inferior replica la de vertical.
+   ============================================================ */
+
+/* 1) DEPORTIVO / TÁCTIL más cortos lateralmente y a los extremos */
+html.expo-iphone-device #cfg #gameModeSelector{
+  grid-template-columns:1fr 1fr !important;
+  width:100% !important;
+  gap:0 !important;
+  align-items:center !important;
+}
+
+html.expo-iphone-device #cfg #gameModeSelector .game-mode-option{
+  width:114px !important;
+  min-width:114px !important;
+  max-width:114px !important;
+}
+
+html.expo-iphone-device #cfg #gameModeSelector .game-mode-option:first-child{
+  justify-self:start !important;
+}
+
+html.expo-iphone-device #cfg #gameModeSelector .game-mode-option:last-child{
+  justify-self:end !important;
+}
+
+html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
+  font-size:10.4px !important;
+  line-height:1 !important;
+  letter-spacing:-.01em !important;
+}
+
+/* 2) Todo hacia arriba, EXCEPTO la fila de COLORES.
+   Se comprimen títulos, tarjetas y espacios desde FLECHAS hasta SONIDOS,
+   dejando intacta la fila ELIGE COLORES. */
+@media (orientation:portrait){
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(5),
+  html.expo-iphone-device #cfg > #arrows:nth-child(6),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(7),
+  html.expo-iphone-device #cfg > #numbers:nth-child(8),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(9),
+  html.expo-iphone-device #cfg > #shapes:nth-child(10),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(11),
+  html.expo-iphone-device #cfg > #sounds:nth-child(12){
+    margin-top:-7px !important;
+  }
+
+  /* 3) Fila inferior simétrica respecto a COMENZAR.
+     La corrección V14 del idioma a la derecha se neutraliza aquí. */
+  html.expo-iphone-device #cfg .start-row{
+    grid-template-columns:
+      34px 34px 22px 128px 22px 34px 34px !important;
+    grid-template-rows:34px !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #soundToggleBtn{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+    left:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #start{
+    grid-column:4 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row .start-actions{
+    grid-column:6 / 8 !important;
+    grid-row:1 !important;
+    display:grid !important;
+    grid-template-columns:34px 34px !important;
+    grid-template-rows:34px !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:68px !important;
+    min-width:68px !important;
+    max-width:68px !important;
+    height:34px !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+}
+
+/* iPhone de poca altura: mismo criterio con medidas algo menores */
+@media (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg #gameModeSelector .game-mode-option{
+    width:108px !important;
+    min-width:108px !important;
+    max-width:108px !important;
+  }
+
+  html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
+    font-size:10px !important;
+  }
+
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(5),
+  html.expo-iphone-device #cfg > #arrows:nth-child(6),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(7),
+  html.expo-iphone-device #cfg > #numbers:nth-child(8),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(9),
+  html.expo-iphone-device #cfg > #shapes:nth-child(10),
+  html.expo-iphone-device #cfg > .section-wrap:nth-child(11),
+  html.expo-iphone-device #cfg > #sounds:nth-child(12){
+    margin-top:-6px !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row{
+    grid-template-columns:
+      32px 32px 18px 122px 18px 32px 32px !important;
+    grid-template-rows:32px !important;
+    column-gap:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    left:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row .start-actions{
+    grid-template-columns:32px 32px !important;
+    grid-template-rows:32px !important;
+    width:64px !important;
+    min-width:64px !important;
+    max-width:64px !important;
+    height:32px !important;
+  }
+}
+
+/* 4) En LANDSCAPE, misma fila inferior que en vertical */
+@media (orientation:landscape){
+  html.expo-iphone-device #cfg .start-row{
+    grid-template-columns:
+      34px 34px 22px 128px 22px 34px 34px !important;
+    grid-template-rows:34px !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #soundToggleBtn{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+    left:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #start{
+    grid-column:4 !important;
+    grid-row:1 !important;
+    width:128px !important;
+    min-width:128px !important;
+    max-width:128px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row .start-actions{
+    grid-column:6 / 8 !important;
+    grid-row:1 !important;
+    display:grid !important;
+    grid-template-columns:34px 34px !important;
+    grid-template-rows:34px !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:68px !important;
+    min-width:68px !important;
+    max-width:68px !important;
+    height:34px !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #soundToggleBtn,
+  html.expo-iphone-device #cfg .start-row #languageStub,
+  html.expo-iphone-device #cfg .start-row #languageStub .lang-current,
+  html.expo-iphone-device #cfg .start-row .start-actions #reset,
+  html.expo-iphone-device #cfg .start-row .start-actions #homeLink{
+    width:34px !important;
+    min-width:34px !important;
+    max-width:34px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
