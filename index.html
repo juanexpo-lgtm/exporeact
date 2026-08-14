@@ -11759,6 +11759,14 @@ html.expo-iphone-stable-panel.expo-iphone-stable-overflow #cfg{
 }
 </style>
 
+
+<style id="expoReactIPhoneHideChooseModeV11">
+/* SOLO iPhone/iPod: ocultar "ELIGE MODO" en vertical y landscape. */
+html.expo-iphone-device #gameModeSelector .mode-choice-label{
+  display:none !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -20251,6 +20259,16 @@ try {
   }
 
   freezeSafeHeight();
+})();
+</script>
+
+
+<script id="expoReactIPhoneDeviceClassV11">
+(() => {
+  const ua = String(navigator.userAgent || "");
+  if (/iPhone|iPod/i.test(ua)) {
+    document.documentElement.classList.add("expo-iphone-device");
+  }
 })();
 </script>
 
