@@ -11871,6 +11871,128 @@ html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
 }
 </style>
 
+
+<style id="expoReactIPhoneRefineV13">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V13
+   SOLO iPhone.
+   - DEPORTIVO/TÁCTIL: menos ancho, fuente ligeramente mayor.
+   - Fila inferior perfectamente simétrica respecto a COMENZAR.
+   - No modifica PC ni iPad.
+   ============================================================ */
+
+/* Botones DEPORTIVO / TÁCTIL más cortos y centrados. */
+html.expo-iphone-device #cfg #gameModeSelector{
+  grid-template-columns:repeat(2,128px) !important;
+  justify-content:center !important;
+  width:100% !important;
+  gap:7px !important;
+}
+
+html.expo-iphone-device #cfg #gameModeSelector .game-mode-option{
+  width:128px !important;
+  min-width:128px !important;
+  max-width:128px !important;
+}
+
+html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
+  font-size:10px !important;
+  line-height:1 !important;
+  letter-spacing:-.01em !important;
+}
+
+/* Fila inferior:
+   [VOLUMEN][IDIOMA]  ↔  COMENZAR  ↔  [REINICIO][CASA]
+   Misma distancia y misma agrupación a ambos lados. */
+@media (orientation:portrait){
+  html.expo-iphone-device #cfg .start-row{
+    grid-template-columns:
+      34px 34px 22px 128px 22px 34px 34px !important;
+    grid-template-rows:34px !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #soundToggleBtn{
+    grid-column:1 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #languageStub{
+    grid-column:2 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row #start{
+    grid-column:4 !important;
+    grid-row:1 !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row .start-actions{
+    grid-column:6 / 8 !important;
+    grid-row:1 !important;
+    display:grid !important;
+    grid-template-columns:34px 34px !important;
+    grid-template-rows:34px !important;
+    column-gap:0 !important;
+    row-gap:0 !important;
+    width:68px !important;
+    min-width:68px !important;
+    max-width:68px !important;
+    height:34px !important;
+    justify-self:center !important;
+    margin:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row .start-actions #reset,
+  html.expo-iphone-device #cfg .start-row .start-actions #homeLink{
+    margin:0 !important;
+  }
+}
+
+/* iPhone de poca altura: misma simetría, manteniendo el ajuste estable. */
+@media (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg #gameModeSelector{
+    grid-template-columns:repeat(2,122px) !important;
+    gap:6px !important;
+  }
+
+  html.expo-iphone-device #cfg #gameModeSelector .game-mode-option{
+    width:122px !important;
+    min-width:122px !important;
+    max-width:122px !important;
+  }
+
+  html.expo-iphone-device #cfg #gameModeSelector .game-mode-title{
+    font-size:9.6px !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row{
+    grid-template-columns:
+      32px 32px 18px 122px 18px 32px 32px !important;
+    grid-template-rows:32px !important;
+    column-gap:0 !important;
+  }
+
+  html.expo-iphone-device #cfg .start-row .start-actions{
+    grid-template-columns:32px 32px !important;
+    grid-template-rows:32px !important;
+    width:64px !important;
+    min-width:64px !important;
+    max-width:64px !important;
+    height:32px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
