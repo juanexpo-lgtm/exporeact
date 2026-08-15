@@ -12826,6 +12826,93 @@ html.expo-iphone-device .tactile-target-shape[style*="green"]{
 }
 </style>
 
+
+<style id="expoReactIPhoneV24Refine">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V24
+   SOLO iPhone.
+   - Carteles ELIGE... algo menores que en V23.
+   - MODOS más ligero y sin recuadro.
+   - En táctil, estímulo y opciones más abajo dejando margen superior.
+   ============================================================ */
+
+/* 1) Carteles: rebajar un poco el exceso de V23 */
+html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
+  font-size:18px !important;
+  line-height:1.1 !important;
+}
+
+@media (max-width:600px) and (orientation:portrait){
+  html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
+    font-size:17.4px !important;
+  }
+}
+
+/* 2) MODOS: menos peso y sin caja */
+html.expo-iphone-device #gameModeSelector::before{
+  font-size:11.5px !important;
+  font-weight:600 !important;
+  letter-spacing:.12em !important;
+  color:#3a3a3a !important;
+  background:transparent !important;
+  padding:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+
+/* 3) Modo táctil: bajar estímulo y opciones dejando más aire arriba */
+@media (orientation:portrait){
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-num:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-shape:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-sound:not(.is-fullscreen-color){
+    top:24.5% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-arr:not(.is-fullscreen-color){
+    top:27% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileChoices{
+    transform:translateY(18px) !important;
+  }
+}
+
+@media (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-num:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-shape:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-sound:not(.is-fullscreen-color){
+    top:23.8% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-arr:not(.is-fullscreen-color){
+    top:26% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileChoices{
+    transform:translateY(14px) !important;
+  }
+}
+
+@media (orientation:landscape){
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-num:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-shape:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-sound:not(.is-fullscreen-color){
+    top:22.5% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-arr:not(.is-fullscreen-color){
+    top:25% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileChoices{
+    transform:translateY(10px) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
