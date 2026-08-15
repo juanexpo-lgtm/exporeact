@@ -12692,6 +12692,47 @@ html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-number{
 }
 </style>
 
+
+<style id="expoReactIPhoneBannerBalanceV22">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V22
+   SOLO iPhone.
+   - Banner menos alto que en V21.
+   - Texto perfectamente centrado.
+   - Padding superior e inferior idénticos.
+   ============================================================ */
+
+html.expo-iphone-device #cfg .banner{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  height:auto !important;
+  min-height:44px !important;
+  padding-top:8px !important;
+  padding-bottom:8px !important;
+}
+
+html.expo-iphone-device #cfg .banner-main-title{
+  display:block !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  text-align:center !important;
+  line-height:.96 !important;
+}
+
+/* iPhone de poca altura */
+@media (max-width:600px) and (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg .banner{
+    min-height:42px !important;
+    padding-top:7px !important;
+    padding-bottom:7px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
