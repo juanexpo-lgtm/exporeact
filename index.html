@@ -12913,6 +12913,83 @@ html.expo-iphone-device #gameModeSelector::before{
 }
 </style>
 
+
+<style id="expoReactIPhoneStablePanelV26">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V26
+   SOLO iPhone.
+   - El panel principal no debe moverse ni apelotonarse al seleccionar tarjetas.
+   - Se anulan los desplazamientos/zooms de selección en el panel principal.
+   - Carteles del panel un pelín más pequeños.
+   ============================================================ */
+
+/* 1) Carteles del panel: un pelín más pequeños */
+html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
+  font-size:16.6px !important;
+  line-height:1.1 !important;
+}
+
+@media (max-width:600px) and (orientation:portrait){
+  html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
+    font-size:16.0px !important;
+  }
+}
+
+/* 2) PANEL ESTABLE:
+   en iPhone, al marcar tarjetas del panel principal, no debe cambiar
+   la posición aparente de filas ni producirse apelotonamiento. */
+html.expo-iphone-device #cfg #colors .color-card:has(input:checked) .swatch,
+html.expo-iphone-device #cfg #colors .color-card:has(input:checked):hover .swatch,
+html.expo-iphone-device #cfg #arrows .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #numbers .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #shapes .number-card:has(input:checked)::before,
+html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .swatch,
+html.expo-iphone-device #cfg #shapes .color-card:has(input:checked):hover .swatch,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked),
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked):hover,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked) .sound-card-content,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked):hover .sound-card-content{
+  transform:none !important;
+  translate:none !important;
+}
+
+/* Anular también los pequeños desplazamientos interiores de iconos/textos
+   cuando una tarjeta queda seleccionada, para que el conjunto no parezca moverse. */
+html.expo-iphone-device #cfg .arrow-card:has(input:checked) span,
+html.expo-iphone-device #cfg .number-card:has(input:checked) > span,
+html.expo-iphone-device #cfg .number-card:has(input:checked) .shape-preview,
+html.expo-iphone-device #cfg .number-card:has(input:checked) .shape-preview > svg,
+html.expo-iphone-device #cfg .number-card:has(input:checked) .shape-preview svg,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked) .voice-uploaded-icon,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked) .whistle-uploaded-icon,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked) .sound-number,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked) .sound-word-label,
+html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .shape-preview,
+html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .shape-preview svg{
+  transform:none !important;
+  translate:none !important;
+}
+
+/* Mantener la realimentación visual de selección, pero sin mover nada */
+html.expo-iphone-device #cfg #colors .color-card:has(input:checked) .swatch,
+html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .swatch,
+html.expo-iphone-device #cfg #arrows .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #numbers .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #shapes .number-card:has(input:checked)::before,
+html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked){
+  transition:background .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+}
+
+/* Bloque adicional: la fila/altura del panel no debe variar por selección */
+html.expo-iphone-device #cfg #colors,
+html.expo-iphone-device #cfg #arrows,
+html.expo-iphone-device #cfg #numbers,
+html.expo-iphone-device #cfg #shapes,
+html.expo-iphone-device #cfg #sounds{
+  align-items:center !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
