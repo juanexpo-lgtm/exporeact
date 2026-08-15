@@ -12578,6 +12578,120 @@ html.expo-iphone-device #repPlus span{
 }
 </style>
 
+
+<style id="expoReactIPhoneSpeedRepsSpacingV20">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V20
+   SOLO iPhone.
+   - Separa más VELOCIDAD y REPS.
+   - VELOCIDAD se desplaza un poco a la izquierda.
+   - REPS se desplaza un poco a la derecha.
+   ============================================================ */
+
+html.expo-iphone-device .speed-row.speed-row-with-repetitions{
+  width:100% !important;
+  justify-content:center !important;
+  gap:14px !important;
+}
+
+html.expo-iphone-device .speed-control-group{
+  transform:translateX(-9px) !important;
+}
+
+html.expo-iphone-device .repetition-control-group{
+  transform:translateX(9px) !important;
+}
+
+@media (max-width:600px) and (orientation:portrait){
+  html.expo-iphone-device .speed-row.speed-row-with-repetitions{
+    gap:16px !important;
+  }
+
+  html.expo-iphone-device .speed-control-group{
+    transform:translateX(-11px) !important;
+  }
+
+  html.expo-iphone-device .repetition-control-group{
+    transform:translateX(11px) !important;
+  }
+}
+
+@media (max-width:600px) and (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device .speed-row.speed-row-with-repetitions{
+    gap:14px !important;
+  }
+
+  html.expo-iphone-device .speed-control-group{
+    transform:translateX(-9px) !important;
+  }
+
+  html.expo-iphone-device .repetition-control-group{
+    transform:translateX(9px) !important;
+  }
+}
+
+@media (max-width:600px) and (orientation:landscape){
+  html.expo-iphone-device .speed-row.speed-row-with-repetitions{
+    gap:18px !important;
+  }
+
+  html.expo-iphone-device .speed-control-group{
+    transform:translateX(-12px) !important;
+  }
+
+  html.expo-iphone-device .repetition-control-group{
+    transform:translateX(12px) !important;
+  }
+}
+</style>
+
+
+<style id="expoReactIPhoneBannerAndSoundNumbersV21">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V21
+   SOLO iPhone.
+   - Banner EXPO REACT un poco más alto.
+   - En sonidos 1–5, acercar el número al icono de altavoz.
+   ============================================================ */
+
+html.expo-iphone-device #cfg .banner{
+  padding-top:8px !important;
+  padding-bottom:8px !important;
+  min-height:52px !important;
+}
+
+html.expo-iphone-device #cfg .banner-main-title{
+  line-height:.96 !important;
+}
+
+/* Tarjetas de sonido 1,2,3,4,5: número más cerca del altavoz */
+html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-card-content{
+  gap:1px !important;
+  justify-content:center !important;
+}
+
+html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-number{
+  margin-left:-2px !important;
+}
+
+/* Ajuste fino en iPhone de poca altura */
+@media (max-width:600px) and (orientation:portrait) and (max-height:760px){
+  html.expo-iphone-device #cfg .banner{
+    padding-top:7px !important;
+    padding-bottom:7px !important;
+    min-height:49px !important;
+  }
+
+  html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-card-content{
+    gap:0px !important;
+  }
+
+  html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-number{
+    margin-left:-1px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
