@@ -12914,35 +12914,39 @@ html.expo-iphone-device #gameModeSelector::before{
 </style>
 
 
-<style id="expoReactIPhoneStablePanelV26">
+<style id="expoReactIPhonePanelLockV27">
 /* ============================================================
-   EXPO REACT 2.0 · iPHONE V26
+   EXPO REACT 2.0 · iPHONE V27
    SOLO iPhone.
-   - El panel principal no debe moverse ni apelotonarse al seleccionar tarjetas.
-   - Se anulan los desplazamientos/zooms de selección en el panel principal.
+   - El panel principal queda fijo: no debe apelotonarse al seleccionar.
+   - Se neutralizan los cambios de escala/desplazamiento en el panel.
    - Carteles del panel un pelín más pequeños.
    ============================================================ */
 
-/* 1) Carteles del panel: un pelín más pequeños */
+/* Carteles del panel: solo un pelín más pequeños */
 html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
-  font-size:16.6px !important;
-  line-height:1.1 !important;
+  font-size:16.8px !important;
+  line-height:1.08 !important;
 }
 
 @media (max-width:600px) and (orientation:portrait){
   html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
-    font-size:16.0px !important;
+    font-size:16.2px !important;
   }
 }
 
-/* 2) PANEL ESTABLE:
-   en iPhone, al marcar tarjetas del panel principal, no debe cambiar
-   la posición aparente de filas ni producirse apelotonamiento. */
+/* Importante: en el panel principal de iPhone, al seleccionar tarjetas
+   no debe haber zoom ni desplazamiento visual de los elementos. */
 html.expo-iphone-device #cfg #colors .color-card:has(input:checked) .swatch,
 html.expo-iphone-device #cfg #colors .color-card:has(input:checked):hover .swatch,
 html.expo-iphone-device #cfg #arrows .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #arrows .arrow-card:has(input:checked):hover,
 html.expo-iphone-device #cfg #numbers .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #numbers .arrow-card:has(input:checked):hover,
+html.expo-iphone-device #cfg #numbers .number-card:has(input:checked)::before,
+html.expo-iphone-device #cfg #numbers .number-card:has(input:checked):hover::before,
 html.expo-iphone-device #cfg #shapes .number-card:has(input:checked)::before,
+html.expo-iphone-device #cfg #shapes .number-card:has(input:checked):hover::before,
 html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .swatch,
 html.expo-iphone-device #cfg #shapes .color-card:has(input:checked):hover .swatch,
 html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked),
@@ -12953,8 +12957,7 @@ html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked):hover .sound
   translate:none !important;
 }
 
-/* Anular también los pequeños desplazamientos interiores de iconos/textos
-   cuando una tarjeta queda seleccionada, para que el conjunto no parezca moverse. */
+/* También neutralizamos el movimiento interior de iconos/textos al seleccionar */
 html.expo-iphone-device #cfg .arrow-card:has(input:checked) span,
 html.expo-iphone-device #cfg .number-card:has(input:checked) > span,
 html.expo-iphone-device #cfg .number-card:has(input:checked) .shape-preview,
@@ -12970,23 +12973,15 @@ html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .shape-previ
   translate:none !important;
 }
 
-/* Mantener la realimentación visual de selección, pero sin mover nada */
+/* Mantener respuesta visual sin mover las filas */
 html.expo-iphone-device #cfg #colors .color-card:has(input:checked) .swatch,
-html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .swatch,
 html.expo-iphone-device #cfg #arrows .arrow-card:has(input:checked),
 html.expo-iphone-device #cfg #numbers .arrow-card:has(input:checked),
+html.expo-iphone-device #cfg #numbers .number-card:has(input:checked)::before,
 html.expo-iphone-device #cfg #shapes .number-card:has(input:checked)::before,
+html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .swatch,
 html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked){
-  transition:background .16s ease, box-shadow .16s ease, border-color .16s ease !important;
-}
-
-/* Bloque adicional: la fila/altura del panel no debe variar por selección */
-html.expo-iphone-device #cfg #colors,
-html.expo-iphone-device #cfg #arrows,
-html.expo-iphone-device #cfg #numbers,
-html.expo-iphone-device #cfg #shapes,
-html.expo-iphone-device #cfg #sounds{
-  align-items:center !important;
+  transition:background .16s ease, border-color .16s ease, box-shadow .16s ease !important;
 }
 </style>
 
@@ -21568,6 +21563,88 @@ try {
     patchDefsAndCards();
     patchMovementGreen();
   }, { passive:true });
+})();
+</script>
+
+
+<script id="expoReactIPhonePanelLockScriptV27">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const cfg = document.getElementById('cfg');
+  if (!cfg) return;
+
+  let lastWidth = 0;
+  let raf = 0;
+
+  function isPortrait(){
+    return window.innerHeight >= window.innerWidth;
+  }
+
+  function releaseLock(){
+    cfg.style.removeProperty('height');
+    cfg.style.removeProperty('max-height');
+    cfg.style.removeProperty('min-height');
+    cfg.style.removeProperty('row-gap');
+    cfg.style.removeProperty('overflow-y');
+  }
+
+  function lockPanel(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      if (!isPortrait()) {
+        releaseLock();
+        lastWidth = window.innerWidth;
+        return;
+      }
+
+      /* Esperamos a que la maquetación automática previa termine y
+         congelamos el layout resultante. */
+      const computed = getComputedStyle(cfg);
+      const rowGap = computed.rowGap;
+      const rect = cfg.getBoundingClientRect();
+      const lockedHeight = Math.round(rect.height);
+
+      cfg.style.setProperty('height', lockedHeight + 'px', 'important');
+      cfg.style.setProperty('max-height', lockedHeight + 'px', 'important');
+      cfg.style.setProperty('min-height', lockedHeight + 'px', 'important');
+      cfg.style.setProperty('row-gap', rowGap, 'important');
+      cfg.style.setProperty('overflow-y', 'hidden', 'important');
+
+      lastWidth = window.innerWidth;
+    });
+  }
+
+  function scheduleLock(){
+    setTimeout(lockPanel, 60);
+    setTimeout(lockPanel, 180);
+    setTimeout(lockPanel, 360);
+  }
+
+  window.addEventListener('load', scheduleLock, { passive:true });
+  window.addEventListener('orientationchange', () => {
+    releaseLock();
+    scheduleLock();
+  }, { passive:true });
+
+  window.addEventListener('resize', () => {
+    if (Math.abs(window.innerWidth - lastWidth) > 24) {
+      releaseLock();
+      scheduleLock();
+    }
+  }, { passive:true });
+
+  /* Al seleccionar tarjetas, NO recalculamos huecos ni alturas.
+     Solo bloqueamos una vez más al final del gesto, por seguridad. */
+  cfg.addEventListener('change', (e) => {
+    const target = e.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (!target.matches('input[type="checkbox"], input[type="radio"]')) return;
+    lockPanel();
+  }, true);
+
+  scheduleLock();
 })();
 </script>
 
