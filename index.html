@@ -12516,6 +12516,68 @@ html.expo-iphone-device #fullscreenBtn{
 }
 </style>
 
+
+<style id="expoReactIPhoneSoftSpeedRepControlsV19">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V19
+   SOLO iPhone.
+   Controles +/- de VELOCIDAD y REPS:
+   - nunca fondo negro;
+   - al pulsar: ligero oscurecimiento + pequeño zoom.
+   ============================================================ */
+
+html.expo-iphone-device #minus,
+html.expo-iphone-device #plus,
+html.expo-iphone-device #repMinus,
+html.expo-iphone-device #repPlus{
+  background:rgba(118,118,128,.12) !important;
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+  box-shadow:none !important;
+  filter:none !important;
+  -webkit-tap-highlight-color:transparent !important;
+  transition:
+    background .14s cubic-bezier(.2,.8,.2,1),
+    transform .14s cubic-bezier(.2,.8,.2,1) !important;
+}
+
+html.expo-iphone-device #minus:focus,
+html.expo-iphone-device #plus:focus,
+html.expo-iphone-device #repMinus:focus,
+html.expo-iphone-device #repPlus:focus,
+html.expo-iphone-device #minus:focus-visible,
+html.expo-iphone-device #plus:focus-visible,
+html.expo-iphone-device #repMinus:focus-visible,
+html.expo-iphone-device #repPlus:focus-visible{
+  background:rgba(118,118,128,.12) !important;
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+  outline:none !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+
+html.expo-iphone-device #minus:active,
+html.expo-iphone-device #plus:active,
+html.expo-iphone-device #repMinus:active,
+html.expo-iphone-device #repPlus:active{
+  background:rgba(118,118,128,.22) !important;
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+  transform:scale(1.045) !important;
+  box-shadow:none !important;
+  filter:none !important;
+}
+
+html.expo-iphone-device #minus span,
+html.expo-iphone-device #plus span,
+html.expo-iphone-device #repMinus span,
+html.expo-iphone-device #repPlus span{
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
