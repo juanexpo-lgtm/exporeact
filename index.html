@@ -12733,6 +12733,99 @@ html.expo-iphone-device #cfg .banner-main-title{
 }
 </style>
 
+
+<style id="expoReactIPhoneOnlyV23">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V23
+   SOLO iPhone:
+   - Deportivo: colores fullscreen en secuencia.
+   - Verde actualizado a #13C70A.
+   - "MODOS" centrado entre DEPORTIVO y TÁCTIL.
+   - Carteles ELIGE... un poco más grandes.
+   ============================================================ */
+
+/* 1) MODO DEPORTIVO: cuando salga color, ocupar toda la pantalla */
+html.expo-iphone-device #stage #movementColorPanel{
+  top:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  left:0 !important;
+  width:100vw !important;
+  max-width:none !important;
+  height:100% !important;
+  transform:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+}
+
+/* 2) MODOS centrado entre ambos botones */
+html.expo-iphone-device #gameModeSelector{
+  position:relative !important;
+}
+
+html.expo-iphone-device #gameModeSelector::before{
+  content:"MODOS";
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:9;
+  pointer-events:none;
+  text-transform:uppercase;
+  font-size:12px !important;
+  font-weight:800 !important;
+  letter-spacing:.16em !important;
+  line-height:1 !important;
+  color:#111 !important;
+  background:rgba(255,255,255,.94);
+  padding:3px 8px;
+  border-radius:999px;
+  box-shadow:0 1px 5px rgba(0,0,0,.08);
+}
+
+/* 3) Carteles ELIGE... un poco más grandes */
+html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
+  font-size:20px !important;
+  line-height:1.1 !important;
+}
+
+/* 4) Verde del panel/configuración solo en iPhone */
+html.expo-iphone-device #colors .color-card[data-green-card="true"] .swatch,
+html.expo-iphone-device #colors .color-card.is-green-card .swatch{
+  --inactive-color:#13C70A !important;
+  --pure-color:#13C70A !important;
+  background:var(--inactive-color) !important;
+}
+
+html.expo-iphone-device #colors .color-card[data-green-card="true"]:has(input:checked) .swatch,
+html.expo-iphone-device #colors .color-card.is-green-card:has(input:checked) .swatch{
+  background:#13C70A !important;
+}
+
+/* Refuerzo visual por si algún elemento conserva "green" inline */
+html.expo-iphone-device #stage .tactile-target-color[style*="green"],
+html.expo-iphone-device #stage .tactile-choice-color-chip[style*="green"],
+html.expo-iphone-device #stage #movementColorPanel[style*="green"]{
+  background:#13C70A !important;
+}
+
+html.expo-iphone-device .shape-preview[style*="green"],
+html.expo-iphone-device .tactile-target-shape[style*="green"]{
+  color:#13C70A !important;
+}
+
+@media (max-width:600px) and (orientation:portrait){
+  html.expo-iphone-device #cfg .section-wrap:not(.speed-legacy-heading) .section-title{
+    font-size:19px !important;
+  }
+
+  html.expo-iphone-device #gameModeSelector::before{
+    font-size:11px !important;
+    padding:3px 7px;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -21235,6 +21328,82 @@ try {
   if (/iPhone|iPod/i.test(ua)) {
     document.documentElement.classList.add("expo-iphone-device");
   }
+})();
+</script>
+
+
+<script id="expoReactIPhoneOnlyV23Script">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const GREEN = '#13C70A';
+
+  function patchDefsAndCards(){
+    if (!Array.isArray(window.defs)) return;
+
+    let greenColorIndex = -1;
+
+    window.defs.forEach((def, index) => {
+      if (!Array.isArray(def)) return;
+
+      if (def[0] === 'color' && String(def[2]).trim().toLowerCase() === 'green') {
+        def[2] = GREEN;
+        greenColorIndex = index;
+      }
+
+      if (def[0] === 'shape' && String(def[2]).trim().toLowerCase() === 'green') {
+        def[2] = GREEN;
+      }
+    });
+
+    if (greenColorIndex >= 0) {
+      const input = document.querySelector(`#colors input[data-stimulus="true"][value="${greenColorIndex}"]`);
+      const card = input?.closest('.color-card');
+      const swatch = card?.querySelector('.swatch');
+
+      if (card) {
+        card.dataset.greenCard = 'true';
+        card.classList.add('is-green-card');
+      }
+
+      if (swatch) {
+        swatch.style.setProperty('--inactive-color', GREEN);
+        swatch.style.setProperty('--pure-color', GREEN);
+        if (!input?.checked) {
+          swatch.style.background = 'var(--inactive-color)';
+        } else {
+          swatch.style.background = GREEN;
+        }
+      }
+    }
+
+    document.querySelectorAll('#shapes .shape-preview').forEach(preview => {
+      const raw = String(preview.style.color || '').trim().toLowerCase();
+      if (raw === 'green' || raw === 'rgb(0, 128, 0)') {
+        preview.style.color = GREEN;
+      }
+    });
+  }
+
+  /* Deportivo: si algún script sigue mandando "green", lo convertimos
+     a #13C70A solo en iPhone. */
+  function patchMovementGreen(){
+    if (typeof window.showMovementColorPanel !== 'function') return;
+    const original = window.showMovementColorPanel;
+    window.showMovementColorPanel = function(color){
+      const normalized = String(color || '').trim().toLowerCase();
+      return original(normalized === 'green' ? GREEN : color);
+    };
+  }
+
+  patchDefsAndCards();
+  patchMovementGreen();
+
+  window.addEventListener('load', () => {
+    patchDefsAndCards();
+    patchMovementGreen();
+  }, { passive:true });
 })();
 </script>
 
