@@ -22437,64 +22437,6 @@ try {
 </script>
 
 
-<script id="expoReactIPhoneSportArrowFixV35">
-(() => {
-  const root = document.documentElement;
-  if (!root.classList.contains('expo-iphone-device')) return;
-
-  const stage = document.getElementById('stage');
-  const arrow = document.getElementById('arrow');
-  if (!stage || !arrow || !window.MutationObserver) return;
-
-  const adjusted = {
-    0:   'translateY(-150px) rotate(0deg)',      // arriba: perfecta
-    180: 'translateY(108px) rotate(180deg)',     // abajo: subir
-    90:  'translateX(112px) rotate(90deg)',      // derecha: centrar
-    270: 'translateX(-112px) rotate(270deg)',    // izquierda: centrar
-
-    45:  'translate(104px,-132px) rotate(45deg)',
-    315: 'translate(-104px,-132px) rotate(315deg)',
-    135: 'translate(104px,108px) rotate(135deg)',
-    225: 'translate(-104px,108px) rotate(225deg)'
-  };
-
-  let applying = false;
-
-  function fixSportArrowPosition(){
-    if (applying) return;
-    if (stage.classList.contains('tactile-mode')) return;
-    if (getComputedStyle(arrow).display === 'none') return;
-
-    const raw = String(arrow.style.transform || '');
-    const match = raw.match(/rotate\(\s*(-?\d+(?:\.\d+)?)deg\s*\)/i);
-    if (!match) return;
-
-    let deg = Math.round(parseFloat(match[1])) % 360;
-    if (deg < 0) deg += 360;
-
-    const wanted = adjusted[deg];
-    if (!wanted || raw === wanted) return;
-
-    applying = true;
-    arrow.style.transform = wanted;
-    applying = false;
-  }
-
-  new MutationObserver(fixSportArrowPosition).observe(arrow, {
-    attributes:true,
-    attributeFilter:['style']
-  });
-
-  new MutationObserver(fixSportArrowPosition).observe(stage, {
-    attributes:true,
-    attributeFilter:['class','style']
-  });
-
-  window.addEventListener('load', fixSportArrowPosition, { passive:true });
-})();
-</script>
-
-
 <script id="expoReactIPhoneSportTimerAndArrowsScriptV36">
 (() => {
   const root = document.documentElement;
@@ -22607,6 +22549,15 @@ try {
 
   syncSportTimerPlacement();
 })();
+</script>
+
+
+<script id="expoReactIPhoneArrowDeadlockFixV37">
+/*
+  V37 · iPhone
+  Se elimina la corrección de flechas V35 para evitar conflicto con V36.
+  V36 queda como única lógica de posicionamiento de flechas deportivas.
+*/
 </script>
 
 </body>
