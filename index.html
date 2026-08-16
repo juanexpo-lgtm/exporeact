@@ -13179,6 +13179,79 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice-sour
 }
 </style>
 
+
+<style id="expoReactIPhoneSportTimerAndArrowsV36">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V36
+   SOLO iPhone
+   - Deportivo: flecha abajo más arriba.
+   - Deportivo: dcha/izda más centradas.
+   - Deportivo: crono integrado en la fila inferior de controles.
+   ============================================================ */
+
+/* Crono integrado SOLO en modo deportivo */
+html.expo-iphone-device #controls.iphone-sport-with-timer{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+}
+
+html.expo-iphone-device #controls.iphone-sport-with-timer #timerBox.iphone-sport-integrated{
+  position:static !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  margin:0 !important;
+  min-width:82px !important;
+  height:48px !important;
+  padding:0 14px !important;
+  border-radius:12px !important;
+  background:rgba(70,70,70,.40) !important;
+  backdrop-filter:blur(4px) !important;
+  -webkit-backdrop-filter:blur(4px) !important;
+  color:#fff !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:21px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  text-align:center !important;
+  font-variant-numeric:tabular-nums !important;
+  box-sizing:border-box !important;
+  z-index:auto !important;
+}
+
+@media (orientation:portrait){
+  html.expo-iphone-device #controls.iphone-sport-with-timer{
+    gap:9px !important;
+  }
+
+  html.expo-iphone-device #controls.iphone-sport-with-timer #timerBox.iphone-sport-integrated{
+    min-width:80px !important;
+    height:48px !important;
+    font-size:20px !important;
+    padding:0 12px !important;
+  }
+}
+
+@media (orientation:landscape){
+  html.expo-iphone-device #controls.iphone-sport-with-timer{
+    gap:8px !important;
+  }
+
+  html.expo-iphone-device #controls.iphone-sport-with-timer #timerBox.iphone-sport-integrated{
+    min-width:74px !important;
+    height:44px !important;
+    font-size:18px !important;
+    padding:0 11px !important;
+    border-radius:11px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22418,6 +22491,121 @@ try {
   });
 
   window.addEventListener('load', fixSportArrowPosition, { passive:true });
+})();
+</script>
+
+
+<script id="expoReactIPhoneSportTimerAndArrowsScriptV36">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const stage = document.getElementById('stage');
+  const arrow = document.getElementById('arrow');
+  const controls = document.getElementById('controls');
+  const timerBox = document.getElementById('timerBox');
+  const cursorCircle = document.getElementById('cursorCircle');
+
+  if (!stage || !arrow || !controls || !timerBox || !cursorCircle) return;
+
+  /* ==========================================================
+     1) Flechas deportivas mejor centradas en iPhone
+     ========================================================== */
+  const adjusted = {
+    0:   'translateY(-150px) rotate(0deg)',      // arriba: mantener
+    180: 'translateY(76px) rotate(180deg)',      // abajo: subir aún más
+    90:  'translateX(84px) rotate(90deg)',       // derecha: más al centro
+    270: 'translateX(-84px) rotate(270deg)',     // izquierda: más al centro
+
+    45:  'translate(104px,-132px) rotate(45deg)',
+    315: 'translate(-104px,-132px) rotate(315deg)',
+    135: 'translate(104px,76px) rotate(135deg)',
+    225: 'translate(-104px,76px) rotate(225deg)'
+  };
+
+  let applyingArrow = false;
+
+  function fixSportArrowPosition(){
+    if (applyingArrow) return;
+    if (stage.classList.contains('tactile-mode')) return;
+    if (getComputedStyle(arrow).display === 'none') return;
+
+    const raw = String(arrow.style.transform || '');
+    const match = raw.match(/rotate\(\s*(-?\d+(?:\.\d+)?)deg\s*\)/i);
+    if (!match) return;
+
+    let deg = Math.round(parseFloat(match[1])) % 360;
+    if (deg < 0) deg += 360;
+
+    const wanted = adjusted[deg];
+    if (!wanted || raw === wanted) return;
+
+    applyingArrow = true;
+    arrow.style.transform = wanted;
+    applyingArrow = false;
+  }
+
+  /* ==========================================================
+     2) Crono integrado en la fila inferior SOLO en deportivo
+     ========================================================== */
+  function isSportActive(){
+    return getComputedStyle(stage).display !== 'none' &&
+           !stage.classList.contains('tactile-mode');
+  }
+
+  function mountTimerInControls(){
+    if (timerBox.parentElement !== controls) {
+      controls.insertBefore(timerBox, controls.firstChild);
+    }
+    controls.classList.add('iphone-sport-with-timer');
+    timerBox.classList.add('iphone-sport-integrated');
+  }
+
+  function restoreTimerToStage(){
+    if (timerBox.parentElement !== stage) {
+      cursorCircle.insertAdjacentElement('afterend', timerBox);
+    }
+    controls.classList.remove('iphone-sport-with-timer');
+    timerBox.classList.remove('iphone-sport-integrated');
+  }
+
+  function syncSportTimerPlacement(){
+    if (isSportActive()) {
+      mountTimerInControls();
+    } else {
+      restoreTimerToStage();
+    }
+  }
+
+  const stageObserver = new MutationObserver(() => {
+    fixSportArrowPosition();
+    syncSportTimerPlacement();
+  });
+
+  stageObserver.observe(stage, {
+    attributes:true,
+    attributeFilter:['class','style']
+  });
+
+  const arrowObserver = new MutationObserver(() => {
+    fixSportArrowPosition();
+  });
+
+  arrowObserver.observe(arrow, {
+    attributes:true,
+    attributeFilter:['style']
+  });
+
+  window.addEventListener('load', () => {
+    fixSportArrowPosition();
+    syncSportTimerPlacement();
+  }, { passive:true });
+
+  document.addEventListener('visibilitychange', () => {
+    syncSportTimerPlacement();
+  }, { passive:true });
+
+  syncSportTimerPlacement();
 })();
 </script>
 
