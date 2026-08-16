@@ -21785,5 +21785,191 @@ try {
 })();
 </script>
 
+
+<script id="expoReactIPhoneAudioRestoreV29">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const soundIsEnabled = () => {
+    const toggle = document.getElementById('selectionSoundToggle');
+    return !toggle || toggle.checked;
+  };
+
+  function getRunningIPhoneContext(){
+    try{
+      if (typeof getExpoAudioContext !== 'function') return null;
+      const ctx = getExpoAudioContext();
+      if (!ctx) return null;
+
+      if (ctx.state === 'suspended' || ctx.state === 'interrupted'){
+        try{
+          const p = ctx.resume();
+          if (p && typeof p.catch === 'function') p.catch(()=>{});
+        }catch(error){}
+      }
+      return ctx;
+    }catch(error){
+      return null;
+    }
+  }
+
+  function makeTone({
+    frequency=1000,
+    endFrequency=null,
+    duration=.05,
+    peak=.18,
+    type='sine',
+    delay=.002
+  } = {}){
+    if (!soundIsEnabled()) return false;
+
+    const ctx = getRunningIPhoneContext();
+    if (!ctx) return false;
+
+    try{
+      const now = ctx.currentTime;
+      const start = now + delay;
+      const end = start + duration;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(frequency, start);
+
+      if (endFrequency && endFrequency > 0){
+        osc.frequency.exponentialRampToValueAtTime(endFrequency, end);
+      }
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(Math.max(.0002, peak), start + .003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(end + .01);
+      return true;
+    }catch(error){
+      return false;
+    }
+  }
+
+  function primeIPhoneAudio(){
+    const ctx = getRunningIPhoneContext();
+    if (!ctx) return;
+
+    try{
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.frequency.setValueAtTime(440, now);
+      gain.gain.setValueAtTime(0.00001, now);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + .015);
+    }catch(error){}
+  }
+
+  document.addEventListener('touchstart', primeIPhoneAudio, {
+    capture:true,
+    passive:true
+  });
+
+  document.addEventListener('pointerdown', primeIPhoneAudio, {
+    capture:true,
+    passive:true
+  });
+
+  if (typeof playSelectionClick === 'function'){
+    playSelectionClick = function(){
+      if (!soundIsEnabled()) return;
+      makeTone({
+        frequency:920,
+        endFrequency:760,
+        duration:.052,
+        peak:.20,
+        type:'sine',
+        delay:.001
+      });
+    };
+  }
+
+  if (typeof playHighControlClick === 'function'){
+    playHighControlClick = function(){
+      if (!soundIsEnabled()) return;
+
+      makeTone({
+        frequency:1850,
+        endFrequency:1350,
+        duration:.045,
+        peak:.26,
+        type:'sine',
+        delay:.001
+      });
+
+      makeTone({
+        frequency:2350,
+        endFrequency:1900,
+        duration:.030,
+        peak:.11,
+        type:'triangle',
+        delay:.001
+      });
+    };
+  }
+
+  if (typeof beep === 'function'){
+    beep = function(ms){
+      if (!soundIsEnabled()) return;
+
+      const duration = Math.max(.04, Number(ms || 120) / 1000);
+
+      makeTone({
+        frequency:1000,
+        endFrequency:1000,
+        duration,
+        peak:.30,
+        type:'sine',
+        delay:.001
+      });
+    };
+  }
+
+  const start = document.getElementById('start');
+
+  start?.addEventListener('touchstart', primeIPhoneAudio, {
+    capture:true,
+    passive:true
+  });
+
+  start?.addEventListener('pointerdown', primeIPhoneAudio, {
+    capture:true,
+    passive:true
+  });
+
+  start?.addEventListener('click', primeIPhoneAudio, {
+    capture:true
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && soundIsEnabled()){
+      const ctx = getRunningIPhoneContext();
+      if (ctx && ctx.state === 'suspended'){
+        try{
+          const p = ctx.resume();
+          if (p && typeof p.catch === 'function') p.catch(()=>{});
+        }catch(error){}
+      }
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
