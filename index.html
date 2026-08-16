@@ -12958,7 +12958,7 @@ html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked):hover .sound
 }
 
 /* También neutralizamos el movimiento interior de iconos/textos al seleccionar */
-html.expo-iphone-device #cfg .arrow-card:has(input:checked) span,
+html.expo-iphone-device #cfg #numbers .arrow-card:has(input:checked) span,
 html.expo-iphone-device #cfg .number-card:has(input:checked) > span,
 html.expo-iphone-device #cfg .number-card:has(input:checked) .shape-preview,
 html.expo-iphone-device #cfg .number-card:has(input:checked) .shape-preview > svg,
@@ -12982,6 +12982,20 @@ html.expo-iphone-device #cfg #shapes .number-card:has(input:checked)::before,
 html.expo-iphone-device #cfg #shapes .color-card:has(input:checked) .swatch,
 html.expo-iphone-device #cfg #sounds .sound-card:has(input:checked){
   transition:background .16s ease, border-color .16s ease, box-shadow .16s ease !important;
+}
+</style>
+
+
+<style id="expoReactIPhoneArrowCountdownFixV28">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V28
+   SOLO iPhone.
+   - Las flechas del panel conservan siempre su dirección.
+   - No se pierde la estabilidad del panel al seleccionarlas.
+   ============================================================ */
+
+html.expo-iphone-device #cfg #arrows .arrow-card > span{
+  transform-origin:center center !important;
 }
 </style>
 
@@ -21645,6 +21659,129 @@ try {
   }, true);
 
   scheduleLock();
+})();
+</script>
+
+
+<script id="expoReactIPhoneArrowCountdownFixScriptV28">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  /* ----------------------------------------------------------
+     1) FLECHAS DEL PANEL:
+        V27 anulaba con !important el transform del span seleccionado.
+        Reaplicamos como !important la rotación que ya existe inline
+        en cada flecha, sin cambiar su posición ni tamaño.
+     ---------------------------------------------------------- */
+  function preserveArrowDirections(){
+    document.querySelectorAll('#cfg #arrows .arrow-card > span').forEach(span => {
+      const inlineTransform = span.style.getPropertyValue('transform');
+      const match = String(inlineTransform).match(/rotate\(\s*(-?\d+(?:\.\d+)?)deg\s*\)/i);
+      if (!match) return;
+
+      span.style.setProperty(
+        'transform',
+        `rotate(${match[1]}deg)`,
+        'important'
+      );
+    });
+  }
+
+  preserveArrowDirections();
+
+  const arrows = document.getElementById('arrows');
+  if (arrows && window.MutationObserver){
+    new MutationObserver(preserveArrowDirections).observe(arrows, {
+      childList:true,
+      subtree:true
+    });
+  }
+
+  /* ----------------------------------------------------------
+     2) CUENTA ATRÁS TÁCTIL:
+        iOS puede suspender WebAudio si el primer resume ocurre
+        después de una espera asíncrona. Lo preparamos directamente
+        durante el gesto sobre COMENZAR.
+     ---------------------------------------------------------- */
+  const startButton = document.getElementById('start');
+
+  function primeCountdownAudio(){
+    try{
+      if (typeof getExpoAudioContext !== 'function') return;
+
+      const ctx = getExpoAudioContext();
+      if (!ctx) return;
+
+      const prime = () => {
+        try{
+          const oscillator = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          gain.gain.setValueAtTime(0.00001, ctx.currentTime);
+          oscillator.connect(gain);
+          gain.connect(ctx.destination);
+
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.012);
+        }catch(error){}
+      };
+
+      if (ctx.state === 'suspended'){
+        const resumed = ctx.resume();
+        if (resumed && typeof resumed.then === 'function'){
+          resumed.then(prime).catch(()=>{});
+        }
+      }else{
+        prime();
+      }
+    }catch(error){}
+  }
+
+  startButton?.addEventListener('pointerdown', primeCountdownAudio, {
+    capture:true,
+    passive:true
+  });
+
+  startButton?.addEventListener('touchstart', primeCountdownAudio, {
+    capture:true,
+    passive:true
+  });
+
+  startButton?.addEventListener('click', primeCountdownAudio, {
+    capture:true
+  });
+
+  /* Refuerzo: si iOS vuelve a suspender el contexto, beep intenta
+     reactivarlo antes de emitir el tono. Mantiene el mismo tono,
+     frecuencia, volumen y duración originales. */
+  if (typeof beep === 'function' && !window.__expoIPhoneBeepV28){
+    window.__expoIPhoneBeepV28 = true;
+
+    const originalBeepV28 = beep;
+
+    beep = function(ms){
+      try{
+        const ctx =
+          typeof getExpoAudioContext === 'function'
+            ? getExpoAudioContext()
+            : null;
+
+        if (ctx && ctx.state === 'suspended'){
+          const resumed = ctx.resume();
+
+          if (resumed && typeof resumed.then === 'function'){
+            resumed
+              .then(() => originalBeepV28(ms))
+              .catch(() => {});
+            return;
+          }
+        }
+      }catch(error){}
+
+      originalBeepV28(ms);
+    };
+  }
 })();
 </script>
 
