@@ -13252,6 +13252,60 @@ html.expo-iphone-device #controls.iphone-sport-with-timer #timerBox.iphone-sport
 }
 </style>
 
+
+<style id="expoReactIPhoneSportTimerAboveBarV38">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V38
+   SOLO iPhone
+   - Deportivo: flechas dcha/izda e inclinadas más centradas.
+   - Deportivo: crono encima de la barra inferior, centrado,
+     texto negro y sin recuadro.
+   ============================================================ */
+
+html.expo-iphone-device #timerBox.iphone-sport-integrated{
+  position:absolute !important;
+  left:50% !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:76px !important;
+  transform:translateX(-50%) !important;
+  margin:0 !important;
+  min-width:auto !important;
+  width:auto !important;
+  height:auto !important;
+  padding:0 !important;
+  border:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#111 !important;
+  display:block !important;
+  text-align:center !important;
+  font-size:29px !important;
+  font-weight:800 !important;
+  line-height:1 !important;
+  font-variant-numeric:tabular-nums !important;
+  z-index:35 !important;
+  pointer-events:none !important;
+}
+
+@media (orientation:portrait){
+  html.expo-iphone-device #timerBox.iphone-sport-integrated{
+    bottom:78px !important;
+    font-size:30px !important;
+  }
+}
+
+@media (orientation:landscape){
+  html.expo-iphone-device #timerBox.iphone-sport-integrated{
+    bottom:54px !important;
+    font-size:24px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22456,13 +22510,13 @@ try {
   const adjusted = {
     0:   'translateY(-150px) rotate(0deg)',      // arriba: mantener
     180: 'translateY(76px) rotate(180deg)',      // abajo: subir aún más
-    90:  'translateX(84px) rotate(90deg)',       // derecha: más al centro
-    270: 'translateX(-84px) rotate(270deg)',     // izquierda: más al centro
+    90:  'translate(34px,-34px) rotate(90deg)',       // derecha: más al centro
+    270: 'translate(-34px,-34px) rotate(270deg)',     // izquierda: más al centro
 
-    45:  'translate(104px,-132px) rotate(45deg)',
-    315: 'translate(-104px,-132px) rotate(315deg)',
-    135: 'translate(104px,76px) rotate(135deg)',
-    225: 'translate(-104px,76px) rotate(225deg)'
+    45:  'translate(73px,-93px) rotate(45deg)',
+    315: 'translate(-73px,-93px) rotate(315deg)',
+    135: 'translate(63px,46px) rotate(135deg)',
+    225: 'translate(-63px,46px) rotate(225deg)'
   };
 
   let applyingArrow = false;
@@ -22496,10 +22550,10 @@ try {
   }
 
   function mountTimerInControls(){
-    if (timerBox.parentElement !== controls) {
-      controls.insertBefore(timerBox, controls.firstChild);
+    if (timerBox.parentElement !== stage) {
+      cursorCircle.insertAdjacentElement('afterend', timerBox);
     }
-    controls.classList.add('iphone-sport-with-timer');
+    controls.classList.remove('iphone-sport-with-timer');
     timerBox.classList.add('iphone-sport-integrated');
   }
 
@@ -22558,6 +22612,11 @@ try {
   Se elimina la corrección de flechas V35 para evitar conflicto con V36.
   V36 queda como única lógica de posicionamiento de flechas deportivas.
 */
+</script>
+
+
+<script id="expoReactIPhoneSportArrowTimerV38Marker">
+/* V38 · iPhone: flechas deportivas recolocadas y crono encima de la barra inferior. */
 </script>
 
 </body>
