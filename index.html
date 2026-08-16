@@ -13112,6 +13112,73 @@ html.expo-iphone-device #stage:not(.tactile-mode) #soundStimulus .movement-speak
 }
 </style>
 
+
+<style id="expoReactIPhoneTactileAndArrowsV35">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V35
+   SOLO iPhone
+   - Táctil: bajar estímulo y filas de opciones.
+   - Táctil: radios iguales al panel frontal.
+   - Deportivo: corregir posición de flechas abajo/izda/dcha.
+   ============================================================ */
+
+/* 1) MODO TÁCTIL: bajar un poco más el estímulo */
+@media (orientation:portrait){
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-num:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-shape:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-sound:not(.is-fullscreen-color){
+    top:26.2% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-arr:not(.is-fullscreen-color){
+    top:28.6% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileChoices{
+    transform:translateY(30px) !important;
+  }
+}
+
+@media (orientation:landscape){
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-num:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-shape:not(.is-fullscreen-color),
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-sound:not(.is-fullscreen-color){
+    top:24.2% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileTarget.tactile-target-arr:not(.is-fullscreen-color){
+    top:26.6% !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileChoices{
+    transform:translateY(18px) !important;
+  }
+}
+
+/* 2) MODO TÁCTIL: radios iguales al panel frontal */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice-source.arrow-card{
+  border-radius:9px !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice-source.number-card{
+  border-radius:9px !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice-source.number-card::before{
+  border-radius:9px !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice-source.sound-card{
+  border-radius:9px !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice-source.color-card .swatch{
+  border-radius:7px !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22293,6 +22360,64 @@ try {
 
   patchTriangleGreen();
   window.addEventListener('load', patchTriangleGreen, { passive:true });
+})();
+</script>
+
+
+<script id="expoReactIPhoneSportArrowFixV35">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const stage = document.getElementById('stage');
+  const arrow = document.getElementById('arrow');
+  if (!stage || !arrow || !window.MutationObserver) return;
+
+  const adjusted = {
+    0:   'translateY(-150px) rotate(0deg)',      // arriba: perfecta
+    180: 'translateY(108px) rotate(180deg)',     // abajo: subir
+    90:  'translateX(112px) rotate(90deg)',      // derecha: centrar
+    270: 'translateX(-112px) rotate(270deg)',    // izquierda: centrar
+
+    45:  'translate(104px,-132px) rotate(45deg)',
+    315: 'translate(-104px,-132px) rotate(315deg)',
+    135: 'translate(104px,108px) rotate(135deg)',
+    225: 'translate(-104px,108px) rotate(225deg)'
+  };
+
+  let applying = false;
+
+  function fixSportArrowPosition(){
+    if (applying) return;
+    if (stage.classList.contains('tactile-mode')) return;
+    if (getComputedStyle(arrow).display === 'none') return;
+
+    const raw = String(arrow.style.transform || '');
+    const match = raw.match(/rotate\(\s*(-?\d+(?:\.\d+)?)deg\s*\)/i);
+    if (!match) return;
+
+    let deg = Math.round(parseFloat(match[1])) % 360;
+    if (deg < 0) deg += 360;
+
+    const wanted = adjusted[deg];
+    if (!wanted || raw === wanted) return;
+
+    applying = true;
+    arrow.style.transform = wanted;
+    applying = false;
+  }
+
+  new MutationObserver(fixSportArrowPosition).observe(arrow, {
+    attributes:true,
+    attributeFilter:['style']
+  });
+
+  new MutationObserver(fixSportArrowPosition).observe(stage, {
+    attributes:true,
+    attributeFilter:['class','style']
+  });
+
+  window.addEventListener('load', fixSportArrowPosition, { passive:true });
 })();
 </script>
 
