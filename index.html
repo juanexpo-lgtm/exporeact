@@ -13306,6 +13306,80 @@ html.expo-iphone-device #timerBox.iphone-sport-integrated{
 }
 </style>
 
+
+<style id="expoReactIPhoneV39Refinements">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V39
+   SOLO iPhone
+   - Sonidos 1-5: números mayores, altavoz mismo tamaño, microajuste lateral.
+   - Cuenta atrás 3/2/1 más grande.
+   - Deportivo: crono más pequeño, menos pesado y más abajo.
+   ============================================================ */
+
+/* Tarjetas de voces/sonidos 1–5 del panel */
+html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .voice-uploaded-icon{
+  transform:translateX(3px) !important;
+}
+
+html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-number:not(.is-command){
+  transform:translateX(-3px) !important;
+  font-size:18px !important;
+  font-weight:700 !important;
+  letter-spacing:-.04em !important;
+}
+
+@media (orientation:landscape){
+  html.expo-iphone-device #cfg #sounds .sound-card:nth-child(-n+5) .sound-number:not(.is-command){
+    font-size:16px !important;
+  }
+}
+
+/* Cuenta atrás: solo 3 / 2 / 1 */
+html.expo-iphone-device #countdown .countdown-number{
+  width:clamp(214px,40vh,420px) !important;
+  height:clamp(214px,40vh,420px) !important;
+  font-size:clamp(136px,30vh,312px) !important;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  html.expo-iphone-device #countdown .countdown-number{
+    width:min(59vw,37vh) !important;
+    height:min(59vw,37vh) !important;
+    font-size:min(31vw,172px) !important;
+  }
+}
+
+@media (max-width:900px) and (orientation:landscape){
+  html.expo-iphone-device #countdown .countdown-number{
+    width:min(34vw,40vh) !important;
+    height:min(34vw,40vh) !important;
+    font-size:min(22vw,184px) !important;
+  }
+}
+
+/* Crono deportivo */
+html.expo-iphone-device #timerBox.iphone-sport-integrated{
+  bottom:60px !important;
+  font-size:24px !important;
+  font-weight:600 !important;
+  color:#111 !important;
+}
+
+@media (orientation:portrait){
+  html.expo-iphone-device #timerBox.iphone-sport-integrated{
+    bottom:62px !important;
+    font-size:24px !important;
+  }
+}
+
+@media (orientation:landscape){
+  html.expo-iphone-device #timerBox.iphone-sport-integrated{
+    bottom:42px !important;
+    font-size:20px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22510,13 +22584,13 @@ try {
   const adjusted = {
     0:   'translateY(-150px) rotate(0deg)',      // arriba: mantener
     180: 'translateY(76px) rotate(180deg)',      // abajo: subir aún más
-    90:  'translate(34px,-34px) rotate(90deg)',       // derecha: más al centro
-    270: 'translate(-34px,-34px) rotate(270deg)',     // izquierda: más al centro
+    90:  'translate(54px,-34px) rotate(90deg)',       // derecha: más al centro
+    270: 'translate(-54px,-34px) rotate(270deg)',     // izquierda: más al centro
 
-    45:  'translate(73px,-93px) rotate(45deg)',
-    315: 'translate(-73px,-93px) rotate(315deg)',
-    135: 'translate(63px,46px) rotate(135deg)',
-    225: 'translate(-63px,46px) rotate(225deg)'
+    45:  'translate(73px,-93px) rotate(37deg)',
+    315: 'translate(-73px,-93px) rotate(323deg)',
+    135: 'translate(63px,46px) rotate(143deg)',
+    225: 'translate(-63px,46px) rotate(217deg)'
   };
 
   let applyingArrow = false;
@@ -22617,6 +22691,11 @@ try {
 
 <script id="expoReactIPhoneSportArrowTimerV38Marker">
 /* V38 · iPhone: flechas deportivas recolocadas y crono encima de la barra inferior. */
+</script>
+
+
+<script id="expoReactIPhoneV39Marker">
+/* V39 · iPhone: retoques en sonidos 1-5, cuenta atrás, crono y flechas deportivas. */
 </script>
 
 </body>
