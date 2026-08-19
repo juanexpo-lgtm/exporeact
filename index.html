@@ -13674,6 +13674,39 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactIPhoneV48TactileTimerInline">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V48
+   Modo táctil: crono sin recuadro negro, en negro y más bajo,
+   alineado con la fila informativa.
+   ============================================================ */
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#000 !important;
+  text-shadow:none !important;
+  align-self:end !important;
+  justify-self:stretch !important;
+  transform:translateY(3px) !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *{
+  color:#000 !important;
+  text-shadow:none !important;
+}
+
+@media (max-width:520px){
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
+    transform:translateY(2px) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23161,6 +23194,11 @@ try {
   window.setTimeout(normalizeFinalArrowChoices,80);
   window.setTimeout(normalizeFinalArrowChoices,250);
 })();
+</script>
+
+
+<script id="expoReactIPhoneV48Marker">
+/* V48 · iPhone: crono táctil sin recuadro negro, negro y más bajo. */
 </script>
 
 </body>
