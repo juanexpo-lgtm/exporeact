@@ -13707,6 +13707,26 @@ html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *{
 }
 </style>
 
+
+<style id="expoReactIPhoneV49TactileTimerForceCSS">
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-tactile-timer-plain{
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#000 !important;
+  text-shadow:none !important;
+  align-self:end !important;
+  justify-self:stretch !important;
+  transform:translateY(4px) !important;
+}
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-tactile-timer-plain *{
+  color:#000 !important;
+  text-shadow:none !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23199,6 +23219,96 @@ try {
 
 <script id="expoReactIPhoneV48Marker">
 /* V48 · iPhone: crono táctil sin recuadro negro, negro y más bajo. */
+</script>
+
+
+<script id="expoReactIPhoneV49TactileTimerForceJS">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const stage = document.getElementById('stage');
+  const timer = document.getElementById('timerBox');
+  if (!stage || !timer) return;
+
+  const props = {
+    background: 'transparent',
+    border: 'none',
+    boxShadow: 'none',
+    backdropFilter: 'none',
+    webkitBackdropFilter: 'none',
+    color: '#000',
+    textShadow: 'none',
+    transform: 'translateY(4px)',
+    margin: '0',
+    paddingTop: '1px',
+    paddingBottom: '1px'
+  };
+
+  function applyPlainTactileTimer(){
+    timer.classList.add('iphone-tactile-timer-plain');
+    timer.classList.remove('iphone-sport-integrated');
+
+    timer.style.setProperty('background', props.background, 'important');
+    timer.style.setProperty('border', props.border, 'important');
+    timer.style.setProperty('box-shadow', props.boxShadow, 'important');
+    timer.style.setProperty('backdrop-filter', props.backdropFilter, 'important');
+    timer.style.setProperty('-webkit-backdrop-filter', props.webkitBackdropFilter, 'important');
+    timer.style.setProperty('color', props.color, 'important');
+    timer.style.setProperty('text-shadow', props.textShadow, 'important');
+    timer.style.setProperty('transform', props.transform, 'important');
+    timer.style.setProperty('margin', props.margin, 'important');
+    timer.style.setProperty('padding-top', props.paddingTop, 'important');
+    timer.style.setProperty('padding-bottom', props.paddingBottom, 'important');
+
+    timer.querySelectorAll('*').forEach(node => {
+      node.style.setProperty('color', '#000', 'important');
+      node.style.setProperty('text-shadow', 'none', 'important');
+    });
+  }
+
+  function clearPlainTactileTimer(){
+    timer.classList.remove('iphone-tactile-timer-plain');
+    [
+      'background',
+      'border',
+      'box-shadow',
+      'backdrop-filter',
+      '-webkit-backdrop-filter',
+      'color',
+      'text-shadow',
+      'transform',
+      'margin',
+      'padding-top',
+      'padding-bottom'
+    ].forEach(prop => timer.style.removeProperty(prop));
+
+    timer.querySelectorAll('*').forEach(node => {
+      node.style.removeProperty('color');
+      node.style.removeProperty('text-shadow');
+    });
+  }
+
+  function syncTimerAppearance(){
+    if (stage.classList.contains('tactile-mode')) {
+      applyPlainTactileTimer();
+    } else {
+      clearPlainTactileTimer();
+    }
+  }
+
+  const stageObs = new MutationObserver(syncTimerAppearance);
+  stageObs.observe(stage, { attributes: true, attributeFilter: ['class'] });
+
+  const bodyObs = new MutationObserver(syncTimerAppearance);
+  bodyObs.observe(document.body, { childList: true, subtree: true });
+
+  window.addEventListener('load', syncTimerAppearance, { passive: true });
+  syncTimerAppearance();
+  requestAnimationFrame(syncTimerAppearance);
+  setTimeout(syncTimerAppearance, 80);
+  setTimeout(syncTimerAppearance, 250);
+})();
 </script>
 
 </body>
