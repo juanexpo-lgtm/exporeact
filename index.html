@@ -13573,6 +13573,57 @@ html.expo-iphone-device #countdown .countdown-number{
 }
 </style>
 
+
+<style id="expoReactIPhoneV43TactileArrowGlyphFix">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V43
+   SOLO iPhone
+   - Modo táctil: flechas de opciones renderizadas como glifo
+     propio, centrado y con tamaño controlado.
+   ============================================================ */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice{
+  overflow:hidden !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice .iphone-arrow-glyph-card{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice .iphone-arrow-glyph{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  color:#111 !important;
+  font-family:"Segoe UI Symbol","Apple Symbols","Arial Unicode MS",sans-serif !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  font-size:clamp(30px, 9.2vw, 48px) !important;
+  transform:none !important;
+  text-align:center !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice.is-voice-arrow .iphone-arrow-glyph{
+  font-size:clamp(32px, 9.6vw, 50px) !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -13591,7 +13642,7 @@ html.expo-iphone-device #countdown .countdown-number{
     <span class="game-mode-description">Toca la tarjeta que coincide</span>
   </button>
 </div>
-<div class="section-wrap"><div class="section-title">ELIGE COLORESS</div></div><div class="grid colors-grid" id="colors"></div>
+<div class="section-wrap"><div class="section-title">ELIGE COLORES</div></div><div class="grid colors-grid" id="colors"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FLECHAS DE DIRECCIÓN</div></div><div class="grid" id="arrows"></div>
 <div class="section-wrap"><div class="section-title">ELIGE NÚMEROS</div></div><div class="grid" id="numbers"></div>
 <div class="section-wrap"><div class="section-title">ELIGE FORMAS</div></div><div class="grid colors-grid" id="shapes"></div>
@@ -23006,6 +23057,94 @@ try {
       button.dataset.type = 'sound';
       button.classList.add('is-voice-arrow');
       button.dataset.voiceArrow = String(arrowIndex);
+    }
+
+    return button;
+  };
+})();
+</script>
+
+
+<script id="expoReactIPhoneV43TactileArrowGlyphFixScript">
+(function(){
+  const isIPhone = document.documentElement.classList.contains('expo-iphone-device');
+  if(!isIPhone) return;
+  if(typeof window.makeTactileChoice !== 'function') return;
+
+  const ALL_DEFS = (typeof defs !== 'undefined') ? defs : (window.defs || []);
+  if(!ALL_DEFS || !ALL_DEFS.length) return;
+
+  const COMMAND_TO_ARROW_INDEX = {
+    IZDA:8,
+    IZQUIERDA:8,
+    LEFT:8,
+    GAUCHE:8,
+    DCHA:9,
+    DERECHA:9,
+    RIGHT:9,
+    DROITE:9,
+    ADELANTE:10,
+    FWD:10,
+    FRONT:10,
+    AVANT:10,
+    ATRAS:11,
+    BACK:11,
+    ARRIERE:11
+  };
+
+  function normalizeCommand(value){
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .trim()
+      .toUpperCase();
+  }
+
+  function getArrowInfo(choiceIndex){
+    const definition = ALL_DEFS[choiceIndex] || [];
+    if(definition[0] === 'arr'){
+      return { arrowIndex: choiceIndex, glyph: definition[1] || '' };
+    }
+    if(definition[0] === 'sound'){
+      const cmd = normalizeCommand(definition[3]);
+      const arrowIndex = COMMAND_TO_ARROW_INDEX[cmd];
+      if(Number.isInteger(arrowIndex)){
+        const arrowDef = ALL_DEFS[arrowIndex] || [];
+        return { arrowIndex, glyph: arrowDef[1] || '' };
+      }
+    }
+    return null;
+  }
+
+  const previousMakeTactileChoice = window.makeTactileChoice;
+
+  window.makeTactileChoice = function(index){
+    const button = previousMakeTactileChoice(index);
+    if(!button) return button;
+
+    const arrowInfo = getArrowInfo(index);
+    if(!arrowInfo || !arrowInfo.glyph) return button;
+
+    const card = document.createElement('div');
+    card.className = 'iphone-arrow-glyph-card tactile-choice-source';
+
+    const glyph = document.createElement('div');
+    glyph.className = 'iphone-arrow-glyph';
+    glyph.textContent = arrowInfo.glyph;
+
+    card.appendChild(glyph);
+    button.replaceChildren(card);
+    button.classList.add('iphone-arrow-glyph-choice');
+
+    const definition = ALL_DEFS[index] || [];
+    if(definition[0] === 'arr'){
+      button.dataset.type = 'arr';
+      button.classList.remove('is-voice-arrow');
+      delete button.dataset.voiceArrow;
+    }else{
+      button.dataset.type = 'sound';
+      button.classList.add('is-voice-arrow');
+      button.dataset.voiceArrow = String(arrowInfo.arrowIndex);
     }
 
     return button;
