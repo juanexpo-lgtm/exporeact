@@ -13514,6 +13514,65 @@ html.expo-iphone-device #countdown .countdown-number{
 }
 </style>
 
+
+<style id="expoReactIPhoneV42TactileArrowsRenderFix">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V42
+   SOLO iPhone
+   - Modo táctil: render REAL de flechas en opciones,
+     sin clonar el SVG gigante del panel.
+   - Cuenta atrás: subir un pelín los números dentro del círculo.
+   ============================================================ */
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow{
+  overflow:hidden !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow .iphone-tactile-arrow-card{
+  position:absolute !important;
+  inset:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow .iphone-tactile-arrow-wrap{
+  width:74% !important;
+  height:74% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  transform-origin:center center !important;
+  flex:0 0 auto !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow .iphone-tactile-arrow-wrap svg{
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  overflow:visible !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow.is-voice-arrow .iphone-tactile-arrow-wrap{
+  width:76% !important;
+  height:76% !important;
+}
+
+/* Cuenta atrás: súbelos un pelín dentro del círculo */
+html.expo-iphone-device #countdown .countdown-number{
+  transform:translateY(-2px) !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22840,6 +22899,118 @@ try {
 
 <script id="expoReactIPhoneV41Marker">
 /* V41 · iPhone: corrección REAL del dimensionado de flechas táctiles. */
+</script>
+
+
+<script id="expoReactIPhoneV42TactileArrowsRenderFixScript">
+/* ============================================================
+   V42 · iPhone
+   Sustitución REAL del contenido de flechas táctiles por un
+   render limpio y escalable.
+   ============================================================ */
+(function(){
+  const isIPhone = document.documentElement.classList.contains('expo-iphone-device');
+  if(!isIPhone) return;
+  if(typeof window.makeTactileChoice !== 'function') return;
+  if(!Array.isArray(window.defs) && typeof defs === 'undefined') return;
+
+  const ALL_DEFS = (typeof defs !== 'undefined') ? defs : window.defs;
+
+  const COMMAND_TO_ARROW_INDEX = {
+    IZDA:8,
+    IZQUIERDA:8,
+    LEFT:8,
+    GAUCHE:8,
+
+    DCHA:9,
+    DERECHA:9,
+    RIGHT:9,
+    DROITE:9,
+
+    ADELANTE:10,
+    FWD:10,
+    FRONT:10,
+    AVANT:10,
+
+    ATRAS:11,
+    BACK:11,
+    ARRIERE:11
+  };
+
+  function normalizeCommand(value){
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .trim()
+      .toUpperCase();
+  }
+
+  function getArrowIndexForChoice(choiceIndex){
+    const definition = ALL_DEFS[choiceIndex] || [];
+    if(definition[0] === 'arr') return choiceIndex;
+
+    if(definition[0] === 'sound'){
+      const command = normalizeCommand(definition[3]);
+      if(Number.isInteger(COMMAND_TO_ARROW_INDEX[command])){
+        return COMMAND_TO_ARROW_INDEX[command];
+      }
+    }
+    return null;
+  }
+
+  function createArrowSVG(){
+    return `
+      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <path d="M50 10 L80 40 H62 V90 H38 V40 H20 Z"
+              fill="currentColor"></path>
+      </svg>
+    `;
+  }
+
+  function createRenderedArrowCard(arrowIndex){
+    const def = ALL_DEFS[arrowIndex] || [];
+    const rotation = Number(def[2] || 0);
+
+    const card = document.createElement('div');
+    card.className = 'iphone-tactile-arrow-card tactile-choice-source';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'iphone-tactile-arrow-wrap';
+    wrap.style.transform = `rotate(${rotation}deg)`;
+
+    wrap.innerHTML = createArrowSVG();
+    card.appendChild(wrap);
+    return card;
+  }
+
+  const previousMakeTactileChoice = window.makeTactileChoice;
+
+  window.makeTactileChoice = function(index){
+    const button = previousMakeTactileChoice(index);
+    if(!button) return button;
+
+    const arrowIndex = getArrowIndexForChoice(index);
+    if(!Number.isInteger(arrowIndex)) return button;
+
+    const renderedCard = createRenderedArrowCard(arrowIndex);
+
+    button.replaceChildren(renderedCard);
+    button.classList.add('iphone-rendered-arrow');
+
+    const originalDef = ALL_DEFS[index] || [];
+    if(originalDef[0] === 'arr'){
+      button.dataset.type = 'arr';
+      button.classList.remove('is-voice-arrow');
+      delete button.dataset.voiceArrow;
+    }else{
+      button.dataset.type = 'sound';
+      button.classList.add('is-voice-arrow');
+      button.dataset.voiceArrow = String(arrowIndex);
+    }
+
+    return button;
+  };
+})();
 </script>
 
 </body>
