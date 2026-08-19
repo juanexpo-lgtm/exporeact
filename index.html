@@ -13380,6 +13380,65 @@ html.expo-iphone-device #timerBox.iphone-sport-integrated{
 }
 </style>
 
+
+<style id="expoReactIPhoneV40TactileArrowsCountdown">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V40
+   SOLO iPhone
+   - Táctil: corregir dimensionado de flechas dentro de sus recuadros.
+   - Cuenta atrás: subir un pelín los números dentro del círculo.
+   ============================================================ */
+
+/* 1) Modo táctil: flechas de opciones bien dimensionadas */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card,
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card{
+  width:68px !important;
+  height:68px !important;
+  border-radius:9px !important;
+  box-sizing:border-box !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card > span,
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span{
+  width:100% !important;
+  height:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  position:relative !important;
+  inset:auto !important;
+  margin:0 !important;
+  transform-origin:center center !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card svg,
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card svg{
+  width:66% !important;
+  height:66% !important;
+  display:block !important;
+  margin:0 !important;
+  flex:0 0 auto !important;
+}
+
+/* 2) Cuenta atrás: subir un pelín 3 · 2 · 1 dentro del círculo */
+html.expo-iphone-device #countdown .countdown-number{
+  box-sizing:border-box !important;
+  padding-bottom:8px !important;
+}
+
+@media (max-width:520px) and (orientation:portrait){
+  html.expo-iphone-device #countdown .countdown-number{
+    padding-bottom:7px !important;
+  }
+}
+
+@media (max-width:900px) and (orientation:landscape){
+  html.expo-iphone-device #countdown .countdown-number{
+    padding-bottom:6px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22696,6 +22755,11 @@ try {
 
 <script id="expoReactIPhoneV39Marker">
 /* V39 · iPhone: retoques en sonidos 1-5, cuenta atrás, crono y flechas deportivas. */
+</script>
+
+
+<script id="expoReactIPhoneV40Marker">
+/* V40 · iPhone: flechas táctiles dimensionadas y números de cuenta atrás ajustados. */
 </script>
 
 </body>
