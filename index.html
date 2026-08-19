@@ -13439,6 +13439,81 @@ html.expo-iphone-device #countdown .countdown-number{
 }
 </style>
 
+
+<style id="expoReactIPhoneV41TactileArrowsRealFix">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V41
+   SOLO iPhone
+   - Modo táctil: corrección REAL del tamaño y centrado
+     de las flechas dentro de sus recuadros de opciones.
+   ============================================================ */
+
+/* La tarjeta clonada sigue llenando el botón, pero ahora se usa
+   como contenedor flex real del icono, sin deformaciones. */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card,
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:9px !important;
+  overflow:hidden !important;
+  box-sizing:border-box !important;
+}
+
+/* El span rotado debe dejar de ocupar tamaño ambiguo:
+   se fija un cuadro interno centrado. */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card > span,
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span{
+  position:static !important;
+  inset:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  width:76% !important;
+  height:76% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  flex:0 0 76% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  transform-origin:center center !important;
+  box-sizing:border-box !important;
+}
+
+/* El SVG ya no va a un tamaño fijo pequeño: llena su cuadro interno. */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card > span > svg,
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span > svg{
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  display:block !important;
+  margin:0 !important;
+  flex:0 0 auto !important;
+}
+
+/* Un pequeño ajuste específico para que las flechas de voz
+   no queden más pequeñas que las táctiles normales. */
+html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span{
+  width:78% !important;
+  height:78% !important;
+  flex-basis:78% !important;
+}
+
+/* Cuenta atrás: afinar un poco más la subida del número dentro del círculo. */
+html.expo-iphone-device #countdown .countdown-number{
+  padding-bottom:10px !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -22760,6 +22835,11 @@ try {
 
 <script id="expoReactIPhoneV40Marker">
 /* V40 · iPhone: flechas táctiles dimensionadas y números de cuenta atrás ajustados. */
+</script>
+
+
+<script id="expoReactIPhoneV41Marker">
+/* V41 · iPhone: corrección REAL del dimensionado de flechas táctiles. */
 </script>
 
 </body>
