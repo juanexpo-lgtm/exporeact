@@ -13625,10 +13625,10 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.ipho
 </style>
 
 
-<style id="expoReactIPhoneV45TactileArrowStructuralFix">
+<style id="expoReactIPhoneV46TactileArrowStructuralFix">
 /* ============================================================
-   EXPO REACT 2.0 · iPHONE V45
-   CORRECCIÓN ESTRUCTURAL DE FLECHAS TÁCTILES
+   EXPO REACT 2.0 · iPHONE V46
+   FLECHAS TÁCTILES · MISMO SVG DE LA APP
    ============================================================ */
 
 html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-tactile-arrow-safe-choice{
@@ -14523,15 +14523,23 @@ function makeTactileChoice(index){
     arrowSafe.setAttribute("aria-hidden","true");
 
     const rotation=Number(definition[2] || 0);
-    arrowSafe.style.setProperty("transform",`rotate(${rotation}deg)`,"important");
-    arrowSafe.innerHTML=`
-      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <path d="M50 7 L85 40 H65 V93 H35 V40 H15 Z" fill="currentColor"></path>
-      </svg>`;
+    arrowSafe.style.setProperty("transform",`translate(-50%,-50%) rotate(${rotation}deg)`,"important");
+
+    const sourceArrowSvg=document.querySelector(`#arrows input[value="${index}"]`)?.closest("label")?.querySelector("svg");
+    const safeSvg=sourceArrowSvg ? sourceArrowSvg.cloneNode(true) : null;
+    if(safeSvg){
+      safeSvg.removeAttribute('width');
+      safeSvg.removeAttribute('height');
+      safeSvg.setAttribute('aria-hidden','true');
+      safeSvg.setAttribute('focusable','false');
+      arrowSafe.appendChild(safeSvg);
+    }
 
     button.dataset.type="arr";
     button.classList.add("iphone-tactile-arrow-safe-choice");
-    button.appendChild(arrowSafe);
+    if(safeSvg){
+      button.appendChild(arrowSafe);
+    }
   }else if(source){
     const visual=source.cloneNode(true);
     visual.removeAttribute("for");
@@ -23027,7 +23035,7 @@ try {
 /* V41 · iPhone: corrección REAL del dimensionado de flechas táctiles. */
 </script>
 
-<script id="expoReactIPhoneV45TactileArrowDOMGuard">
+<script id="expoReactIPhoneV46TactileArrowDOMGuard">
 (function(){
   const root=document.documentElement;
   if(!root.classList.contains('expo-iphone-device')) return;
@@ -23062,7 +23070,7 @@ try {
     return null;
   }
 
-  function makeSafeArrow(rotation){
+  function makeSafeArrow(rotation, arrowIndex){
     const visual=document.createElement('span');
     visual.className='iphone-tactile-arrow-safe-final';
     visual.setAttribute('aria-hidden','true');
@@ -23074,10 +23082,16 @@ try {
       'important'
     );
 
-    visual.innerHTML=`
-      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-        <path d="M50 7 L85 40 H65 V93 H35 V40 H15 Z" fill="currentColor"></path>
-      </svg>`;
+    const sourceArrowSvg=document.querySelector(`#arrows input[value="${arrowIndex}"]`)?.closest('label')?.querySelector('svg');
+    if(sourceArrowSvg){
+      const safeSvg=sourceArrowSvg.cloneNode(true);
+      safeSvg.removeAttribute('width');
+      safeSvg.removeAttribute('height');
+      safeSvg.setAttribute('aria-hidden','true');
+      safeSvg.setAttribute('focusable','false');
+      visual.appendChild(safeSvg);
+    }
+
     return visual;
   }
 
@@ -23106,8 +23120,8 @@ try {
         ) return;
 
         /* Aquí se elimina TODO: SVG grande, span, arrow-card clonada, etc. */
-        button.replaceChildren(makeSafeArrow(rotation));
-        button.dataset.iphoneArrowSafe=marker;
+        button.replaceChildren(makeSafeArrow(rotation, arrowIndex));
+        button.dataset.iphoneArrowSafe='v46-'+marker;
         button.classList.add('iphone-tactile-arrow-safe-choice');
 
         const original=defs[index] || [];
