@@ -13625,7 +13625,7 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.ipho
 </style>
 
 
-<style id="expoReactIPhoneV46TactileArrowStructuralFix">
+<style id="expoReactIPhoneV47TactileArrowStructuralFix">
 /* ============================================================
    EXPO REACT 2.0 · iPHONE V46
    FLECHAS TÁCTILES · MISMO SVG DE LA APP
@@ -23035,7 +23035,13 @@ try {
 /* V41 · iPhone: corrección REAL del dimensionado de flechas táctiles. */
 </script>
 
-<script id="expoReactIPhoneV46TactileArrowDOMGuard">
+<script id="expoReactIPhoneV47TactileArrowDOMGuard">
+/*
+  V47 · iPhone
+  Fix de congelación:
+  la marca de normalización y la condición de salida usan ahora
+  exactamente el mismo valor, evitando el bucle del MutationObserver.
+*/
 (function(){
   const root=document.documentElement;
   if(!root.classList.contains('expo-iphone-device')) return;
@@ -23111,7 +23117,7 @@ try {
 
         const arrowDefinition=defs[arrowIndex] || [];
         const rotation=Number(arrowDefinition[2] || 0);
-        const marker=`v45-${arrowIndex}-${rotation}`;
+        const marker=`v47-${arrowIndex}-${rotation}`;
 
         if(
           button.dataset.iphoneArrowSafe===marker &&
@@ -23121,7 +23127,7 @@ try {
 
         /* Aquí se elimina TODO: SVG grande, span, arrow-card clonada, etc. */
         button.replaceChildren(makeSafeArrow(rotation, arrowIndex));
-        button.dataset.iphoneArrowSafe='v46-'+marker;
+        button.dataset.iphoneArrowSafe=marker;
         button.classList.add('iphone-tactile-arrow-safe-choice');
 
         const original=defs[index] || [];
