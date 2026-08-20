@@ -13379,252 +13379,6 @@ html.expo-iphone-device #timerBox.iphone-sport-integrated{
   }
 }
 </style>
-
-
-<style id="expoReactIPhoneV40TactileArrowsCountdown">
-/* ============================================================
-   EXPO REACT 2.0 · iPHONE V40
-   SOLO iPhone
-   - Táctil: corregir dimensionado de flechas dentro de sus recuadros.
-   - Cuenta atrás: subir un pelín los números dentro del círculo.
-   ============================================================ */
-
-/* 1) Modo táctil: flechas de opciones bien dimensionadas */
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card,
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card{
-  width:68px !important;
-  height:68px !important;
-  border-radius:9px !important;
-  box-sizing:border-box !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card > span,
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span{
-  width:100% !important;
-  height:100% !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  position:relative !important;
-  inset:auto !important;
-  margin:0 !important;
-  transform-origin:center center !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card svg,
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card svg{
-  width:66% !important;
-  height:66% !important;
-  display:block !important;
-  margin:0 !important;
-  flex:0 0 auto !important;
-}
-
-/* 2) Cuenta atrás: subir un pelín 3 · 2 · 1 dentro del círculo */
-html.expo-iphone-device #countdown .countdown-number{
-  box-sizing:border-box !important;
-  padding-bottom:8px !important;
-}
-
-@media (max-width:520px) and (orientation:portrait){
-  html.expo-iphone-device #countdown .countdown-number{
-    padding-bottom:7px !important;
-  }
-}
-
-@media (max-width:900px) and (orientation:landscape){
-  html.expo-iphone-device #countdown .countdown-number{
-    padding-bottom:6px !important;
-  }
-}
-</style>
-
-
-<style id="expoReactIPhoneV41TactileArrowsRealFix">
-/* ============================================================
-   EXPO REACT 2.0 · iPHONE V41
-   SOLO iPhone
-   - Modo táctil: corrección REAL del tamaño y centrado
-     de las flechas dentro de sus recuadros de opciones.
-   ============================================================ */
-
-/* La tarjeta clonada sigue llenando el botón, pero ahora se usa
-   como contenedor flex real del icono, sin deformaciones. */
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card,
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card{
-  position:absolute !important;
-  inset:0 !important;
-  width:100% !important;
-  height:100% !important;
-  margin:0 !important;
-  padding:0 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  background:transparent !important;
-  border:0 !important;
-  border-radius:9px !important;
-  overflow:hidden !important;
-  box-sizing:border-box !important;
-}
-
-/* El span rotado debe dejar de ocupar tamaño ambiguo:
-   se fija un cuadro interno centrado. */
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card > span,
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span{
-  position:static !important;
-  inset:auto !important;
-  margin:0 !important;
-  padding:0 !important;
-  width:76% !important;
-  height:76% !important;
-  min-width:0 !important;
-  min-height:0 !important;
-  flex:0 0 76% !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  transform-origin:center center !important;
-  box-sizing:border-box !important;
-}
-
-/* El SVG ya no va a un tamaño fijo pequeño: llena su cuadro interno. */
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice[data-type="arr"] .tactile-choice-source.arrow-card > span > svg,
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span > svg{
-  width:100% !important;
-  height:100% !important;
-  max-width:none !important;
-  max-height:none !important;
-  display:block !important;
-  margin:0 !important;
-  flex:0 0 auto !important;
-}
-
-/* Un pequeño ajuste específico para que las flechas de voz
-   no queden más pequeñas que las táctiles normales. */
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.is-voice-arrow .tactile-choice-source.arrow-card > span{
-  width:78% !important;
-  height:78% !important;
-  flex-basis:78% !important;
-}
-
-/* Cuenta atrás: afinar un poco más la subida del número dentro del círculo. */
-html.expo-iphone-device #countdown .countdown-number{
-  padding-bottom:10px !important;
-}
-</style>
-
-
-<style id="expoReactIPhoneV42TactileArrowsRenderFix">
-/* ============================================================
-   EXPO REACT 2.0 · iPHONE V42
-   SOLO iPhone
-   - Modo táctil: render REAL de flechas en opciones,
-     sin clonar el SVG gigante del panel.
-   - Cuenta atrás: subir un pelín los números dentro del círculo.
-   ============================================================ */
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow{
-  overflow:hidden !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow .iphone-tactile-arrow-card{
-  position:absolute !important;
-  inset:0 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  width:100% !important;
-  height:100% !important;
-  margin:0 !important;
-  padding:0 !important;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:hidden !important;
-  pointer-events:none !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow .iphone-tactile-arrow-wrap{
-  width:74% !important;
-  height:74% !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  transform-origin:center center !important;
-  flex:0 0 auto !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow .iphone-tactile-arrow-wrap svg{
-  width:100% !important;
-  height:100% !important;
-  display:block !important;
-  overflow:visible !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-rendered-arrow.is-voice-arrow .iphone-tactile-arrow-wrap{
-  width:76% !important;
-  height:76% !important;
-}
-
-/* Cuenta atrás: súbelos un pelín dentro del círculo */
-html.expo-iphone-device #countdown .countdown-number{
-  transform:translateY(-2px) !important;
-}
-</style>
-
-
-<style id="expoReactIPhoneV43TactileArrowGlyphFix">
-/* ============================================================
-   EXPO REACT 2.0 · iPHONE V43
-   SOLO iPhone
-   - Modo táctil: flechas de opciones renderizadas como glifo
-     propio, centrado y con tamaño controlado.
-   ============================================================ */
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice{
-  overflow:hidden !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice .iphone-arrow-glyph-card{
-  position:absolute !important;
-  inset:0 !important;
-  width:100% !important;
-  height:100% !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  margin:0 !important;
-  padding:0 !important;
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:hidden !important;
-  pointer-events:none !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice .iphone-arrow-glyph{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  width:100% !important;
-  height:100% !important;
-  margin:0 !important;
-  padding:0 !important;
-  color:#111 !important;
-  font-family:"Segoe UI Symbol","Apple Symbols","Arial Unicode MS",sans-serif !important;
-  font-weight:700 !important;
-  line-height:1 !important;
-  font-size:clamp(30px, 9.2vw, 48px) !important;
-  transform:none !important;
-  text-align:center !important;
-}
-
-html.expo-iphone-device #stage.tactile-mode #tactileChoices .tactile-choice.iphone-arrow-glyph-choice.is-voice-arrow .iphone-arrow-glyph{
-  font-size:clamp(32px, 9.6vw, 50px) !important;
-}
-</style>
-
-
 <style id="expoReactIPhoneV47TactileArrowStructuralFix">
 /* ============================================================
    EXPO REACT 2.0 · iPHONE V46
@@ -13674,12 +13428,55 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
-
-<style id="expoReactIPhoneV48dTactileTimerSameHeightAsWrong">
-/* iPhone · modo táctil · crono con EXACTAMENTE la misma franja vertical que FALLOS */
-@media (max-width:600px) and (orientation:portrait){
+<style id="expoReactIPhoneV49CleanTactileInfoRow">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V49 CLEAN
+   Una sola fuente de verdad para la fila informativa táctil.
+   ============================================================ */
+@media (max-width:600px){
   html.expo-iphone-device #stage.tactile-mode #tactileInfoRow{
+    display:grid !important;
+    width:min(calc(100vw - 14px),480px) !important;
+    max-width:calc(100vw - 14px) !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    grid-template-rows:40px !important;
+    column-gap:3px !important;
     align-items:center !important;
+    justify-items:stretch !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #tactileScore{
+    display:contents !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow .tactile-score-correct{
+    grid-column:1 !important;
+    grid-row:1 !important;
+  }
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow .tactile-score-wrong{
+    grid-column:2 !important;
+    grid-row:1 !important;
+  }
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
+    grid-column:3 !important;
+    grid-row:1 !important;
+  }
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow .tactile-score-missed{
+    grid-column:4 !important;
+    grid-row:1 !important;
+  }
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow .tactile-score-average{
+    grid-column:5 !important;
+    grid-row:1 !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow .tactile-score-item{
+    height:38px !important;
+    min-height:38px !important;
+    padding:3px 2px !important;
+    margin:0 !important;
+    align-self:center !important;
+    box-sizing:border-box !important;
   }
 
   html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
@@ -13693,22 +13490,25 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
     min-width:0 !important;
     height:38px !important;
     min-height:38px !important;
-    padding:0 2px !important;
     margin:0 !important;
+    padding:0 2px !important;
     align-self:center !important;
     justify-self:stretch !important;
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
-    line-height:1 !important;
+    box-sizing:border-box !important;
     background:transparent !important;
-    border:none !important;
-    border-color:transparent !important;
-    box-shadow:none !important;
+    border:0 !important;
     border-radius:0 !important;
-    text-shadow:none !important;
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
     color:#000 !important;
     -webkit-text-fill-color:#000 !important;
+    text-shadow:none !important;
+    font-size:14px !important;
+    line-height:1 !important;
     transform:none !important;
   }
 
@@ -13717,21 +13517,6 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
     -webkit-text-fill-color:#000 !important;
     text-shadow:none !important;
   }
-}
-</style>
-
-<style id="expoReactIPhoneV48fTactileTimerRealAlignment">
-/* iPhone · táctil: crono 30 px más bajo que FALLOS. */
-html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
-  background:transparent !important;
-  border:none !important;
-  border-color:transparent !important;
-  box-shadow:none !important;
-  backdrop-filter:none !important;
-  -webkit-backdrop-filter:none !important;
-  color:#000 !important;
-  -webkit-text-fill-color:#000 !important;
-  text-shadow:none !important;
 }
 </style>
 
@@ -23085,17 +22870,6 @@ try {
 <script id="expoReactIPhoneV39Marker">
 /* V39 · iPhone: retoques en sonidos 1-5, cuenta atrás, crono y flechas deportivas. */
 </script>
-
-
-<script id="expoReactIPhoneV40Marker">
-/* V40 · iPhone: flechas táctiles dimensionadas y números de cuenta atrás ajustados. */
-</script>
-
-
-<script id="expoReactIPhoneV41Marker">
-/* V41 · iPhone: corrección REAL del dimensionado de flechas táctiles. */
-</script>
-
 <script id="expoReactIPhoneV47TactileArrowDOMGuard">
 /*
   V47 · iPhone
@@ -23223,141 +22997,5 @@ try {
   window.setTimeout(normalizeFinalArrowChoices,250);
 })();
 </script>
-
-
-<script id="expoReactIPhoneV48fTactileTimerRealAlignmentJS">
-(() => {
-  const root = document.documentElement;
-  if (!root.classList.contains('expo-iphone-device')) return;
-
-  const stage = document.getElementById('stage');
-  const timer = document.getElementById('timerBox');
-  if (!stage || !timer) return;
-
-  let resizeObserver = null;
-  let observedWrong = null;
-  let observedTimer = null;
-  let raf1 = 0;
-  let raf2 = 0;
-
-  function applyVisualStyle(){
-    timer.style.setProperty('background', 'transparent', 'important');
-    timer.style.setProperty('border', 'none', 'important');
-    timer.style.setProperty('border-color', 'transparent', 'important');
-    timer.style.setProperty('box-shadow', 'none', 'important');
-    timer.style.setProperty('backdrop-filter', 'none', 'important');
-    timer.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
-    timer.style.setProperty('color', '#000', 'important');
-    timer.style.setProperty('-webkit-text-fill-color', '#000', 'important');
-    timer.style.setProperty('text-shadow', 'none', 'important');
-  }
-
-  function alignExactly(){
-    if (!stage.classList.contains('tactile-mode')) return;
-
-    const row = document.getElementById('tactileInfoRow');
-    const wrong = row?.querySelector('.tactile-score-wrong');
-    if (!row || !wrong || timer.parentElement !== row) return;
-
-    applyVisualStyle();
-
-    /* 1. Igualar primero la altura REAL a la de FALLOS. */
-    timer.style.setProperty('transform', 'none', 'important');
-
-    const wrongRectBefore = wrong.getBoundingClientRect();
-    if (!wrongRectBefore.height) return;
-
-    const exactHeight = `${wrongRectBefore.height}px`;
-    timer.style.setProperty('height', exactHeight, 'important');
-    timer.style.setProperty('min-height', exactHeight, 'important');
-
-    cancelAnimationFrame(raf1);
-    cancelAnimationFrame(raf2);
-
-    /*
-      2. Medir ya con la misma altura.
-      3. Mover únicamente en Y la diferencia EXACTA entre ambos top.
-    */
-    raf1 = requestAnimationFrame(() => {
-      timer.style.setProperty('transform', 'none', 'important');
-
-      raf2 = requestAnimationFrame(() => {
-        const wrongRect = wrong.getBoundingClientRect();
-        const timerRect = timer.getBoundingClientRect();
-
-        if (!wrongRect.height || !timerRect.height) return;
-
-        const deltaY = (wrongRect.top - timerRect.top) + 30;
-
-        timer.style.setProperty(
-          'transform',
-          `translateY(${deltaY}px)`,
-          'important'
-        );
-
-        timer.dataset.iphoneAlignedToWrong = 'true';
-        timer.dataset.iphoneAlignmentDeltaY = deltaY.toFixed(3);
-      });
-    });
-
-    if ('ResizeObserver' in window) {
-      if (!resizeObserver) {
-        resizeObserver = new ResizeObserver(() => {
-          requestAnimationFrame(alignExactly);
-        });
-      }
-
-      if (observedWrong !== wrong) {
-        if (observedWrong) resizeObserver.unobserve(observedWrong);
-        resizeObserver.observe(wrong);
-        observedWrong = wrong;
-      }
-
-      if (observedTimer !== timer) {
-        if (observedTimer) resizeObserver.unobserve(observedTimer);
-        resizeObserver.observe(timer);
-        observedTimer = timer;
-      }
-    }
-  }
-
-  function scheduleAlignment(){
-    alignExactly();
-    requestAnimationFrame(alignExactly);
-    setTimeout(alignExactly, 60);
-    setTimeout(alignExactly, 180);
-    setTimeout(alignExactly, 400);
-  }
-
-  const stageObserver = new MutationObserver(() => {
-    scheduleAlignment();
-  });
-
-  stageObserver.observe(stage, {
-    attributes: true,
-    attributeFilter: ['class'],
-    childList: true,
-    subtree: false
-  });
-
-  const bodyObserver = new MutationObserver((mutations) => {
-    if (mutations.some(m => m.type === 'childList')) {
-      scheduleAlignment();
-    }
-  });
-
-  bodyObserver.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
-  window.addEventListener('resize', scheduleAlignment, {passive:true});
-  window.addEventListener('orientationchange', scheduleAlignment, {passive:true});
-  window.addEventListener('load', scheduleAlignment, {passive:true});
-
-  scheduleAlignment();
-})();
-</script>
-
 </body>
 </html>
