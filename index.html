@@ -13727,6 +13727,61 @@ html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-tac
 }
 </style>
 
+
+<style id="expoReactIPhoneV50TactileTimerCentered">
+/* ============================================================
+   EXPO REACT 2.0 · iPHONE V50
+   Modo táctil: crono centrado entre FALLOS y PÉRDIDAS
+   y centrado verticalmente respecto a esos recuadros.
+   ============================================================ */
+
+/* La fila se define con columna central automática para el crono */
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto minmax(0,1fr) minmax(0,1fr) !important;
+  align-items:center !important;
+}
+
+/* Timer exactamente centrado en su columna */
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-tactile-timer-plain{
+  grid-column:3 !important;
+  grid-row:1 !important;
+  justify-self:center !important;
+  align-self:center !important;
+  width:auto !important;
+  min-width:46px !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#000 !important;
+  text-shadow:none !important;
+  line-height:1 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  transform:none !important;
+}
+
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *,
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-tactile-timer-plain *{
+  color:#000 !important;
+  text-shadow:none !important;
+}
+
+@media (max-width:520px){
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-tactile-timer-plain{
+    min-width:42px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23308,6 +23363,61 @@ try {
   requestAnimationFrame(syncTimerAppearance);
   setTimeout(syncTimerAppearance, 80);
   setTimeout(syncTimerAppearance, 250);
+})();
+</script>
+
+
+<script id="expoReactIPhoneV50TactileTimerCenteredJS">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const stage = document.getElementById('stage');
+  const timer = document.getElementById('timerBox');
+  if (!stage || !timer) return;
+
+  function applyCenteredTactileTimer(){
+    if (!stage.classList.contains('tactile-mode')) return;
+
+    timer.classList.add('iphone-tactile-timer-plain');
+    timer.style.setProperty('background', 'transparent', 'important');
+    timer.style.setProperty('border', 'none', 'important');
+    timer.style.setProperty('box-shadow', 'none', 'important');
+    timer.style.setProperty('backdrop-filter', 'none', 'important');
+    timer.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+    timer.style.setProperty('color', '#000', 'important');
+    timer.style.setProperty('text-shadow', 'none', 'important');
+    timer.style.setProperty('transform', 'none', 'important');
+    timer.style.setProperty('width', 'auto', 'important');
+    timer.style.setProperty('min-width', '46px', 'important');
+    timer.style.setProperty('height', 'auto', 'important');
+    timer.style.setProperty('min-height', '0', 'important');
+    timer.style.setProperty('padding', '0', 'important');
+    timer.style.setProperty('margin', '0', 'important');
+    timer.style.setProperty('display', 'flex', 'important');
+    timer.style.setProperty('align-items', 'center', 'important');
+    timer.style.setProperty('justify-content', 'center', 'important');
+    timer.style.setProperty('align-self', 'center', 'important');
+    timer.style.setProperty('justify-self', 'center', 'important');
+
+    timer.querySelectorAll('*').forEach(node => {
+      node.style.setProperty('color', '#000', 'important');
+      node.style.setProperty('text-shadow', 'none', 'important');
+    });
+  }
+
+  function sync(){
+    if (stage.classList.contains('tactile-mode')) {
+      applyCenteredTactileTimer();
+    }
+  }
+
+  const obs = new MutationObserver(sync);
+  obs.observe(stage, { attributes: true, attributeFilter: ['class'] });
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 80);
+  setTimeout(sync, 250);
 })();
 </script>
 
