@@ -13546,6 +13546,51 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactIPhoneV51TimerNoBoxCSS">
+/* ============================================================
+   V51 · iPhone + modo táctil + secuencia
+   CRONO SIN RECUADRO REAL
+   ============================================================ */
+@media (max-width: 600px){
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box{
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    text-shadow: none !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox::before,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox::after,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box::before,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box::after{
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box *{
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    text-shadow: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23023,5 +23068,65 @@ try {
   window.setTimeout(normalizeFinalArrowChoices,250);
 })();
 </script>
+
+<script id="expoReactIPhoneV51TimerNoBoxJS">
+(() => {
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  const timer = document.getElementById('timerBox');
+  if (!root || !stage || !timer) return;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  function applyNoBox(){
+    if (!stage.classList.contains('tactile-mode')) return;
+
+    timer.classList.add('iphone-no-timer-box');
+    const styles = [
+      ['background', 'none'],
+      ['background-color', 'transparent'],
+      ['background-image', 'none'],
+      ['border', '0'],
+      ['outline', '0'],
+      ['box-shadow', 'none'],
+      ['border-radius', '0'],
+      ['backdrop-filter', 'none'],
+      ['-webkit-backdrop-filter', 'none'],
+      ['color', '#000'],
+      ['-webkit-text-fill-color', '#000'],
+      ['text-shadow', 'none']
+    ];
+    for (const [prop, value] of styles){
+      timer.style.setProperty(prop, value, 'important');
+    }
+    timer.querySelectorAll('*').forEach(node => {
+      node.style.setProperty('color', '#000', 'important');
+      node.style.setProperty('-webkit-text-fill-color', '#000', 'important');
+      node.style.setProperty('text-shadow', 'none', 'important');
+      node.style.setProperty('background', 'transparent', 'important');
+      node.style.setProperty('box-shadow', 'none', 'important');
+    });
+  }
+
+  function sync(){
+    if (stage.classList.contains('tactile-mode')) applyNoBox();
+  }
+
+  const obs = new MutationObserver(sync);
+  obs.observe(stage, { attributes: true, attributeFilter: ['class'] });
+
+  const bodyObs = new MutationObserver(sync);
+  bodyObs.observe(document.body, { childList: true, subtree: true });
+
+  window.addEventListener('load', sync, { passive:true });
+  window.addEventListener('resize', sync, { passive:true });
+
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 60);
+  setTimeout(sync, 180);
+  setTimeout(sync, 400);
+})();
+</script>
+
 </body>
 </html>
