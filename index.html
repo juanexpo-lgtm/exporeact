@@ -13720,8 +13720,8 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
-<style id="expoReactIPhoneV48eTactileTimerRealAlignment">
-/* iPhone · táctil: aspecto del crono. La posición Y exacta se sincroniza por JS. */
+<style id="expoReactIPhoneV48fTactileTimerRealAlignment">
+/* iPhone · táctil: crono 30 px más bajo que FALLOS. */
 html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
   background:transparent !important;
   border:none !important;
@@ -23225,7 +23225,7 @@ try {
 </script>
 
 
-<script id="expoReactIPhoneV48eTactileTimerRealAlignmentJS">
+<script id="expoReactIPhoneV48fTactileTimerRealAlignmentJS">
 (() => {
   const root = document.documentElement;
   if (!root.classList.contains('expo-iphone-device')) return;
@@ -23287,7 +23287,7 @@ try {
 
         if (!wrongRect.height || !timerRect.height) return;
 
-        const deltaY = wrongRect.top - timerRect.top;
+        const deltaY = (wrongRect.top - timerRect.top) + 30;
 
         timer.style.setProperty(
           'transform',
