@@ -13719,6 +13719,22 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
   }
 }
 </style>
+
+<style id="expoReactIPhoneV48eTactileTimerRealAlignment">
+/* iPhone · táctil: aspecto del crono. La posición Y exacta se sincroniza por JS. */
+html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox{
+  background:transparent !important;
+  border:none !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  text-shadow:none !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23205,6 +23221,141 @@ try {
   requestAnimationFrame(normalizeFinalArrowChoices);
   window.setTimeout(normalizeFinalArrowChoices,80);
   window.setTimeout(normalizeFinalArrowChoices,250);
+})();
+</script>
+
+
+<script id="expoReactIPhoneV48eTactileTimerRealAlignmentJS">
+(() => {
+  const root = document.documentElement;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const stage = document.getElementById('stage');
+  const timer = document.getElementById('timerBox');
+  if (!stage || !timer) return;
+
+  let resizeObserver = null;
+  let observedWrong = null;
+  let observedTimer = null;
+  let raf1 = 0;
+  let raf2 = 0;
+
+  function applyVisualStyle(){
+    timer.style.setProperty('background', 'transparent', 'important');
+    timer.style.setProperty('border', 'none', 'important');
+    timer.style.setProperty('border-color', 'transparent', 'important');
+    timer.style.setProperty('box-shadow', 'none', 'important');
+    timer.style.setProperty('backdrop-filter', 'none', 'important');
+    timer.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+    timer.style.setProperty('color', '#000', 'important');
+    timer.style.setProperty('-webkit-text-fill-color', '#000', 'important');
+    timer.style.setProperty('text-shadow', 'none', 'important');
+  }
+
+  function alignExactly(){
+    if (!stage.classList.contains('tactile-mode')) return;
+
+    const row = document.getElementById('tactileInfoRow');
+    const wrong = row?.querySelector('.tactile-score-wrong');
+    if (!row || !wrong || timer.parentElement !== row) return;
+
+    applyVisualStyle();
+
+    /* 1. Igualar primero la altura REAL a la de FALLOS. */
+    timer.style.setProperty('transform', 'none', 'important');
+
+    const wrongRectBefore = wrong.getBoundingClientRect();
+    if (!wrongRectBefore.height) return;
+
+    const exactHeight = `${wrongRectBefore.height}px`;
+    timer.style.setProperty('height', exactHeight, 'important');
+    timer.style.setProperty('min-height', exactHeight, 'important');
+
+    cancelAnimationFrame(raf1);
+    cancelAnimationFrame(raf2);
+
+    /*
+      2. Medir ya con la misma altura.
+      3. Mover únicamente en Y la diferencia EXACTA entre ambos top.
+    */
+    raf1 = requestAnimationFrame(() => {
+      timer.style.setProperty('transform', 'none', 'important');
+
+      raf2 = requestAnimationFrame(() => {
+        const wrongRect = wrong.getBoundingClientRect();
+        const timerRect = timer.getBoundingClientRect();
+
+        if (!wrongRect.height || !timerRect.height) return;
+
+        const deltaY = wrongRect.top - timerRect.top;
+
+        timer.style.setProperty(
+          'transform',
+          `translateY(${deltaY}px)`,
+          'important'
+        );
+
+        timer.dataset.iphoneAlignedToWrong = 'true';
+        timer.dataset.iphoneAlignmentDeltaY = deltaY.toFixed(3);
+      });
+    });
+
+    if ('ResizeObserver' in window) {
+      if (!resizeObserver) {
+        resizeObserver = new ResizeObserver(() => {
+          requestAnimationFrame(alignExactly);
+        });
+      }
+
+      if (observedWrong !== wrong) {
+        if (observedWrong) resizeObserver.unobserve(observedWrong);
+        resizeObserver.observe(wrong);
+        observedWrong = wrong;
+      }
+
+      if (observedTimer !== timer) {
+        if (observedTimer) resizeObserver.unobserve(observedTimer);
+        resizeObserver.observe(timer);
+        observedTimer = timer;
+      }
+    }
+  }
+
+  function scheduleAlignment(){
+    alignExactly();
+    requestAnimationFrame(alignExactly);
+    setTimeout(alignExactly, 60);
+    setTimeout(alignExactly, 180);
+    setTimeout(alignExactly, 400);
+  }
+
+  const stageObserver = new MutationObserver(() => {
+    scheduleAlignment();
+  });
+
+  stageObserver.observe(stage, {
+    attributes: true,
+    attributeFilter: ['class'],
+    childList: true,
+    subtree: false
+  });
+
+  const bodyObserver = new MutationObserver((mutations) => {
+    if (mutations.some(m => m.type === 'childList')) {
+      scheduleAlignment();
+    }
+  });
+
+  bodyObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  window.addEventListener('resize', scheduleAlignment, {passive:true});
+  window.addEventListener('orientationchange', scheduleAlignment, {passive:true});
+  window.addEventListener('load', scheduleAlignment, {passive:true});
+
+  scheduleAlignment();
 })();
 </script>
 
