@@ -13547,9 +13547,9 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 </style>
 
 
-<style id="expoReactIPhoneV51TimerNoBoxCSS">
+<style id="expoReactIPhoneV52TimerNoBoxCSS">
 /* ============================================================
-   V51 · iPhone + modo táctil + secuencia
+   V52 · iPhone + modo táctil + secuencia
    CRONO SIN RECUADRO REAL
    ============================================================ */
 @media (max-width: 600px){
@@ -13567,6 +13567,7 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
     color: #000 !important;
     -webkit-text-fill-color: #000 !important;
     text-shadow: none !important;
+    transform: translateY(50px) !important;
   }
 
   html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox::before,
@@ -23069,7 +23070,7 @@ try {
 })();
 </script>
 
-<script id="expoReactIPhoneV51TimerNoBoxJS">
+<script id="expoReactIPhoneV52TimerNoBoxJS">
 (() => {
   const root = document.documentElement;
   const stage = document.getElementById('stage');
@@ -23093,7 +23094,8 @@ try {
       ['-webkit-backdrop-filter', 'none'],
       ['color', '#000'],
       ['-webkit-text-fill-color', '#000'],
-      ['text-shadow', 'none']
+      ['text-shadow', 'none'],
+      ['transform', 'translateY(50px)']
     ];
     for (const [prop, value] of styles){
       timer.style.setProperty(prop, value, 'important');
