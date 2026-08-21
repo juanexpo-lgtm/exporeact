@@ -13592,111 +13592,52 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 </style>
 
 
-<style id="expoReactIPhoneV55TimerTactileLower30Fixed">
+<style id="expoReactIPhoneV57TimerFixedBetweenWrongMissed">
 @media (max-width: 600px){
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow{
-    overflow: visible !important;
-  }
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-sport-integrated,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box.iphone-sport-integrated{
-    grid-column: 3 !important;
-    grid-row: 1 !important;
-    position: relative !important;
+  html.expo-iphone-device #stage.tactile-mode #timerBox,
+  html.expo-iphone-device #stage.tactile-mode #timerBox.iphone-no-timer-box,
+  html.expo-iphone-device #stage.tactile-mode #timerBox.iphone-sport-integrated,
+  html.expo-iphone-device #stage.tactile-mode #timerBox.iphone-no-timer-box.iphone-sport-integrated{
+    position: fixed !important;
     inset: auto !important;
-    left: auto !important;
+    left: 50% !important;
+    top: 120px !important;
     right: auto !important;
-    top: 30px !important;
     bottom: auto !important;
     transform: none !important;
-    justify-self: stretch !important;
-    align-self: center !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    z-index: 7 !important;
-    background: none !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: 0 !important;
-    outline: 0 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    color: #000 !important;
-    -webkit-text-fill-color: #000 !important;
-    text-shadow: none !important;
-  }
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box *,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-sport-integrated *,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box.iphone-sport-integrated *{
-    color: #000 !important;
-    -webkit-text-fill-color: #000 !important;
-    text-shadow: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-  }
-}
-</style>
-
-
-<style id="expoReactIPhoneV56TimerInlineRow">
-@media (max-width: 600px){
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow{
-    overflow: visible !important;
-  }
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-sport-integrated,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box.iphone-sport-integrated{
-    grid-column: 3 !important;
-    grid-row: 1 !important;
-    position: static !important;
-    inset: auto !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
-    transform: none !important;
-    justify-self: stretch !important;
-    align-self: center !important;
-    width: 100% !important;
+    width: auto !important;
     min-width: 0 !important;
     height: 38px !important;
     min-height: 38px !important;
     margin: 0 !important;
-    padding: 0 2px !important;
-    z-index: 1 !important;
+    padding: 0 !important;
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
-    background: none !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    border: 0 !important;
-    outline: 0 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    color: #000 !important;
-    -webkit-text-fill-color: #000 !important;
-    text-shadow: none !important;
-    font-size:14px !important;
-    line-height:1 !important;
+    z-index: 10030 !important;
+    background:none !important;
+    background-color:transparent !important;
+    background-image:none !important;
+    border:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+    border-radius:0 !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+    text-shadow:none !important;
+    pointer-events:none !important;
   }
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box *,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-sport-integrated *,
-  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box.iphone-sport-integrated *{
-    color: #000 !important;
-    -webkit-text-fill-color: #000 !important;
-    text-shadow: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
+  html.expo-iphone-device #stage.tactile-mode #timerBox::before,
+  html.expo-iphone-device #stage.tactile-mode #timerBox::after{content:none !important;display:none !important;}
+  html.expo-iphone-device #stage.tactile-mode #timerBox,
+  html.expo-iphone-device #stage.tactile-mode #timerBox *{
+    color:#000 !important;
+    -webkit-text-fill-color:#000 !important;
+    text-shadow:none !important;
+    background:transparent !important;
+    box-shadow:none !important;
   }
 }
 </style>
@@ -23239,79 +23180,54 @@ try {
 </script>
 
 
-<script id="expoReactIPhoneV55TimerTactileLower30FixedJS">
-(() => {
-  const root = document.documentElement;
-  const stage = document.getElementById('stage');
-  const timer = document.getElementById('timerBox');
-  if (!root || !stage || !timer) return;
-  if (!root.classList.contains('expo-iphone-device')) return;
-  function applyV55(){
-    if (!stage.classList.contains('tactile-mode')) return;
-    const row = document.getElementById('tactileInfoRow');
-    if (row) row.style.setProperty('overflow', 'visible', 'important');
-    timer.classList.remove('iphone-sport-integrated');
-    timer.classList.add('iphone-no-timer-box');
-    const own = [
-      ['position', 'relative'], ['inset', 'auto'], ['left', 'auto'], ['right', 'auto'],
-      ['top', '30px'], ['bottom', 'auto'], ['transform', 'none'], ['width', '100%'],
-      ['min-width', '0'], ['margin', '0'], ['z-index', '7'], ['background', 'none'],
-      ['background-color', 'transparent'], ['background-image', 'none'], ['border', '0'],
-      ['outline', '0'], ['box-shadow', 'none'], ['border-radius', '0'],
-      ['backdrop-filter', 'none'], ['-webkit-backdrop-filter', 'none'], ['color', '#000'],
-      ['-webkit-text-fill-color', '#000'], ['text-shadow', 'none']
-    ];
-    own.forEach(([p,v]) => timer.style.setProperty(p, v, 'important'));
-    timer.querySelectorAll('*').forEach(node => {
-      node.style.setProperty('color', '#000', 'important');
-      node.style.setProperty('-webkit-text-fill-color', '#000', 'important');
-      node.style.setProperty('text-shadow', 'none', 'important');
-      node.style.setProperty('background', 'transparent', 'important');
-      node.style.setProperty('box-shadow', 'none', 'important');
-    });
-  }
-  const sync = () => { if (stage.classList.contains('tactile-mode')) applyV55(); };
-  new MutationObserver(sync).observe(stage, {attributes:true, attributeFilter:['class']});
-  new MutationObserver(sync).observe(document.body, {childList:true, subtree:true});
-  window.addEventListener('load', sync, {passive:true});
-  window.addEventListener('resize', sync, {passive:true});
-  sync(); requestAnimationFrame(sync); setTimeout(sync,60); setTimeout(sync,180); setTimeout(sync,400);
-})();
-</script>
-
-
-<script id="expoReactIPhoneV56TimerInlineRowJS">
+<script id="expoReactIPhoneV57TimerFixedBetweenWrongMissedJS">
 (() => {
   const root=document.documentElement, stage=document.getElementById('stage'), timer=document.getElementById('timerBox');
   if(!root||!stage||!timer||!root.classList.contains('expo-iphone-device')) return;
-  function applyV56(){
-    if(!stage.classList.contains('tactile-mode')) return;
-    const row=document.getElementById('tactileInfoRow');
-    if(row) row.style.setProperty('overflow','visible','important');
+
+  function applyVisual(){
     timer.classList.remove('iphone-sport-integrated');
     timer.classList.add('iphone-no-timer-box');
-    const own=[
-      ['position','static'],['inset','auto'],['left','auto'],['right','auto'],['top','auto'],['bottom','auto'],
-      ['transform','none'],['width','100%'],['min-width','0'],['height','38px'],['min-height','38px'],['margin','0'],['padding','0 2px'],
-      ['display','flex'],['align-items','center'],['justify-content','center'],['background','none'],['background-color','transparent'],
-      ['background-image','none'],['border','0'],['outline','0'],['box-shadow','none'],['border-radius','0'],['backdrop-filter','none'],
-      ['-webkit-backdrop-filter','none'],['color','#000'],['-webkit-text-fill-color','#000'],['text-shadow','none'],['font-size','14px'],['line-height','1']
+    const styles=[
+      ['position','fixed'],['inset','auto'],['right','auto'],['bottom','auto'],['transform','none'],['width','auto'],['min-width','0'],
+      ['height','38px'],['min-height','38px'],['margin','0'],['padding','0'],['display','flex'],['align-items','center'],['justify-content','center'],
+      ['z-index','10030'],['background','none'],['background-color','transparent'],['background-image','none'],['border','0'],['outline','0'],
+      ['box-shadow','none'],['border-radius','0'],['backdrop-filter','none'],['-webkit-backdrop-filter','none'],['color','#000'],['-webkit-text-fill-color','#000'],['text-shadow','none'],['pointer-events','none']
     ];
-    own.forEach(([p,v])=>timer.style.setProperty(p,v,'important'));
-    timer.querySelectorAll('*').forEach(node=>{
-      node.style.setProperty('color','#000','important');
-      node.style.setProperty('-webkit-text-fill-color','#000','important');
-      node.style.setProperty('text-shadow','none','important');
-      node.style.setProperty('background','transparent','important');
-      node.style.setProperty('box-shadow','none','important');
-    });
+    styles.forEach(([p,v])=>timer.style.setProperty(p,v,'important'));
+    timer.querySelectorAll('*').forEach(n=>{n.style.setProperty('color','#000','important');n.style.setProperty('-webkit-text-fill-color','#000','important');n.style.setProperty('text-shadow','none','important');n.style.setProperty('background','transparent','important');n.style.setProperty('box-shadow','none','important');});
   }
-  const sync=()=>{ if(stage.classList.contains('tactile-mode')) applyV56(); };
+
+  function positionTimer(){
+    if(!stage.classList.contains('tactile-mode')) return;
+    const row=document.getElementById('tactileInfoRow');
+    const wrong=row?.querySelector('.tactile-score-wrong');
+    const missed=row?.querySelector('.tactile-score-missed');
+    if(!wrong || !missed) return;
+    applyVisual();
+
+    const wr=wrong.getBoundingClientRect();
+    const mr=missed.getBoundingClientRect();
+    if(!wr.width || !mr.width) return;
+
+    // First set temporary position to measure actual timer width.
+    timer.style.setProperty('left','0px','important');
+    timer.style.setProperty('top','0px','important');
+    const tr=timer.getBoundingClientRect();
+    const centerX=(wr.right + mr.left)/2;
+    const left=Math.round(centerX - tr.width/2);
+    const top=Math.round(wr.top + ((wr.height - tr.height)/2));
+    timer.style.setProperty('left', left+'px', 'important');
+    timer.style.setProperty('top', top+'px', 'important');
+  }
+
+  const sync=()=>{ if(stage.classList.contains('tactile-mode')) { requestAnimationFrame(positionTimer); setTimeout(positionTimer, 60);} };
   new MutationObserver(sync).observe(stage,{attributes:true,attributeFilter:['class']});
   new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
   window.addEventListener('load',sync,{passive:true});
   window.addEventListener('resize',sync,{passive:true});
-  sync(); requestAnimationFrame(sync); setTimeout(sync,60); setTimeout(sync,180); setTimeout(sync,400);
+  window.addEventListener('orientationchange',sync,{passive:true});
+  sync(); requestAnimationFrame(positionTimer); setTimeout(positionTimer,60); setTimeout(positionTimer,180); setTimeout(positionTimer,400);
 })();
 </script>
 
