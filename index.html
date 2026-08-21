@@ -13908,6 +13908,48 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReact_iPhone_exitWeight_plusMinusSmaller_v2">
+/* iPhone:
+   - SALIR con menos peso
+   - botones +/- realmente más pequeños en secuencia
+   No tocar nada más. */
+@media (max-width: 600px){
+  html.expo-iphone-device #stage #minusStage,
+  html.expo-iphone-device #stage #plusStage,
+  html.expo-iphone-device #minusStage,
+  html.expo-iphone-device #plusStage{
+    width: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+  }
+
+  html.expo-iphone-device #stage #minusStage span,
+  html.expo-iphone-device #stage #plusStage span,
+  html.expo-iphone-device #minusStage span,
+  html.expo-iphone-device #plusStage span{
+    font-size: 16px !important;
+    line-height: 1 !important;
+  }
+
+  html.expo-iphone-device #exitBtn,
+  html.expo-iphone-device #exitButton,
+  html.expo-iphone-device .exit-btn,
+  html.expo-iphone-device [data-role="exit"],
+  html.expo-iphone-device button[aria-label="Salir"]{
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23606,6 +23648,55 @@ try {
         el.style.setProperty('line-height', '1', 'important');
       });
     }
+  }
+
+  new MutationObserver(applyFixes).observe(document.documentElement, {subtree:true, childList:true, attributes:true});
+  window.addEventListener('load', applyFixes, {passive:true});
+  window.addEventListener('resize', applyFixes, {passive:true});
+  applyFixes();
+  requestAnimationFrame(applyFixes);
+  setTimeout(applyFixes, 120);
+  setTimeout(applyFixes, 400);
+})();
+</script>
+
+
+<script id="expoReact_iPhone_exitWeight_plusMinusSmaller_v2JS">
+(() => {
+  function applyFixes(){
+    const root = document.documentElement;
+    const isIPhone = root.classList.contains('expo-iphone-device') || /iPhone/i.test(navigator.userAgent);
+    if (!(window.matchMedia('(max-width: 600px)').matches && isIPhone)) return;
+
+    ['minusStage','plusStage'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.setProperty('width', '34px', 'important');
+      el.style.setProperty('min-width', '34px', 'important');
+      el.style.setProperty('max-width', '34px', 'important');
+      el.style.setProperty('height', '30px', 'important');
+      el.style.setProperty('min-height', '30px', 'important');
+      el.style.setProperty('max-height', '30px', 'important');
+      el.style.setProperty('padding', '0', 'important');
+      el.style.setProperty('border-radius', '9px', 'important');
+      el.querySelectorAll('span').forEach(n => {
+        n.style.setProperty('font-size', '16px', 'important');
+        n.style.setProperty('line-height', '1', 'important');
+      });
+    });
+
+    const exitCandidates = [
+      document.getElementById('exitBtn'),
+      document.getElementById('exitButton'),
+      ...document.querySelectorAll('.exit-btn, [data-role="exit"], button[aria-label="Salir"]')
+    ].filter(Boolean);
+
+    exitCandidates.forEach(el => {
+      el.style.setProperty('font-size', '15px', 'important');
+      el.style.setProperty('font-weight', '600', 'important');
+      el.style.setProperty('line-height', '1', 'important');
+      el.style.setProperty('letter-spacing', '0', 'important');
+    });
   }
 
   new MutationObserver(applyFixes).observe(document.documentElement, {subtree:true, childList:true, attributes:true});
