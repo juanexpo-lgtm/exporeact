@@ -13909,31 +13909,28 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 </style>
 
 
-<style id="expoReact_iPhone_exitWeight_plusMinusSmaller_v2">
-/* iPhone:
-   - SALIR con menos peso
-   - botones +/- realmente más pequeños en secuencia
-   No tocar nada más. */
+<style id="expoReact_iPhone_exitWeight_plusMinusSmaller_v3">
 @media (max-width: 600px){
   html.expo-iphone-device #stage #minusStage,
   html.expo-iphone-device #stage #plusStage,
   html.expo-iphone-device #minusStage,
   html.expo-iphone-device #plusStage{
-    width: 34px !important;
-    min-width: 34px !important;
-    max-width: 34px !important;
-    height: 30px !important;
-    min-height: 30px !important;
-    max-height: 30px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
+    flex: 0 0 30px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
     padding: 0 !important;
-    border-radius: 9px !important;
+    border-radius: 8px !important;
   }
 
-  html.expo-iphone-device #stage #minusStage span,
-  html.expo-iphone-device #stage #plusStage span,
-  html.expo-iphone-device #minusStage span,
-  html.expo-iphone-device #plusStage span{
-    font-size: 16px !important;
+  html.expo-iphone-device #stage #minusStage > *,
+  html.expo-iphone-device #stage #plusStage > *,
+  html.expo-iphone-device #minusStage > *,
+  html.expo-iphone-device #plusStage > *{
+    font-size: 15px !important;
     line-height: 1 !important;
   }
 
@@ -13943,9 +13940,17 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
   html.expo-iphone-device [data-role="exit"],
   html.expo-iphone-device button[aria-label="Salir"]{
     font-size: 15px !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     line-height: 1 !important;
     letter-spacing: 0 !important;
+  }
+
+  html.expo-iphone-device #exitBtn *,
+  html.expo-iphone-device #exitButton *,
+  html.expo-iphone-device .exit-btn *,
+  html.expo-iphone-device [data-role="exit"] *,
+  html.expo-iphone-device button[aria-label="Salir"] *{
+    font-weight: 500 !important;
   }
 }
 </style>
@@ -23661,7 +23666,7 @@ try {
 </script>
 
 
-<script id="expoReact_iPhone_exitWeight_plusMinusSmaller_v2JS">
+<script id="expoReact_iPhone_exitWeight_plusMinusSmaller_v3JS">
 (() => {
   function applyFixes(){
     const root = document.documentElement;
@@ -23671,16 +23676,14 @@ try {
     ['minusStage','plusStage'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.style.setProperty('width', '34px', 'important');
-      el.style.setProperty('min-width', '34px', 'important');
-      el.style.setProperty('max-width', '34px', 'important');
-      el.style.setProperty('height', '30px', 'important');
-      el.style.setProperty('min-height', '30px', 'important');
-      el.style.setProperty('max-height', '30px', 'important');
-      el.style.setProperty('padding', '0', 'important');
-      el.style.setProperty('border-radius', '9px', 'important');
-      el.querySelectorAll('span').forEach(n => {
-        n.style.setProperty('font-size', '16px', 'important');
+      [
+        ['width','30px'], ['min-width','30px'], ['max-width','30px'], ['flex','0 0 30px'],
+        ['height','28px'], ['min-height','28px'], ['max-height','28px'],
+        ['padding','0'], ['border-radius','8px']
+      ].forEach(([p,v]) => el.style.setProperty(p, v, 'important'));
+
+      Array.from(el.children).forEach(n => {
+        n.style.setProperty('font-size', '15px', 'important');
         n.style.setProperty('line-height', '1', 'important');
       });
     });
@@ -23693,9 +23696,12 @@ try {
 
     exitCandidates.forEach(el => {
       el.style.setProperty('font-size', '15px', 'important');
-      el.style.setProperty('font-weight', '600', 'important');
+      el.style.setProperty('font-weight', '500', 'important');
       el.style.setProperty('line-height', '1', 'important');
       el.style.setProperty('letter-spacing', '0', 'important');
+      el.querySelectorAll('*').forEach(n => {
+        n.style.setProperty('font-weight', '500', 'important');
+      });
     });
   }
 
