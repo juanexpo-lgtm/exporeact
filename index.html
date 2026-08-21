@@ -13845,6 +13845,69 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReact_PC_iPhone_targetedFix_v1">
+/* ===== AJUSTES PUNTUALES PEDIDOS =====
+   1) PC: quitar anillo blanco interior de la cuenta atrás
+   2) iPhone: reducir tamaño recuadros +/- de secuencia
+   3) iPhone: subir fuente de SALIR al nivel visual del contador de reps
+   No tocar nada más.
+====================================== */
+
+/* 1) PC - quitar el anillo/blanco interior del countdown */
+@media (min-width: 1025px){
+  #countdown .countdown-number::after,
+  #countdown .countdown-go::after,
+  #countdownOverlay .countdown-number::after,
+  #countdownOverlay .countdown-go::after,
+  .countdown-number::after,
+  .countdown-go::after{
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  #countdown .countdown-number,
+  #countdown .countdown-go,
+  #countdownOverlay .countdown-number,
+  #countdownOverlay .countdown-go,
+  .countdown-number,
+  .countdown-go{
+    box-shadow: none !important;
+    background-image: none !important;
+  }
+}
+
+/* 2) iPhone - recuadros +/- más pequeños */
+@media (max-width: 600px){
+  html.expo-iphone-device #stage #minusStage,
+  html.expo-iphone-device #stage #plusStage,
+  html.expo-iphone-device #minusStage,
+  html.expo-iphone-device #plusStage{
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+  }
+
+  /* 3) iPhone - SALIR más grande */
+  html.expo-iphone-device #exitBtn,
+  html.expo-iphone-device #exitButton,
+  html.expo-iphone-device .exit-btn,
+  html.expo-iphone-device [data-role="exit"],
+  html.expo-iphone-device button[aria-label="Salir"]{
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23497,6 +23560,61 @@ try {
   setTimeout(sync, 80);
   setTimeout(sync, 220);
   setTimeout(sync, 500);
+})();
+</script>
+
+
+<script id="expoReact_PC_iPhone_targetedFix_v1JS">
+(() => {
+  function applyFixes(){
+    const root = document.documentElement;
+
+    // PC countdown ring removal fallback
+    if (window.matchMedia('(min-width: 1025px)').matches) {
+      const nodes = document.querySelectorAll('#countdown .countdown-number, #countdown .countdown-go, #countdownOverlay .countdown-number, #countdownOverlay .countdown-go, .countdown-number, .countdown-go');
+      nodes.forEach(el => {
+        el.style.setProperty('box-shadow', 'none', 'important');
+        el.style.setProperty('background-image', 'none', 'important');
+      });
+    }
+
+    // iPhone only tweaks
+    const isIPhone = root.classList.contains('expo-iphone-device') || /iPhone/i.test(navigator.userAgent);
+    if (window.matchMedia('(max-width: 600px)').matches && isIPhone) {
+      ['minusStage','plusStage'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.setProperty('width', '42px', 'important');
+        el.style.setProperty('min-width', '42px', 'important');
+        el.style.setProperty('max-width', '42px', 'important');
+        el.style.setProperty('height', '34px', 'important');
+        el.style.setProperty('min-height', '34px', 'important');
+        el.style.setProperty('max-height', '34px', 'important');
+        el.style.setProperty('padding', '0', 'important');
+        el.style.setProperty('border-radius', '10px', 'important');
+      });
+
+      const exitCandidates = [
+        document.getElementById('exitBtn'),
+        document.getElementById('exitButton'),
+        ...document.querySelectorAll('.exit-btn, [data-role="exit"], button[aria-label="Salir"]')
+      ].filter(Boolean);
+
+      exitCandidates.forEach(el => {
+        el.style.setProperty('font-size', '15px', 'important');
+        el.style.setProperty('font-weight', '700', 'important');
+        el.style.setProperty('line-height', '1', 'important');
+      });
+    }
+  }
+
+  new MutationObserver(applyFixes).observe(document.documentElement, {subtree:true, childList:true, attributes:true});
+  window.addEventListener('load', applyFixes, {passive:true});
+  window.addEventListener('resize', applyFixes, {passive:true});
+  applyFixes();
+  requestAnimationFrame(applyFixes);
+  setTimeout(applyFixes, 120);
+  setTimeout(applyFixes, 400);
 })();
 </script>
 
