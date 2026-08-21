@@ -13642,6 +13642,21 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactIPhoneV58ProportionalZoomCSS">
+/* V58 · iPhone · secuencia
+   Evita reflow interno durante pinch-zoom: la geometría base queda congelada
+   y Safari amplía el conjunto visualmente. */
+html.expo-iphone-device.iphone-sequence-zoom-locked #stage{
+  max-width:none !important;
+  max-height:none !important;
+}
+
+html.expo-iphone-device.iphone-sequence-zoom-locked #controls{
+  left:50% !important;
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23228,6 +23243,131 @@ try {
   window.addEventListener('resize',sync,{passive:true});
   window.addEventListener('orientationchange',sync,{passive:true});
   sync(); requestAnimationFrame(positionTimer); setTimeout(positionTimer,60); setTimeout(positionTimer,180); setTimeout(positionTimer,400);
+})();
+</script>
+
+
+<script id="expoReactIPhoneV58ProportionalZoomJS">
+(() => {
+  'use strict';
+
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  const controls = document.getElementById('controls');
+  if (!root || !stage) return;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  const vv = window.visualViewport;
+  let base = null;
+  let raf = 0;
+  let lastOrientation = '';
+
+  function orientationKey(w, h){
+    return h >= w ? 'portrait' : 'landscape';
+  }
+
+  function sequenceVisible(){
+    const cs = getComputedStyle(stage);
+    return cs.display !== 'none' && cs.visibility !== 'hidden';
+  }
+
+  function layoutViewport(){
+    const w = Math.max(1, document.documentElement.clientWidth || window.innerWidth || 1);
+    const h = Math.max(1, document.documentElement.clientHeight || window.innerHeight || 1);
+    return {width:w, height:h};
+  }
+
+  function captureBase(force=false){
+    if (!sequenceVisible()) return;
+
+    const layout = layoutViewport();
+    const orientation = orientationKey(layout.width, layout.height);
+    const scale = vv && Number.isFinite(vv.scale) ? vv.scale : 1;
+
+    if (!force && base && orientation === lastOrientation && scale > 1.02) return;
+
+    const controlsFit = controls
+      ? (controls.style.getPropertyValue('--sequence-controls-fit') || '1')
+      : '1';
+
+    base = {
+      width: layout.width,
+      height: layout.height,
+      controlsFit
+    };
+    lastOrientation = orientation;
+  }
+
+  function applyLockedGeometry(){
+    if (!sequenceVisible()){
+      root.classList.remove('iphone-sequence-zoom-locked');
+      base = null;
+      return;
+    }
+
+    const layout = layoutViewport();
+    const orientation = orientationKey(layout.width, layout.height);
+    const scale = vv && Number.isFinite(vv.scale) ? vv.scale : 1;
+
+    if (!base || orientation !== lastOrientation){
+      captureBase(true);
+    } else if (scale <= 1.02){
+      /* A escala normal permitimos adaptar barras/orientación y renovamos la base. */
+      captureBase(true);
+    }
+
+    if (!base) return;
+
+    root.classList.add('iphone-sequence-zoom-locked');
+
+    /* Estas variables eran reescritas con visualViewport y provocaban reflow. */
+    root.style.setProperty('--expo-vw', base.width + 'px');
+    root.style.setProperty('--expo-vh', base.height + 'px');
+
+    /* Mantener el escenario en su geometría de layout, no en el viewport visual reducido. */
+    stage.style.setProperty('left', '0px', 'important');
+    stage.style.setProperty('top', '0px', 'important');
+    stage.style.setProperty('width', base.width + 'px', 'important');
+    stage.style.setProperty('height', base.height + 'px', 'important');
+
+    /* No volver a encoger la barra inferior cuando Safari hace pinch-zoom. */
+    if (controls){
+      controls.style.setProperty('--sequence-controls-fit', base.controlsFit || '1');
+      controls.style.setProperty('left', '50%', 'important');
+    }
+  }
+
+  function schedule(){
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      /* Se ejecuta después de los módulos responsive previos y pisa solo iPhone/secuencia. */
+      requestAnimationFrame(applyLockedGeometry);
+    });
+  }
+
+  window.addEventListener('load', schedule, {passive:true});
+  window.addEventListener('resize', schedule, {passive:true});
+  window.addEventListener('orientationchange', () => {
+    base = null;
+    setTimeout(schedule, 80);
+    setTimeout(schedule, 350);
+  }, {passive:true});
+
+  if (vv){
+    vv.addEventListener('resize', schedule, {passive:true});
+    vv.addEventListener('scroll', schedule, {passive:true});
+  }
+
+  if (window.MutationObserver){
+    new MutationObserver(schedule).observe(stage, {
+      attributes:true,
+      attributeFilter:['style','class']
+    });
+  }
+
+  schedule();
+  setTimeout(schedule, 120);
+  setTimeout(schedule, 600);
 })();
 </script>
 
