@@ -13742,6 +13742,82 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactIPhoneSequenceControlsCompactV2">
+/* iPhone · secuencia · ajustes finos
+   - fuente algo menor en REPS e INTERVALO
+   - crono deportivo más bajo visualmente
+   - botones +/- sin color/sombra retenidos */
+@media (max-width: 600px){
+  html.expo-iphone-device #stage{
+    --iphone-badge-font-v2: 13px;
+    --iphone-badge-value-font-v2: 15px;
+    --iphone-sport-timer-h-v2: 22px;
+    --iphone-sport-timer-offset-v2: 6px;
+  }
+
+  html.expo-iphone-device #stage #speedBadge,
+  html.expo-iphone-device #stage #stimCounter{
+    font-size: var(--iphone-badge-font-v2) !important;
+    font-weight: 700 !important;
+  }
+
+  html.expo-iphone-device #stage #speedBadge .value,
+  html.expo-iphone-device #stage #stimCounter .value,
+  html.expo-iphone-device #stage #speedBadge strong,
+  html.expo-iphone-device #stage #stimCounter strong,
+  html.expo-iphone-device #stage #speedBadge b,
+  html.expo-iphone-device #stage #stimCounter b,
+  html.expo-iphone-device #stage #speedBadge span,
+  html.expo-iphone-device #stage #stimCounter span{
+    font-size: var(--iphone-badge-value-font-v2) !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+  }
+
+  html.expo-iphone-device #stage #speedBadge .label,
+  html.expo-iphone-device #stage #stimCounter .label{
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Crono deportivo: bajar un poco y hacer caja más baja */
+  html.expo-iphone-device #stage.sport-mode #timerBox,
+  html.expo-iphone-device #stage.deportivo-mode #timerBox,
+  html.expo-iphone-device #stage .iphone-sport-integrated#timerBox,
+  html.expo-iphone-device #stage #timerBox.iphone-sport-integrated{
+    min-height: var(--iphone-sport-timer-h-v2) !important;
+    height: var(--iphone-sport-timer-h-v2) !important;
+    position: relative !important;
+    top: var(--iphone-sport-timer-offset-v2) !important;
+    line-height: 1 !important;
+  }
+
+  /* Más/menos: no quedar sombreados ni con color retenido */
+  html.expo-iphone-device #stage #minusStage,
+  html.expo-iphone-device #stage #plusStage,
+  html.expo-iphone-device #stage #minusStage:active,
+  html.expo-iphone-device #stage #plusStage:active,
+  html.expo-iphone-device #stage #minusStage:focus,
+  html.expo-iphone-device #stage #plusStage:focus,
+  html.expo-iphone-device #stage #minusStage.pressed,
+  html.expo-iphone-device #stage #plusStage.pressed,
+  html.expo-iphone-device #stage #minusStage.active,
+  html.expo-iphone-device #stage #plusStage.active{
+    filter: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  html.expo-iphone-device #stage #minusStage:active,
+  html.expo-iphone-device #stage #plusStage:active{
+    transform: scale(0.98) !important;
+    opacity: .92 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23384,6 +23460,82 @@ try {
   }
 
   const sync = () => compactSequenceControls();
+  new MutationObserver(sync).observe(stage, {attributes:true, attributeFilter:['class']});
+  new MutationObserver(sync).observe(document.body, {childList:true, subtree:true});
+
+  window.addEventListener('load', sync, {passive:true});
+  window.addEventListener('resize', sync, {passive:true});
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 80);
+  setTimeout(sync, 220);
+  setTimeout(sync, 500);
+})();
+</script>
+
+
+<script id="expoReactIPhoneSequenceControlsCompactV2JS">
+(() => {
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  if (!root || !stage || !root.classList.contains('expo-iphone-device')) return;
+
+  function applyV2(){
+    const isTactile = stage.classList.contains('tactile-mode');
+    const isSport = stage.classList.contains('sport-mode') || stage.classList.contains('deportivo-mode');
+    if (!isTactile && !isSport) return;
+
+    const speedBadge = document.getElementById('speedBadge');
+    const stimCounter = document.getElementById('stimCounter');
+    [speedBadge, stimCounter].forEach(el => {
+      if (!el) return;
+      el.style.setProperty('font-size', '13px', 'important');
+      el.style.setProperty('font-weight', '700', 'important');
+      el.querySelectorAll('.value,strong,b,span').forEach(n => {
+        n.style.setProperty('font-size', '15px', 'important');
+        n.style.setProperty('font-weight', '800', 'important');
+        n.style.setProperty('line-height', '1', 'important');
+      });
+      el.querySelectorAll('.label').forEach(n => {
+        n.style.setProperty('font-size', '12px', 'important');
+        n.style.setProperty('font-weight', '700', 'important');
+      });
+    });
+
+    if (isSport) {
+      const timer = document.getElementById('timerBox');
+      if (timer) {
+        timer.style.setProperty('height', '22px', 'important');
+        timer.style.setProperty('min-height', '22px', 'important');
+        timer.style.setProperty('position', 'relative', 'important');
+        timer.style.setProperty('top', '6px', 'important');
+        timer.style.setProperty('line-height', '1', 'important');
+      }
+    }
+
+    ['minusStage','plusStage'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || el.dataset.iphoneNoStickyBound === '1') return;
+      el.dataset.iphoneNoStickyBound = '1';
+
+      const clearState = () => {
+        el.classList.remove('active','pressed','selected','is-active');
+        el.style.removeProperty('filter');
+        el.style.removeProperty('background-color');
+        el.style.removeProperty('background-image');
+        el.style.removeProperty('box-shadow');
+        el.style.removeProperty('outline');
+      };
+
+      ['touchend','touchcancel','mouseup','mouseleave','blur'].forEach(evt => {
+        el.addEventListener(evt, clearState, {passive:true});
+      });
+
+      setTimeout(clearState, 0);
+    });
+  }
+
+  const sync = () => applyV2();
   new MutationObserver(sync).observe(stage, {attributes:true, attributeFilter:['class']});
   new MutationObserver(sync).observe(document.body, {childList:true, subtree:true});
 
