@@ -13642,6 +13642,106 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactIPhoneSequenceControlsCompactV1">
+/* ============================================================
+   iPhone · secuencia · táctil + deportivo
+   - Fila de controles más baja
+   - Crono deportivo más bajo en altura
+   - Texto mayor en REPS e INTERVALO DE TIEMPO
+   ============================================================ */
+@media (max-width: 600px){
+  html.expo-iphone-device #stage{
+    --iphone-seq-control-h: 34px;
+    --iphone-seq-control-radius: 10px;
+    --iphone-seq-gap: 8px;
+    --iphone-sport-timer-h: 24px;
+    --iphone-badge-font: 15px;
+    --iphone-badge-value-font: 17px;
+  }
+
+  /* Caja general de controles/badges durante secuencia */
+  html.expo-iphone-device #stage #speedBadge,
+  html.expo-iphone-device #stage #stimCounter,
+  html.expo-iphone-device #stage #minusStage,
+  html.expo-iphone-device #stage #plusStage,
+  html.expo-iphone-device #stage #pauseBtn,
+  html.expo-iphone-device #stage #exitBtn{
+    min-height: var(--iphone-seq-control-h) !important;
+    height: var(--iphone-seq-control-h) !important;
+    border-radius: var(--iphone-seq-control-radius) !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1 !important;
+  }
+
+  /* Si existe fila/banda inferior de controles */
+  html.expo-iphone-device #stage .bottom-controls,
+  html.expo-iphone-device #stage .stage-controls,
+  html.expo-iphone-device #stage .sequence-controls,
+  html.expo-iphone-device #stage .controls-row{
+    min-height: calc(var(--iphone-seq-control-h) + 2px) !important;
+    gap: var(--iphone-seq-gap) !important;
+    align-items: center !important;
+  }
+
+  /* Crono deportivo: más bajo en altura */
+  html.expo-iphone-device #stage.sport-mode #timerBox,
+  html.expo-iphone-device #stage.deportivo-mode #timerBox,
+  html.expo-iphone-device #stage .iphone-sport-integrated#timerBox,
+  html.expo-iphone-device #stage #timerBox.iphone-sport-integrated{
+    min-height: var(--iphone-sport-timer-h) !important;
+    height: var(--iphone-sport-timer-h) !important;
+    line-height: 1 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Tacto: si el crono está en la fila informativa, no tocar posición,
+     solo compactar un pelín si lleva caja propia. */
+  html.expo-iphone-device #stage.tactile-mode #timerBox{
+    line-height: 1 !important;
+  }
+
+  /* Recuadros de REPS / INTERVALO TIEMPO */
+  html.expo-iphone-device #stage #speedBadge,
+  html.expo-iphone-device #stage #stimCounter{
+    font-size: var(--iphone-badge-font) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  html.expo-iphone-device #stage #speedBadge .value,
+  html.expo-iphone-device #stage #stimCounter .value,
+  html.expo-iphone-device #stage #speedBadge strong,
+  html.expo-iphone-device #stage #stimCounter strong,
+  html.expo-iphone-device #stage #speedBadge b,
+  html.expo-iphone-device #stage #stimCounter b,
+  html.expo-iphone-device #stage #speedBadge span,
+  html.expo-iphone-device #stage #stimCounter span{
+    font-size: var(--iphone-badge-value-font) !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+  }
+
+  /* Si internamente usan dos líneas o labels específicos */
+  html.expo-iphone-device #stage #speedBadge .label,
+  html.expo-iphone-device #stage #stimCounter .label{
+    font-size: 14px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Ajuste de iconos de botones para que no queden grandes al bajar altura */
+  html.expo-iphone-device #stage #minusStage span,
+  html.expo-iphone-device #stage #plusStage span,
+  html.expo-iphone-device #stage #pauseBtn span{
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23228,6 +23328,72 @@ try {
   window.addEventListener('resize',sync,{passive:true});
   window.addEventListener('orientationchange',sync,{passive:true});
   sync(); requestAnimationFrame(positionTimer); setTimeout(positionTimer,60); setTimeout(positionTimer,180); setTimeout(positionTimer,400);
+})();
+</script>
+
+
+<script id="expoReactIPhoneSequenceControlsCompactV1JS">
+(() => {
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  if (!root || !stage || !root.classList.contains('expo-iphone-device')) return;
+
+  function compactSequenceControls(){
+    const isTactile = stage.classList.contains('tactile-mode');
+    const isSport = stage.classList.contains('sport-mode') || stage.classList.contains('deportivo-mode');
+    if (!isTactile && !isSport) return;
+
+    const setH = (el, h, radius='10px') => {
+      if (!el) return;
+      el.style.setProperty('height', h, 'important');
+      el.style.setProperty('min-height', h, 'important');
+      el.style.setProperty('padding-top', '0', 'important');
+      el.style.setProperty('padding-bottom', '0', 'important');
+      el.style.setProperty('line-height', '1', 'important');
+      el.style.setProperty('border-radius', radius, 'important');
+    };
+
+    ['speedBadge','stimCounter','minusStage','plusStage','pauseBtn','exitBtn'].forEach(id => {
+      const el = document.getElementById(id);
+      setH(el, '34px', '10px');
+    });
+
+    const speedBadge = document.getElementById('speedBadge');
+    const stimCounter = document.getElementById('stimCounter');
+    [speedBadge, stimCounter].forEach(el => {
+      if (!el) return;
+      el.style.setProperty('font-size', '15px', 'important');
+      el.style.setProperty('font-weight', '700', 'important');
+      el.querySelectorAll('.value,strong,b,span').forEach(n => {
+        n.style.setProperty('font-size', '17px', 'important');
+        n.style.setProperty('font-weight', '800', 'important');
+        n.style.setProperty('line-height', '1', 'important');
+      });
+      el.querySelectorAll('.label').forEach(n => {
+        n.style.setProperty('font-size', '14px', 'important');
+        n.style.setProperty('font-weight', '700', 'important');
+      });
+    });
+
+    if (isSport) {
+      const timer = document.getElementById('timerBox');
+      if (timer) {
+        setH(timer, '24px', '0');
+      }
+    }
+  }
+
+  const sync = () => compactSequenceControls();
+  new MutationObserver(sync).observe(stage, {attributes:true, attributeFilter:['class']});
+  new MutationObserver(sync).observe(document.body, {childList:true, subtree:true});
+
+  window.addEventListener('load', sync, {passive:true});
+  window.addEventListener('resize', sync, {passive:true});
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 80);
+  setTimeout(sync, 220);
+  setTimeout(sync, 500);
 })();
 </script>
 
