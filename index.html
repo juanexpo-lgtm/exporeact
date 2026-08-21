@@ -13795,6 +13795,53 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactSeqTouchTabletCleanV1">
+/* iPhone + iPad · secuencia
+   - +/- con misma transparencia visual que pause/salir
+   - sin recuadro en REPS ni INTERVALO DE TIEMPO
+   - sin círculo blanco interior en la cuenta atrás
+   No tocar nada más. */
+@media (max-width: 1024px){
+  /* Quitar recuadros de REPS e INTERVALO */
+  html #stage #stimCounter,
+  html #stage #speedBadge{
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Cuenta atrás: quitar anillo/círculo blanco interior, sin tocar el tamaño del círculo */
+  html #countdownOverlay .countdown-circle,
+  html .countdown-circle,
+  html #countdownOverlay .countdown-ring,
+  html .countdown-ring{
+    background-image: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  html #countdownOverlay .countdown-circle::before,
+  html #countdownOverlay .countdown-circle::after,
+  html .countdown-circle::before,
+  html .countdown-circle::after,
+  html #countdownOverlay .countdown-ring::before,
+  html #countdownOverlay .countdown-ring::after,
+  html .countdown-ring::before,
+  html .countdown-ring::after{
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23440,6 +23487,78 @@ try {
   new MutationObserver(sync).observe(stage, {attributes:true, attributeFilter:['class']});
   new MutationObserver(sync).observe(document.body, {childList:true, subtree:true});
 
+  window.addEventListener('load', sync, {passive:true});
+  window.addEventListener('resize', sync, {passive:true});
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 80);
+  setTimeout(sync, 220);
+  setTimeout(sync, 500);
+})();
+</script>
+
+
+<script id="expoReactSeqTouchTabletCleanV1JS">
+(() => {
+  const touchTabletPhone = () => window.matchMedia('(max-width: 1024px)').matches;
+
+  function copyTransparencyFromPauseOrExit(){
+    if (!touchTabletPhone()) return;
+
+    const pause = document.getElementById('pauseBtn');
+    const exitBtn = document.getElementById('exitBtn');
+    const source = pause || exitBtn;
+    if (!source) return;
+
+    const cs = getComputedStyle(source);
+    ['minusStage','plusStage'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+
+      // Copiar solo la apariencia del recuadro, no la tipografía ni el tamaño.
+      btn.style.setProperty('background', cs.background, 'important');
+      btn.style.setProperty('background-color', cs.backgroundColor, 'important');
+      btn.style.setProperty('background-image', cs.backgroundImage, 'important');
+      btn.style.setProperty('border', cs.border, 'important');
+      btn.style.setProperty('box-shadow', cs.boxShadow, 'important');
+      btn.style.setProperty('backdrop-filter', cs.backdropFilter || 'none', 'important');
+      btn.style.setProperty('-webkit-backdrop-filter', cs.getPropertyValue('-webkit-backdrop-filter') || 'none', 'important');
+      btn.style.setProperty('opacity', cs.opacity || '1', 'important');
+    });
+  }
+
+  function clearBadgeBoxes(){
+    ['stimCounter','speedBadge'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.setProperty('background', 'none', 'important');
+      el.style.setProperty('background-color', 'transparent', 'important');
+      el.style.setProperty('background-image', 'none', 'important');
+      el.style.setProperty('border', '0', 'important');
+      el.style.setProperty('outline', '0', 'important');
+      el.style.setProperty('box-shadow', 'none', 'important');
+      el.style.setProperty('backdrop-filter', 'none', 'important');
+      el.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+    });
+  }
+
+  function cleanCountdownRings(){
+    const circles = document.querySelectorAll('#countdownOverlay .countdown-circle, .countdown-circle, #countdownOverlay .countdown-ring, .countdown-ring');
+    circles.forEach(el => {
+      el.style.setProperty('background-image', 'none', 'important');
+      el.style.setProperty('box-shadow', 'none', 'important');
+      el.style.setProperty('filter', 'none', 'important');
+    });
+  }
+
+  function sync(){
+    if (!touchTabletPhone()) return;
+    copyTransparencyFromPauseOrExit();
+    clearBadgeBoxes();
+    cleanCountdownRings();
+  }
+
+  new MutationObserver(sync).observe(document.body, {childList:true, subtree:true, attributes:true});
   window.addEventListener('load', sync, {passive:true});
   window.addEventListener('resize', sync, {passive:true});
   sync();
