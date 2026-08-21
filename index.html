@@ -13547,9 +13547,9 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 </style>
 
 
-<style id="expoReactIPhoneV52TimerNoBoxCSS">
+<style id="expoReactIPhoneV51TimerNoBoxCSS">
 /* ============================================================
-   V52 · iPhone + modo táctil + secuencia
+   V51 · iPhone + modo táctil + secuencia
    CRONO SIN RECUADRO REAL
    ============================================================ */
 @media (max-width: 600px){
@@ -13567,7 +13567,6 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
     color: #000 !important;
     -webkit-text-fill-color: #000 !important;
     text-shadow: none !important;
-    transform: translateY(50px) !important;
   }
 
   html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox::before,
@@ -13579,6 +13578,46 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
     background: none !important;
     box-shadow: none !important;
     border: 0 !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box *{
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    text-shadow: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+
+
+<style id="expoReactIPhoneV54TimerLower30">
+/* V54 · iPhone / táctil / secuencia
+   Crono 30 px más bajo, visible, sin recuadro y con fuente negra. */
+@media (max-width: 600px){
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow{
+    overflow: visible !important;
+  }
+
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox,
+  html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox.iphone-no-timer-box{
+    position: relative !important;
+    top: 30px !important;
+    transform: none !important;
+    z-index: 7 !important;
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+    text-shadow: none !important;
   }
 
   html.expo-iphone-device #stage.tactile-mode #tactileInfoRow #timerBox *,
@@ -23070,7 +23109,7 @@ try {
 })();
 </script>
 
-<script id="expoReactIPhoneV52TimerNoBoxJS">
+<script id="expoReactIPhoneV51TimerNoBoxJS">
 (() => {
   const root = document.documentElement;
   const stage = document.getElementById('stage');
@@ -23094,8 +23133,7 @@ try {
       ['-webkit-backdrop-filter', 'none'],
       ['color', '#000'],
       ['-webkit-text-fill-color', '#000'],
-      ['text-shadow', 'none'],
-      ['transform', 'translateY(50px)']
+      ['text-shadow', 'none']
     ];
     for (const [prop, value] of styles){
       timer.style.setProperty(prop, value, 'important');
@@ -23122,6 +23160,66 @@ try {
   window.addEventListener('load', sync, { passive:true });
   window.addEventListener('resize', sync, { passive:true });
 
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 60);
+  setTimeout(sync, 180);
+  setTimeout(sync, 400);
+})();
+</script>
+
+
+<script id="expoReactIPhoneV54TimerLower30JS">
+(() => {
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  const timer = document.getElementById('timerBox');
+  if (!root || !stage || !timer) return;
+  if (!root.classList.contains('expo-iphone-device')) return;
+
+  function applyV54(){
+    if (!stage.classList.contains('tactile-mode')) return;
+    const row = document.getElementById('tactileInfoRow');
+    if (row) row.style.setProperty('overflow', 'visible', 'important');
+
+    timer.classList.add('iphone-no-timer-box');
+    const own = [
+      ['position', 'relative'],
+      ['top', '30px'],
+      ['transform', 'none'],
+      ['z-index', '7'],
+      ['background', 'none'],
+      ['background-color', 'transparent'],
+      ['background-image', 'none'],
+      ['border', '0'],
+      ['outline', '0'],
+      ['box-shadow', 'none'],
+      ['border-radius', '0'],
+      ['backdrop-filter', 'none'],
+      ['-webkit-backdrop-filter', 'none'],
+      ['color', '#000'],
+      ['-webkit-text-fill-color', '#000'],
+      ['text-shadow', 'none']
+    ];
+    own.forEach(([p,v]) => timer.style.setProperty(p, v, 'important'));
+    timer.querySelectorAll('*').forEach(node => {
+      node.style.setProperty('color', '#000', 'important');
+      node.style.setProperty('-webkit-text-fill-color', '#000', 'important');
+      node.style.setProperty('text-shadow', 'none', 'important');
+      node.style.setProperty('background', 'transparent', 'important');
+      node.style.setProperty('box-shadow', 'none', 'important');
+    });
+  }
+
+  const sync = () => { if (stage.classList.contains('tactile-mode')) applyV54(); };
+
+  const obs1 = new MutationObserver(sync);
+  obs1.observe(stage, {attributes:true, attributeFilter:['class']});
+  const obs2 = new MutationObserver(sync);
+  obs2.observe(document.body, {childList:true, subtree:true});
+
+  window.addEventListener('load', sync, {passive:true});
+  window.addEventListener('resize', sync, {passive:true});
   sync();
   requestAnimationFrame(sync);
   setTimeout(sync, 60);
