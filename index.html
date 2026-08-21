@@ -13787,6 +13787,74 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactIPhoneCountdownYAAndSportTimerFix">
+/* iPhone:
+   - recuperar círculo verde del "YA"
+   - bajar 10px el crono en modo deportivo
+   No tocar nada más. */
+@media (max-width: 600px){
+  /* Bajar crono deportivo 10 px */
+  html.expo-iphone-device #stage.sport-mode #timerBox,
+  html.expo-iphone-device #stage.deportivo-mode #timerBox,
+  html.expo-iphone-device #stage .iphone-sport-integrated#timerBox,
+  html.expo-iphone-device #stage #timerBox.iphone-sport-integrated{
+    position: relative !important;
+    top: 10px !important;
+  }
+
+  /* Recuperar el círculo verde del "YA" */
+  html.expo-iphone-device #countdownOverlay .countdown-ya,
+  html.expo-iphone-device #countdownOverlay .countdown-go,
+  html.expo-iphone-device #countdownOverlay .countdown-ya-circle,
+  html.expo-iphone-device #countdownOverlay .countdown-go-circle,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="go"],
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="ya"]{
+    background: #19b312 !important;
+    background-color: #19b312 !important;
+    background-image: none !important;
+    border-radius: 999px !important;
+    box-shadow: none !important;
+  }
+
+  html.expo-iphone-device #countdownOverlay .countdown-ya::before,
+  html.expo-iphone-device #countdownOverlay .countdown-ya::after,
+  html.expo-iphone-device #countdownOverlay .countdown-go::before,
+  html.expo-iphone-device #countdownOverlay .countdown-go::after,
+  html.expo-iphone-device #countdownOverlay .countdown-ya-circle::before,
+  html.expo-iphone-device #countdownOverlay .countdown-ya-circle::after,
+  html.expo-iphone-device #countdownOverlay .countdown-go-circle::before,
+  html.expo-iphone-device #countdownOverlay .countdown-go-circle::after,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="go"]::before,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="go"]::after,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="ya"]::before,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="ya"]::after{
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  html.expo-iphone-device #countdownOverlay .countdown-ya,
+  html.expo-iphone-device #countdownOverlay .countdown-go,
+  html.expo-iphone-device #countdownOverlay .countdown-ya-circle,
+  html.expo-iphone-device #countdownOverlay .countdown-go-circle,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="go"],
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="ya"],
+  html.expo-iphone-device #countdownOverlay .countdown-ya *,
+  html.expo-iphone-device #countdownOverlay .countdown-go *,
+  html.expo-iphone-device #countdownOverlay .countdown-ya-circle *,
+  html.expo-iphone-device #countdownOverlay .countdown-go-circle *,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="go"] *,
+  html.expo-iphone-device #countdownOverlay [data-countdown-state="ya"] *{
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    text-shadow: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23485,6 +23553,68 @@ try {
   setTimeout(cleanCountdown, 80);
   setTimeout(cleanCountdown, 200);
   setTimeout(cleanCountdown, 400);
+})();
+</script>
+
+
+<script id="expoReactIPhoneCountdownYAAndSportTimerFixJS">
+(() => {
+  const root = document.documentElement;
+  const stage = document.getElementById('stage');
+  if (!root || !root.classList.contains('expo-iphone-device')) return;
+
+  function lowerSportTimer(){
+    if (!stage) return;
+    const isSport = stage.classList.contains('sport-mode') || stage.classList.contains('deportivo-mode');
+    if (!isSport) return;
+    const timer = document.getElementById('timerBox');
+    if (!timer) return;
+    timer.style.setProperty('position', 'relative', 'important');
+    timer.style.setProperty('top', '10px', 'important');
+  }
+
+  function restoreYaCircle(){
+    const overlay = document.getElementById('countdownOverlay') || document.body;
+    const candidates = [
+      ...overlay.querySelectorAll('.countdown-ya, .countdown-go, .countdown-ya-circle, .countdown-go-circle, [data-countdown-state="go"], [data-countdown-state="ya"]')
+    ];
+
+    // Additionally detect the node that literally shows "YA"
+    overlay.querySelectorAll('*').forEach(el => {
+      const txt = (el.textContent || '').trim().toUpperCase();
+      if (txt === 'YA' || txt === 'GO') candidates.push(el);
+    });
+
+    const uniq = [...new Set(candidates)];
+    uniq.forEach(el => {
+      el.style.setProperty('background', '#19b312', 'important');
+      el.style.setProperty('background-color', '#19b312', 'important');
+      el.style.setProperty('background-image', 'none', 'important');
+      el.style.setProperty('border-radius', '999px', 'important');
+      el.style.setProperty('box-shadow', 'none', 'important');
+      el.style.setProperty('color', '#fff', 'important');
+      el.style.setProperty('-webkit-text-fill-color', '#fff', 'important');
+      el.style.setProperty('text-shadow', 'none', 'important');
+      el.querySelectorAll('*').forEach(n => {
+        n.style.setProperty('color', '#fff', 'important');
+        n.style.setProperty('-webkit-text-fill-color', '#fff', 'important');
+        n.style.setProperty('text-shadow', 'none', 'important');
+      });
+    });
+  }
+
+  const sync = () => { lowerSportTimer(); restoreYaCircle(); };
+
+  if (stage) new MutationObserver(sync).observe(stage, {attributes:true, attributeFilter:['class']});
+  new MutationObserver(sync).observe(document.body, {childList:true, subtree:true, attributes:true});
+
+  window.addEventListener('load', sync, {passive:true});
+  window.addEventListener('resize', sync, {passive:true});
+  sync();
+  requestAnimationFrame(sync);
+  setTimeout(sync, 80);
+  setTimeout(sync, 180);
+  setTimeout(sync, 400);
 })();
 </script>
 
