@@ -13742,6 +13742,51 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
+
+<style id="expoReactTouchPlusMinusResetV1">
+/* iPad + iPhone · secuencia
+   Botones +/-: nunca quedarse oscuros.
+   Solo pequeño zoom en hover/active y retorno inmediato a su estado base. */
+@media (max-width: 1024px){
+  html #stage #minusStage,
+  html #stage #plusStage{
+    transition: transform .10s ease, opacity .10s ease, filter .10s ease, background-color .10s ease, box-shadow .10s ease !important;
+    will-change: transform !important;
+  }
+
+  html #stage #minusStage:hover,
+  html #stage #plusStage:hover{
+    transform: scale(1.05) !important;
+    filter: none !important;
+  }
+
+  html #stage #minusStage:active,
+  html #stage #plusStage:active{
+    transform: scale(0.96) !important;
+    opacity: .95 !important;
+    filter: none !important;
+    box-shadow: none !important;
+  }
+
+  html #stage #minusStage,
+  html #stage #plusStage,
+  html #stage #minusStage:focus,
+  html #stage #plusStage:focus,
+  html #stage #minusStage.active,
+  html #stage #plusStage.active,
+  html #stage #minusStage.pressed,
+  html #stage #plusStage.pressed,
+  html #stage #minusStage.selected,
+  html #stage #plusStage.selected,
+  html #stage #minusStage.is-active,
+  html #stage #plusStage.is-active{
+    filter: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <!-- ======================================================
@@ -23394,6 +23439,74 @@ try {
   setTimeout(sync, 80);
   setTimeout(sync, 220);
   setTimeout(sync, 500);
+})();
+</script>
+
+
+<script id="expoReactTouchPlusMinusResetV1JS">
+(() => {
+  const isTouchTabletPhone = () => window.matchMedia('(max-width: 1024px)').matches;
+  const ids = ['minusStage','plusStage'];
+
+  function resetBtn(el){
+    if (!el) return;
+    el.classList.remove('active','pressed','selected','is-active');
+    el.blur?.();
+    el.style.removeProperty('filter');
+    el.style.removeProperty('background-color');
+    el.style.removeProperty('background-image');
+    el.style.removeProperty('box-shadow');
+    el.style.removeProperty('outline');
+    el.style.removeProperty('transform');
+    el.style.removeProperty('opacity');
+  }
+
+  function bind(el){
+    if (!el || el.dataset.plusMinusResetBound === '1') return;
+    el.dataset.plusMinusResetBound = '1';
+
+    const pulseIn = () => {
+      if (!isTouchTabletPhone()) return;
+      el.style.setProperty('transform', 'scale(0.96)', 'important');
+      el.style.setProperty('opacity', '.95', 'important');
+      el.style.setProperty('filter', 'none', 'important');
+      el.style.setProperty('box-shadow', 'none', 'important');
+    };
+    const pulseOut = () => {
+      if (!isTouchTabletPhone()) return;
+      setTimeout(() => resetBtn(el), 0);
+    };
+
+    el.addEventListener('touchstart', pulseIn, {passive:true});
+    el.addEventListener('touchend', pulseOut, {passive:true});
+    el.addEventListener('touchcancel', pulseOut, {passive:true});
+    el.addEventListener('pointerdown', pulseIn, {passive:true});
+    el.addEventListener('pointerup', pulseOut, {passive:true});
+    el.addEventListener('pointercancel', pulseOut, {passive:true});
+    el.addEventListener('mouseup', pulseOut, {passive:true});
+    el.addEventListener('mouseleave', pulseOut, {passive:true});
+    el.addEventListener('blur', pulseOut, {passive:true});
+    el.addEventListener('dragend', pulseOut, {passive:true});
+  }
+
+  function init(){
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        bind(el);
+        resetBtn(el);
+      }
+    });
+  }
+
+  const mo = new MutationObserver(init);
+  mo.observe(document.body, {childList:true, subtree:true});
+  window.addEventListener('load', init, {passive:true});
+  window.addEventListener('resize', init, {passive:true});
+  init();
+  requestAnimationFrame(init);
+  setTimeout(init, 80);
+  setTimeout(init, 220);
 })();
 </script>
 
