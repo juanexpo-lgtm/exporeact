@@ -13743,32 +13743,37 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 </style>
 
 
-<style id="expoReactIPhoneCountdownCleanV1">
+<style id="expoReactIPhoneCountdownV2">
 /* iPhone · cuenta atrás
-   - quitar círculo/anillo interior blanco
-   - aumentar un poco los números 3,2,1 sin tocar el círculo */
+   - quitar anillo/círculo blanco interior
+   - subir 5 px el tamaño de los números sin tocar el círculo */
 @media (max-width: 600px){
   html.expo-iphone-device #countdownOverlay .countdown-circle,
-  html.expo-iphone-device .countdown-circle,
   html.expo-iphone-device #countdownOverlay .countdown-ring,
-  html.expo-iphone-device .countdown-ring{
-    box-shadow: none !important;
+  html.expo-iphone-device .countdown-circle,
+  html.expo-iphone-device .countdown-ring,
+  html.expo-iphone-device #countdownOverlay [class*="countdown"],
+  html.expo-iphone-device [class*="countdown"]{
     background-image: none !important;
+    box-shadow: none !important;
     filter: none !important;
   }
 
   html.expo-iphone-device #countdownOverlay .countdown-circle::before,
   html.expo-iphone-device #countdownOverlay .countdown-circle::after,
-  html.expo-iphone-device .countdown-circle::before,
-  html.expo-iphone-device .countdown-circle::after,
   html.expo-iphone-device #countdownOverlay .countdown-ring::before,
   html.expo-iphone-device #countdownOverlay .countdown-ring::after,
+  html.expo-iphone-device .countdown-circle::before,
+  html.expo-iphone-device .countdown-circle::after,
   html.expo-iphone-device .countdown-ring::before,
-  html.expo-iphone-device .countdown-ring::after{
+  html.expo-iphone-device .countdown-ring::after,
+  html.expo-iphone-device #countdownOverlay [class*="countdown"]::before,
+  html.expo-iphone-device #countdownOverlay [class*="countdown"]::after{
     content: none !important;
     display: none !important;
     background: none !important;
     border: 0 !important;
+    outline: 0 !important;
     box-shadow: none !important;
   }
 
@@ -13776,9 +13781,8 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
   html.expo-iphone-device .countdown-number,
   html.expo-iphone-device #countdownNumber,
   html.expo-iphone-device .countdown-value{
-    font-size: 1.16em !important;
-    transform: translateY(-1px) !important;
     line-height: 1 !important;
+    text-shadow: none !important;
   }
 }
 </style>
@@ -23439,30 +23443,36 @@ try {
 </script>
 
 
-<script id="expoReactIPhoneCountdownCleanV1JS">
+<script id="expoReactIPhoneCountdownV2JS">
 (() => {
   const root = document.documentElement;
   if (!root.classList.contains('expo-iphone-device')) return;
 
   function cleanCountdown(){
-    const candidates = [
-      ...document.querySelectorAll('#countdownOverlay .countdown-circle, .countdown-circle, #countdownOverlay .countdown-ring, .countdown-ring')
-    ];
-    candidates.forEach(el => {
-      el.style.setProperty('box-shadow', 'none', 'important');
+    const rings = document.querySelectorAll(
+      '#countdownOverlay .countdown-circle, #countdownOverlay .countdown-ring, .countdown-circle, .countdown-ring, #countdownOverlay [class*="countdown"]'
+    );
+    rings.forEach(el => {
       el.style.setProperty('background-image', 'none', 'important');
+      el.style.setProperty('box-shadow', 'none', 'important');
       el.style.setProperty('filter', 'none', 'important');
-      // si el anillo interior viene por borde/inset
       el.style.setProperty('outline', 'none', 'important');
+      el.style.setProperty('text-shadow', 'none', 'important');
     });
 
-    const numbers = [
-      ...document.querySelectorAll('#countdownOverlay .countdown-number, .countdown-number, #countdownNumber, .countdown-value')
-    ];
+    const numbers = document.querySelectorAll(
+      '#countdownOverlay .countdown-number, .countdown-number, #countdownNumber, .countdown-value'
+    );
     numbers.forEach(el => {
-      el.style.setProperty('font-size', '1.16em', 'important');
+      if (el.dataset.iphoneCountdownPlus5 !== '1') {
+        const current = parseFloat(getComputedStyle(el).fontSize || '0') || 0;
+        if (current > 0) {
+          el.style.setProperty('font-size', (current + 5) + 'px', 'important');
+          el.dataset.iphoneCountdownPlus5 = '1';
+        }
+      }
       el.style.setProperty('line-height', '1', 'important');
-      el.style.setProperty('transform', 'translateY(-1px)', 'important');
+      el.style.setProperty('text-shadow', 'none', 'important');
     });
   }
 
