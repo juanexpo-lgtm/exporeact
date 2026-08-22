@@ -23851,5 +23851,99 @@ html:not(.expo-iphone-device):not(.expo-ipad-device) #stage #controls #pauseBtn 
 }
 </style>
 
+
+
+<style id="expoReactPCIPadRequestedAdjustmentsV3">
+/* ============================================================
+   AJUSTES V3 SOLICITADOS
+   PC:
+   - Crono de secuencia +5 px (17 -> 22 px), peso ligeramente mayor.
+   - Icono pausa/play 2 px más abajo respecto al ajuste anterior (-4 -> -2).
+   iPad:
+   - Pausa/play y SALIR al doble de ancho, manteniendo la altura.
+   - Mayor fuente en segundos e indicador de REPS.
+   - Crono sin recuadro, negro y algo mayor durante la secuencia.
+   ============================================================ */
+
+/* PC · crono de secuencia: +5 px y un poco más de peso. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage #timerBox{
+  font-size:22px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+}
+
+/* PC · bajar 2 px el símbolo respecto a la posición anterior (-4px -> -2px). */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage #controls #pauseBtn .pause-control-icon{
+  transform:translateY(-2px) !important;
+}
+
+/* iPad · botones pausa/play y SALIR: doble de ancho, misma altura. */
+html.expo-ipad-device #stage #controls #pauseBtn{
+  width:94px !important;
+  min-width:94px !important;
+  max-width:94px !important;
+  height:47px !important;
+  min-height:47px !important;
+  max-height:47px !important;
+  flex:0 0 94px !important;
+}
+html.expo-ipad-device #stage #controls #exitBtn{
+  width:114px !important;
+  min-width:114px !important;
+  max-width:114px !important;
+  height:47px !important;
+  min-height:47px !important;
+  max-height:47px !important;
+  flex:0 0 114px !important;
+}
+
+/* iPad · lectura de intervalo/segundos y REPS más grande. */
+html.expo-ipad-device #stage #controls #speedBadge,
+html.expo-ipad-device #stage #controls #stimCounter{
+  font-size:21px !important;
+  line-height:1 !important;
+}
+
+/* iPad · crono como texto simple, negro y ligeramente mayor. */
+html.expo-ipad-device #stage #timerBox,
+html.expo-ipad-device #stage #timerBox *{
+  font-size:20px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border:0 !important;
+  border-color:transparent !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* iPad táctil tiene reglas históricas más específicas: neutralizarlas también. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #timerBox,
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #timerBox *{
+  font-size:20px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border:0 !important;
+  border-color:transparent !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+</style>
+
 </body>
 </html>
