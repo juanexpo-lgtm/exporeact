@@ -13908,40 +13908,6 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
 }
 </style>
 
-
-<style id="iphoneOnlyExitAndPlusMinusFix_v1">
-@media (max-width: 600px){
-  html.expo-iphone-device #minusStage,
-  html.expo-iphone-device #plusStage{
-    width: 28px !important;
-    min-width: 28px !important;
-    max-width: 28px !important;
-    height: 26px !important;
-    min-height: 26px !important;
-    max-height: 26px !important;
-    flex: 0 0 28px !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-  }
-
-  html.expo-iphone-device #minusStage *,
-  html.expo-iphone-device #plusStage *{
-    font-size: 14px !important;
-    line-height: 1 !important;
-  }
-
-  html.expo-iphone-device #exitBtn,
-  html.expo-iphone-device #exitBtn *,
-  html.expo-iphone-device #exitButton,
-  html.expo-iphone-device #exitButton *,
-  html.expo-iphone-device .exit-btn,
-  html.expo-iphone-device .exit-btn *{
-    font-weight: 500 !important;
-    letter-spacing: 0 !important;
-  }
-}
-</style>
-
 </head>
 <body>
 <!-- ======================================================
@@ -23649,60 +23615,6 @@ try {
   requestAnimationFrame(applyFixes);
   setTimeout(applyFixes, 120);
   setTimeout(applyFixes, 400);
-})();
-</script>
-
-
-<script id="iphoneOnlyExitAndPlusMinusFix_v1JS">
-(() => {
-  function applyIPhoneOnlyFix(){
-    const root = document.documentElement;
-    const isIPhone = root.classList.contains('expo-iphone-device') || /iPhone/i.test(navigator.userAgent);
-    if (!(isIPhone && window.matchMedia('(max-width: 600px)').matches)) return;
-
-    const minus = document.getElementById('minusStage');
-    const plus = document.getElementById('plusStage');
-
-    [minus, plus].forEach(el => {
-      if (!el) return;
-      [
-        ['width','28px'], ['min-width','28px'], ['max-width','28px'],
-        ['height','26px'], ['min-height','26px'], ['max-height','26px'],
-        ['flex','0 0 28px'], ['padding','0'], ['border-radius','8px']
-      ].forEach(([p,v]) => el.style.setProperty(p, v, 'important'));
-      el.querySelectorAll('*').forEach(n => {
-        n.style.setProperty('font-size', '14px', 'important');
-        n.style.setProperty('line-height', '1', 'important');
-      });
-    });
-
-    const exitCandidates = [
-      document.getElementById('exitBtn'),
-      document.getElementById('exitButton'),
-      ...document.querySelectorAll('.exit-btn')
-    ].filter(Boolean);
-
-    exitCandidates.forEach(el => {
-      el.style.setProperty('font-weight', '500', 'important');
-      el.style.setProperty('letter-spacing', '0', 'important');
-      el.querySelectorAll('*').forEach(n => {
-        n.style.setProperty('font-weight', '500', 'important');
-        n.style.setProperty('letter-spacing', '0', 'important');
-      });
-    });
-  }
-
-  new MutationObserver(applyIPhoneOnlyFix).observe(document.documentElement, {
-    subtree: true, childList: true, attributes: true
-  });
-
-  window.addEventListener('load', applyIPhoneOnlyFix, {passive:true});
-  window.addEventListener('resize', applyIPhoneOnlyFix, {passive:true});
-  applyIPhoneOnlyFix();
-  requestAnimationFrame(applyIPhoneOnlyFix);
-  setTimeout(applyIPhoneOnlyFix, 120);
-  setTimeout(applyIPhoneOnlyFix, 350);
-  setTimeout(applyIPhoneOnlyFix, 700);
 })();
 </script>
 
