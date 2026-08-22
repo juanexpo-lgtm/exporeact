@@ -23792,5 +23792,64 @@ html.expo-ipad-device #stage #plusStage:active{
 }
 </style>
 
+
+<style id="expoReactIPadPCRequestedAdjustmentsV2">
+/* ============================================================
+   AJUSTES V2 SOLICITADOS
+   iPad:
+   - Deportivo interno = movement-mode.
+   - Barra inferior exactamente al 70% del viewport, sin autoescala.
+   - Mejor aprovechamiento vertical del panel principal.
+   PC:
+   - Crono deportivo sin recuadro y texto negro.
+   - Icono de pausa 4 px más arriba.
+   ============================================================ */
+
+/* iPad · usar más altura útil del panel, evitando el hueco superior
+   y distribuyendo el espacio sobrante entre las filas reales. */
+html.expo-ipad-device #cfg{
+  align-content:space-between !important;
+  grid-auto-rows:max-content !important;
+  row-gap:4px !important;
+  padding-top:max(8px, env(safe-area-inset-top)) !important;
+  padding-bottom:max(10px, env(safe-area-inset-bottom)) !important;
+}
+
+/* iPad · Deportivo usa realmente .movement-mode.
+   Fijamos también la escala en 1 para que el auto-fit no reduzca
+   físicamente la barra por debajo del 70% solicitado. */
+html.expo-ipad-device #stage.movement-mode #controls,
+html.expo-ipad-device #stage.sport-mode #controls,
+html.expo-ipad-device #stage.deportivo-mode #controls{
+  width:70vw !important;
+  min-width:70vw !important;
+  max-width:70vw !important;
+  --sequence-controls-fit:1 !important;
+  justify-content:space-between !important;
+  column-gap:10px !important;
+  box-sizing:border-box !important;
+}
+
+/* PC · crono del modo Deportivo como texto simple negro. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.movement-mode #timerBox,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.sport-mode #timerBox,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.deportivo-mode #timerBox{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  color:#000 !important;
+  border:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* PC · elevar 4 px el símbolo del botón pausa/play de la barra de secuencia. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage #controls #pauseBtn .pause-control-icon{
+  transform:translateY(-4px) !important;
+}
+</style>
+
 </body>
 </html>
