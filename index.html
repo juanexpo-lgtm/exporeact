@@ -13854,7 +13854,8 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
    No tocar nada más.
 ====================================== */
 
-/* 1) PC - quitar el anillo/blanco interior del countdown */
+/* 1) PC - quitar solo el anillo blanco interior del countdown.
+   Se conservan el fondo degradado y la sombra de los círculos rojo/verde. */
 @media (min-width: 1025px){
   #countdown .countdown-number::after,
   #countdown .countdown-go::after,
@@ -13867,15 +13868,6 @@ html.expo-iphone-device #stage.tactile-mode #tactileChoices .iphone-tactile-arro
     background: none !important;
     border: 0 !important;
     box-shadow: none !important;
-  }
-  #countdown .countdown-number,
-  #countdown .countdown-go,
-  #countdownOverlay .countdown-number,
-  #countdownOverlay .countdown-go,
-  .countdown-number,
-  .countdown-go{
-    box-shadow: none !important;
-    background-image: none !important;
   }
 }
 
@@ -23569,14 +23561,8 @@ try {
   function applyFixes(){
     const root = document.documentElement;
 
-    // PC countdown ring removal fallback
-    if (window.matchMedia('(min-width: 1025px)').matches) {
-      const nodes = document.querySelectorAll('#countdown .countdown-number, #countdown .countdown-go, #countdownOverlay .countdown-number, #countdownOverlay .countdown-go, .countdown-number, .countdown-go');
-      nodes.forEach(el => {
-        el.style.setProperty('box-shadow', 'none', 'important');
-        el.style.setProperty('background-image', 'none', 'important');
-      });
-    }
+    // PC: no tocar el fondo ni la sombra de los círculos de la cuenta atrás.
+    // El anillo blanco interior se elimina únicamente por CSS mediante ::after.
 
     // iPhone only tweaks
     const isIPhone = root.classList.contains('expo-iphone-device') || /iPhone/i.test(navigator.userAgent);
