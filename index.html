@@ -24049,5 +24049,194 @@ html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #timerBox *{
 }
 </style>
 
+
+
+<style id="expoReactRequestedAdjustmentsV5">
+/* ============================================================
+   AJUSTES V5 SOLICITADOS
+   PC:
+   - Táctil: crono sin recuadro.
+   - Deportivo y Táctil: barra inferior +100 px por cada lado
+     (360 -> 560 px en viewport normal de PC).
+   - Táctil: estadísticas repartidas proporcionalmente en 560 px.
+   iPad Táctil:
+   - SALIR 50 px a la izquierda; PAUSA/PLAY 50 px a la derecha.
+   - Fila informativa al mismo 90% que la barra inferior.
+   - Cuatro estadísticas distribuidas en todo ese ancho con crono centrado.
+   - Contenido de estadísticas +5 px.
+   ============================================================ */
+
+/* ---------- PC ---------- */
+/* Barra inferior: 360 + 100 + 100 = 560 px. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.movement-mode #controls,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.sport-mode #controls,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.deportivo-mode #controls,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #controls{
+  width:min(560px,calc(100vw - 24px)) !important;
+  min-width:min(560px,calc(100vw - 24px)) !important;
+  max-width:min(560px,calc(100vw - 24px)) !important;
+  box-sizing:border-box !important;
+  --sequence-controls-fit:1 !important;
+}
+
+/* Aprovechar la nueva anchura sin agrandar los controles. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.movement-mode #controls,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.sport-mode #controls,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.deportivo-mode #controls,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #controls{
+  grid-template-columns:42px minmax(112px,1fr) 68px 54px !important;
+  column-gap:18px !important;
+}
+
+/* Táctil PC: fila informativa con el mismo ancho ampliado y 5 columnas iguales. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow{
+  width:min(560px,calc(100vw - 24px)) !important;
+  min-width:min(560px,calc(100vw - 24px)) !important;
+  max-width:min(560px,calc(100vw - 24px)) !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  justify-items:stretch !important;
+  column-gap:8px !important;
+  box-sizing:border-box !important;
+}
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow #tactileScore{
+  display:contents !important;
+}
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow .tactile-score-item{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+}
+
+/* Táctil PC: crono sin recuadro y legible sobre fondo blanco. */
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow #timerBox,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow #timerBox *{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border:0 !important;
+  border-color:transparent !important;
+  border-radius:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+}
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow #timerBox::before,
+html:not(.expo-iphone-device):not(.expo-ipad-device) #stage.tactile-mode #tactileInfoRow #timerBox::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* ---------- iPad · TÁCTIL ---------- */
+/* Separar los botones extremos 50 px hacia fuera sin alterar sus animaciones. */
+html.expo-ipad-device #stage.tactile-mode #controls #pauseBtn{
+  position:relative !important;
+  left:50px !important;
+}
+html.expo-ipad-device #stage.tactile-mode #controls #exitBtn{
+  position:relative !important;
+  left:-50px !important;
+}
+
+/* Fila de estadísticas = exactamente el mismo 90% que la barra inferior. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow{
+  width:90vw !important;
+  min-width:90vw !important;
+  max-width:90vw !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  grid-template-rows:56px !important;
+  align-items:center !important;
+  justify-items:stretch !important;
+  column-gap:10px !important;
+  box-sizing:border-box !important;
+}
+
+/* El score deja de ser una caja intermedia: sus 4 métricas son columnas reales. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #tactileScore{
+  display:contents !important;
+}
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-correct{
+  grid-column:1 !important;
+  grid-row:1 !important;
+}
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-wrong{
+  grid-column:2 !important;
+  grid-row:1 !important;
+}
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #timerBox{
+  grid-column:3 !important;
+  grid-row:1 !important;
+  justify-self:stretch !important;
+  align-self:center !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  text-align:center !important;
+}
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-missed{
+  grid-column:4 !important;
+  grid-row:1 !important;
+}
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-average{
+  grid-column:5 !important;
+  grid-row:1 !important;
+}
+
+/* Recuadros estadísticos ocupan por completo su quinta parte del 90%. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-item{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:52px !important;
+  min-height:52px !important;
+  padding:5px 10px !important;
+  gap:6px !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+/* +5 px sobre los tamaños anteriores: 11 -> 16 y 20 -> 25. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-label{
+  font-size:16px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow .tactile-score-item strong{
+  font-size:25px !important;
+  font-weight:500 !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+
+/* Crono permanece exactamente en la columna central, sin recuadro. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #timerBox,
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow #timerBox *{
+  font-size:40px !important;
+  font-weight:500 !important;
+  height:52px !important;
+  min-height:52px !important;
+  padding:0 !important;
+  color:#000 !important;
+  -webkit-text-fill-color:#000 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+</style>
 </body>
 </html>
