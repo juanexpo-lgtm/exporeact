@@ -15725,7 +15725,7 @@ document.addEventListener("pointerdown", event => {
 
   const control = target.closest("#minus, #plus, #minusStage, #plusStage");
   if (control) {
-    playHighControlClick();
+    playSelectionClick();
   }
 });
 
@@ -18861,14 +18861,14 @@ try {
       });
 
       repMinus?.addEventListener('pointerdown',()=>{
-        if(typeof playHighControlClick==='function'){
-          playHighControlClick();
+        if(typeof playSelectionClick==='function'){
+          playSelectionClick();
         }
       });
 
       repPlus?.addEventListener('pointerdown',()=>{
-        if(typeof playHighControlClick==='function'){
-          playHighControlClick();
+        if(typeof playSelectionClick==='function'){
+          playSelectionClick();
         }
       });
     }
@@ -23606,158 +23606,191 @@ try {
 
 
 
-<!-- ============================================================
-     EXPO REACT 2.0 · iPAD FULLSCREEN PANEL + FULL-WIDTH CONTROLS
-     - Solo iPad/iPadOS (incluye UA de escritorio de iPadOS).
-     - Panel de configuración a viewport completo en vertical/horizontal.
-     - Fila inferior de controles a todo el ancho durante la secuencia.
-     - PC e iPhone permanecen sin cambios.
-     ============================================================ -->
-<style id="expoReactIPadFullscreenPanelControlsV1">
-html.expo-ipad-device,
-html.expo-ipad-device body{
-  width:100% !important;
-  height:100% !important;
-  min-width:0 !important;
-  min-height:0 !important;
-}
-
-/* iPad: el panel ocupa todo el viewport visible, en vertical y horizontal. */
-html.expo-ipad-device #cfg{
-  position:fixed !important;
-  left:0 !important;
-  top:0 !important;
-  right:auto !important;
-  bottom:auto !important;
-  width:var(--expo-vw,100vw) !important;
-  min-width:0 !important;
-  max-width:none !important;
-  height:var(--expo-vh,100dvh) !important;
-  min-height:var(--expo-vh,100dvh) !important;
-  max-height:var(--expo-vh,100dvh) !important;
-  margin:0 !important;
-  padding:
-    max(20px,var(--expo-safe-top,env(safe-area-inset-top)))
-    max(24px,var(--expo-safe-right,env(safe-area-inset-right)))
-    max(20px,var(--expo-safe-bottom,env(safe-area-inset-bottom)))
-    max(24px,var(--expo-safe-left,env(safe-area-inset-left))) !important;
-  transform:none !important;
-  transform-origin:center center !important;
-  border-radius:0 !important;
-  box-sizing:border-box !important;
-  overflow-x:hidden !important;
-  overflow-y:auto !important;
-  overscroll-behavior:contain !important;
-  -webkit-overflow-scrolling:touch !important;
-  align-content:space-evenly !important;
-}
-
-html.expo-ipad-device body.training-transition #cfg{
-  transform:none !important;
-}
-
-/* Aprovecha el ancho del iPad sin deformar los grupos internos. */
-html.expo-ipad-device #cfg > *{
-  width:min(100%,920px) !important;
-  max-width:920px !important;
-  justify-self:center !important;
-  box-sizing:border-box !important;
-}
-
-html.expo-ipad-device #cfg .banner{
-  width:min(100%,920px) !important;
-}
-
-html.expo-ipad-device #cfg #gameModeSelector{
-  width:min(100%,920px) !important;
-  max-width:920px !important;
-}
-
-/* iPad: fila de controles durante la secuencia a todo el ancho útil. */
-html.expo-ipad-device #stage #controls{
-  position:fixed !important;
-  left:0 !important;
-  right:0 !important;
-  width:var(--expo-vw,100vw) !important;
-  min-width:0 !important;
-  max-width:none !important;
-  margin:0 !important;
-  padding-left:max(18px,var(--expo-safe-left,env(safe-area-inset-left))) !important;
-  padding-right:max(18px,var(--expo-safe-right,env(safe-area-inset-right))) !important;
-  box-sizing:border-box !important;
-  transform:none !important;
-  transform-origin:center bottom !important;
-  display:flex !important;
-  flex-wrap:nowrap !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  gap:clamp(10px,2vw,26px) !important;
-  overflow:visible !important;
-}
-
-html.expo-ipad-device #stage #controls > #pauseBtn,
-html.expo-ipad-device #stage #controls > #stimCounter,
-html.expo-ipad-device #stage #controls > #exitBtn{
-  flex:0 0 auto !important;
-}
-
-html.expo-ipad-device #stage #controls > .stage-speed-control{
-  flex:1 1 auto !important;
-  min-width:0 !important;
-  width:auto !important;
-  max-width:none !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:clamp(8px,1.4vw,18px) !important;
-}
-
-/* En horizontal se mantiene el mismo comportamiento de borde a borde. */
-@media (orientation:landscape){
-  html.expo-ipad-device #stage #controls{
-    padding-left:max(24px,var(--expo-safe-left,env(safe-area-inset-left))) !important;
-    padding-right:max(24px,var(--expo-safe-right,env(safe-area-inset-right))) !important;
-    gap:clamp(14px,2.2vw,32px) !important;
-  }
-}
-</style>
-
-<script id="expoReactIPadFullscreenPanelControlsV1JS">
+<script id="expoReactIPadDeviceClassV1">
 (() => {
-  const root = document.documentElement;
-  if (!root) return;
-
   const ua = navigator.userAgent || '';
   const platform = navigator.platform || '';
-  const isIPad = /iPad/i.test(ua) || (platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (!isIPad) return;
-
-  root.classList.add('expo-ipad-device');
-
-  const syncIPadViewport = () => {
-    const vv = window.visualViewport;
-    const width = Math.max(1, vv ? vv.width : (document.documentElement.clientWidth || window.innerWidth || 1));
-    const height = Math.max(1, vv ? vv.height : (document.documentElement.clientHeight || window.innerHeight || 1));
-    root.style.setProperty('--expo-vw', width + 'px');
-    root.style.setProperty('--expo-vh', height + 'px');
-  };
-
-  window.addEventListener('resize', syncIPadViewport, {passive:true});
-  window.addEventListener('orientationchange', () => {
-    syncIPadViewport();
-    setTimeout(syncIPadViewport, 100);
-    setTimeout(syncIPadViewport, 360);
-  }, {passive:true});
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', syncIPadViewport, {passive:true});
-    window.visualViewport.addEventListener('scroll', syncIPadViewport, {passive:true});
-  }
-
-  syncIPadViewport();
-  requestAnimationFrame(syncIPadViewport);
+  const isIPad = /iPad/i.test(ua) || (platform === 'MacIntel' && Number(navigator.maxTouchPoints || 0) > 1);
+  if (isIPad) document.documentElement.classList.add('expo-ipad-device');
 })();
 </script>
+
+<style id="expoReactIPadRequestedAdjustmentsV1">
+/* ============================================================
+   iPad · ajustes específicos solicitados
+   - Panel principal aprovecha todo el viewport (vertical/horizontal).
+   - Banner algo más bajo y subtítulo un poco más ligero.
+   - +/- de intervalo del panel: sin estado negro persistente; solo zoom.
+   - Secuencia deportivo/táctil: controles e información al 70% del ancho.
+   - Controles de barra de secuencia +3 px.
+   ============================================================ */
+
+/* Mantener el panel de iPad ocupando todo el viewport visible. */
+html.expo-ipad-device #cfg{
+  --expo-fit:1 !important;
+  width:var(--expo-vw) !important;
+  min-width:0 !important;
+  max-width:var(--expo-vw) !important;
+  height:var(--expo-vh) !important;
+  min-height:var(--expo-vh) !important;
+  max-height:var(--expo-vh) !important;
+  box-sizing:border-box !important;
+  border-radius:0 !important;
+  padding:16px 20px !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  transform:translate(-50%,-50%) !important;
+  transform-origin:center center !important;
+  align-content:center !important;
+}
+html.expo-ipad-device body.training-transition #cfg{
+  transform:translate(-50%,-50%) scale(.985) !important;
+}
+
+/* Banner iPad: menos altura, sin reducir el título principal. */
+html.expo-ipad-device #cfg .banner{
+  padding:12px 16px !important;
+  border-radius:28px !important;
+}
+html.expo-ipad-device #cfg .banner-subtitle{
+  font-weight:450 !important;
+  margin-top:6px !important;
+}
+
+/* +/- del selector de intervalo del panel principal:
+   conservar color inicial en hover/focus/active y usar solo zoom táctil. */
+html.expo-ipad-device #cfg #minus,
+html.expo-ipad-device #cfg #plus,
+html.expo-ipad-device #cfg #minus:hover,
+html.expo-ipad-device #cfg #plus:hover,
+html.expo-ipad-device #cfg #minus:focus,
+html.expo-ipad-device #cfg #plus:focus,
+html.expo-ipad-device #cfg #minus:focus-visible,
+html.expo-ipad-device #cfg #plus:focus-visible,
+html.expo-ipad-device #cfg #minus:active,
+html.expo-ipad-device #cfg #plus:active{
+  background:rgba(118,118,128,.12) !important;
+  background-color:rgba(118,118,128,.12) !important;
+  background-image:none !important;
+  color:var(--ios-text) !important;
+  border:1px solid rgba(0,0,0,.04) !important;
+  box-shadow:none !important;
+  filter:none !important;
+  outline:none !important;
+  transition:transform .14s var(--ios-ease), background .14s var(--ios-ease) !important;
+}
+html.expo-ipad-device #cfg #minus:hover,
+html.expo-ipad-device #cfg #plus:hover,
+html.expo-ipad-device #cfg #minus:focus,
+html.expo-ipad-device #cfg #plus:focus,
+html.expo-ipad-device #cfg #minus:focus-visible,
+html.expo-ipad-device #cfg #plus:focus-visible{
+  transform:none !important;
+}
+html.expo-ipad-device #cfg #minus:active,
+html.expo-ipad-device #cfg #plus:active{
+  transform:scale(1.10) !important;
+}
+
+/* Deportivo y táctil en iPad: barra de secuencia al 70% del viewport. */
+html.expo-ipad-device #stage.sport-mode #controls,
+html.expo-ipad-device #stage.deportivo-mode #controls,
+html.expo-ipad-device #stage.tactile-mode #controls{
+  width:70vw !important;
+  min-width:70vw !important;
+  max-width:70vw !important;
+  grid-template-columns:max-content max-content max-content max-content !important;
+  justify-content:space-between !important;
+  column-gap:10px !important;
+  box-sizing:border-box !important;
+}
+
+/* Segunda fila informativa del modo táctil al 70% del viewport. */
+html.expo-ipad-device #stage.tactile-mode #tactileInfoRow{
+  width:70vw !important;
+  min-width:70vw !important;
+  max-width:70vw !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  box-sizing:border-box !important;
+}
+
+/* +3 px respecto a los tamaños táctiles efectivos de iPad. */
+html.expo-ipad-device #stage #controls #pauseBtn{
+  width:47px !important;
+  min-width:47px !important;
+  max-width:47px !important;
+  height:47px !important;
+  min-height:47px !important;
+  max-height:47px !important;
+}
+html.expo-ipad-device #stage #controls #minusStage,
+html.expo-ipad-device #stage #controls #plusStage{
+  width:43px !important;
+  min-width:43px !important;
+  max-width:43px !important;
+  height:43px !important;
+  min-height:43px !important;
+  max-height:43px !important;
+}
+html.expo-ipad-device #stage #controls #speedBadge{
+  width:61px !important;
+  min-width:61px !important;
+  max-width:61px !important;
+  height:47px !important;
+  min-height:47px !important;
+  max-height:47px !important;
+}
+html.expo-ipad-device #stage #controls #stimCounter{
+  width:71px !important;
+  min-width:71px !important;
+  max-width:71px !important;
+  height:47px !important;
+  min-height:47px !important;
+  max-height:47px !important;
+}
+html.expo-ipad-device #stage #controls #exitBtn{
+  width:57px !important;
+  min-width:57px !important;
+  max-width:57px !important;
+  height:47px !important;
+  min-height:47px !important;
+  max-height:47px !important;
+}
+html.expo-ipad-device #stage #controls > .stage-speed-control{
+  width:153px !important;
+  min-width:153px !important;
+  max-width:153px !important;
+  gap:3px !important;
+  flex:0 0 153px !important;
+}
+
+/* Evita el hover táctil persistente sobre +/- de secuencia en iPad;
+   conserva su color normal y solo anima la escala mientras se pulsa. */
+html.expo-ipad-device #stage #minusStage,
+html.expo-ipad-device #stage #plusStage,
+html.expo-ipad-device #stage #minusStage:hover,
+html.expo-ipad-device #stage #plusStage:hover,
+html.expo-ipad-device #stage #minusStage:focus,
+html.expo-ipad-device #stage #plusStage:focus,
+html.expo-ipad-device #stage #minusStage:focus-visible,
+html.expo-ipad-device #stage #plusStage:focus-visible,
+html.expo-ipad-device #stage #minusStage:active,
+html.expo-ipad-device #stage #plusStage:active{
+  background:rgba(28,28,30,.72) !important;
+  background-color:rgba(28,28,30,.72) !important;
+  filter:none !important;
+}
+html.expo-ipad-device #stage #minusStage:hover,
+html.expo-ipad-device #stage #plusStage:hover,
+html.expo-ipad-device #stage #minusStage:focus,
+html.expo-ipad-device #stage #plusStage:focus-visible{
+  transform:none !important;
+}
+html.expo-ipad-device #stage #minusStage:active,
+html.expo-ipad-device #stage #plusStage:active{
+  transform:scale(1.08) !important;
+}
+</style>
 
 </body>
 </html>
